@@ -1,0 +1,66 @@
+This is pdfTeX, Version 3.141592653-2.6-1.40.23 (MiKTeX 21.8) (preloaded format=pdflatex 2021.8.28)  29 AUG 2021 18:09
+entering extended mode
+**s:/Repos/kart-simulator/docs/cahier_des_charges.tex
+(s:/Repos/kart-simulator/docs/cahier_des_charges.tex
+LaTeX2e <2021-06-01> patch level 1
+L3 programming layer <2021-07-12> (G:\MiKTeX\tex/latex/base\article.cls
+Document Class: article 2021/02/12 v1.4n Standard LaTeX document class
+(G:\MiKTeX\tex/latex/base\size10.clo
+File: size10.clo 2021/02/12 v1.4n Standard LaTeX file (size option)
+)
+\c@part=\count182
+\c@section=\count183
+\c@subsection=\count184
+\c@subsubsection=\count185
+\c@paragraph=\count186
+\c@subparagraph=\count187
+\c@figure=\count188
+\c@table=\count189
+\abovecaptionskip=\skip47
+\belowcaptionskip=\skip48
+\bibindent=\dimen138
+) (G:\MiKTeX\tex/latex/l3backend\l3backend-pdftex.def
+File: l3backend-pdftex.def 2021-08-04 L3 backend support: PDF output (pdfTeX)
+\l__color_backend_stack_int=\count190
+\l__pdf_internal_box=\box50
+) (cahier_des_charges.aux)
+\openout1 = `cahier_des_charges.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 7.
+LaTeX Font Info:    ... okay on input line 7.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 7.
+LaTeX Font Info:    ... okay on input line 7.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 7.
+LaTeX Font Info:    ... okay on input line 7.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 7.
+LaTeX Font Info:    ... okay on input line 7.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 7.
+LaTeX Font Info:    ... okay on input line 7.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 7.
+LaTeX Font Info:    ... okay on input line 7.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 7.
+LaTeX Font Info:    ... okay on input line 7.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <12> on input line 8.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <8> on input line 8.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <6> on input line 8.
+ [1
+
+{C:/Users/lorin/AppData/Local/MiKTeX/pdftex/config/pdftex.map}] [1] (cahier_des_charges.aux) ) 
+Here is how much of TeX's memory you used:
+ 417 strings out of 478868
+ 7391 string characters out of 2865294
+ 299062 words of memory out of 3000000
+ 18406 multiletter control sequences out of 15000+600000
+ 407070 words of font info for 39 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 34i,7n,41p,185b,202s stack positions out of 5000i,500n,10000p,200000b,80000s
+<G:/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx12.pfb><G:/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><G:/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><G:/MiKTeX/fonts/type1/public/amsfonts/cm/cmr17.pfb>
+Output written on cahier_des_charges.pdf (2 pages, 46134 bytes).
+PDF statistics:
+ 29 PDF objects out of 1000 (max. 8388607)
+ 0 named destinations out of 1000 (max. 500000)
+ 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+
