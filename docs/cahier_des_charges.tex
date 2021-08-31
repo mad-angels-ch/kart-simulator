@@ -41,11 +41,16 @@ Un circuit de Kart jouable pour un joueur et un créateur de circuits.
                     \end{itemize}
           \end{itemize}
     \item Règles du jeu: \begin{itemize}
-        \item Le but est de terminer le nombre de tour requis le plus rapidement possible.
+        \item Le but est de terminer le nombre de tour requis le plus rapidement possible
+        \item Les karts perdent de la vitesse lorsqu'ils touchent le bord de la piste
+        \item La partie est terminée (le kart meurt) si celui-ci sort de la piste (par un bout sans barrière)
+    \end{itemize}
+    \item Types d'obstacles:\begin{itemize}
+        \item Boost: accélère les karts qui passent dessus
     \end{itemize}
     \item Kart \begin{itemize}
         \item Collisions avec le bord de la piste
-        \item Collision avec les autres karts
+        \item Collisions avec les autres karts
         \item Contrôles: \begin{itemize}
             \item Gauche
             \item Droite
@@ -57,6 +62,12 @@ Un circuit de Kart jouable pour un joueur et un créateur de circuits.
 \end{itemize}
 
 \section{Version finale}
+Le jeu peut être joué en multi-joueur.
+\begin{itemize}
+    \item Choix du mode de jeu (solo et multi-joueur)
+    \item Choix supplémentaire de POV : kart fixe au centre de l'écran, c'est le monde qui bouge
+    \item Affichage du pseudo du joueur à côté du kart
+\end{itemize}
 
 \section{Extensions possibles}
 \begin{itemize}
@@ -66,6 +77,10 @@ Un circuit de Kart jouable pour un joueur et un créateur de circuits.
     \item Kart: \begin{itemize}
         \item Possibilité de dérapage
     \end{itemize}
+    \item Possibilité de se tirer dessus, les karts meurent lorsqu'ils n'ont plus de pv
+    \item Mondes sur plusieurs niveaux (ex: ponts, tunnels)
+    \item Choix du pilote, avec différentes exclamations de ceux-ci durant la course
+    \item Nouveaux types d'obstacles
 \end{itemize}
 
 \section{Extensions impossibles}
