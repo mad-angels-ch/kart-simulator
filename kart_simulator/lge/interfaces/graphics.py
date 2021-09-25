@@ -1,0 +1,2 @@
+class GraphicsInterface:
+    pass
