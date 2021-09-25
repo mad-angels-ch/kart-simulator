@@ -1,2 +1,4 @@
+import queue
+
 class CoreInterface:
-    pass
+    requests = queue.Queue()

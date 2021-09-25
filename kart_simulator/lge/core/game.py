@@ -11,7 +11,7 @@ class Game:
     _stopRequested = False
     _objectsContainer = ObjectsContainer()
 
-    def __init__(self, coreConfig: configparser.SectionProxy()) -> None:
+    def __init__(self, coreConfig: configparser.SectionProxy) -> None:
         self._config = coreConfig
 
     def start(self) -> None:

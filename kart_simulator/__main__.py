@@ -6,5 +6,3 @@ from kart_simulator.lge import LGE
 
 lge = LGE("kart_simulator/lge.ini")
 lge.run()
-
-print(lge)

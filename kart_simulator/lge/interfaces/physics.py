@@ -1,2 +1,4 @@
+import queue
+
 class PhysicsInterface:
-    pass
+    requests = queue.Queue()

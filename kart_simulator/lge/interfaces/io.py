@@ -1,2 +1,5 @@
+import queue
+
 class IOInterface:
-    pass
+    requests = queue.Queue()
+    inputs = queue.Queue()

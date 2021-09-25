@@ -1,2 +1,4 @@
+import queue
+
 class GraphicsInterface:
-    pass
+    requests = queue.Queue()
