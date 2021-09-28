@@ -1,8 +1,9 @@
-build/*
-kart_simulator.egg-info/*
-docs/*.aux
-docs/*.fdb_latexmk
-docs/*.fls
-docs/*.log
-docs/*.out
-docs/*.synctex.gz
+build
+kart_simulator.egg-info
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.pyc
