@@ -1,22 +1,10 @@
 import configparser
-import threading
 
-import interfaces
 
-class Physics(threading.Thread):
+class Physics:
     _config: configparser.SectionProxy
-    _interface: interfaces.Interface
+    _core: object
 
-    def __init__(self, config: configparser.SectionProxy, interface: interfaces.Interface) -> None:
-        super().__init__()
+    def __init__(self, config: configparser.SectionProxy, core) -> None:
         self._config = config
-        self._interface = interface
-
-    def run(self) -> None:
-        print("Physics started")
-        while True:
-            request = self._interface.physics.requests.get(block=True)
-
-            if request == "_quit_":
-                print("Physics stopped")
-                break
+        self._core = core

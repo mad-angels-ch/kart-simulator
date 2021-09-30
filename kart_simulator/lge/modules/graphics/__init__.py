@@ -1,24 +1,10 @@
 import configparser
-import threading
 
-import interfaces
 
-class Graphics(threading.Thread):
+class Graphics:
     _config: configparser.SectionProxy
-    _interface: interfaces.Interface
+    _core: object
 
-    def __init__(self, config: configparser.SectionProxy, interface: interfaces.Interface) -> None:
-        super().__init__()
+    def __init__(self, config: configparser.SectionProxy, core) -> None:
         self._config = config
-        self._interface = interface
-
-    def run(self) -> None:
-        print("Graphics started")
-        while True:
-            request = self._interface.graphics.requests.get(block=True)
-
-            if request == "_quit_":
-                print("Graphics stopped")
-                break
-
-            # gère la demande
+        self._core = core
