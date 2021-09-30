@@ -1,6 +1,7 @@
 import configparser
 import os
 import threading
+import time
 
 import core.objects as objects
 import modules
@@ -50,4 +51,17 @@ class Core(threading.Thread):
 
     def _mainLoop(self) -> None:
         while not self._requestStop:
-            pass
+            # récupéré les inputs
+
+            
+            # lancer physics
+
+
+            # lancer events
+
+
+            # lancer graphics
+
+
+            # attendre la frame suivante
+            time.sleep(1/60)
