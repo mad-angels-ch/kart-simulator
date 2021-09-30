@@ -5,6 +5,7 @@ import threading
 import core.objects as objects
 import modules
 
+
 class Core(threading.Thread):
     _path = os.path.abspath("")
     _config = configparser.ConfigParser()
