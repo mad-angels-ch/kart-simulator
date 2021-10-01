@@ -22,3 +22,5 @@ class Factory:
 
         Factory.objectsCreatedCount += 1
         return newObject
+
+create = Factory()
