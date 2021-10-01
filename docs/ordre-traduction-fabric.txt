@@ -1,0 +1,11 @@
+1. ScaleX + ScaleY
+
+2. FlipX + FlipY
+
+3. Rotation (en degrée, sens trigo)
+
+4. Left + Top:
+Cercle: centre
+Polygon: (xmax + xmin) / 2, pareil pour y
+
+5. Finit !
