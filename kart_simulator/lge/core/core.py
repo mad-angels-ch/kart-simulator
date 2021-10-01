@@ -32,7 +32,7 @@ class Core(threading.Thread):
         self.physics = modules.Physics(self._config["physics"], self)
 
     def run(self) -> None:
-        self._startGame()
+        self.io.run(self._startGame)
 
     def _startGame(self) -> None:
         self._mainLoop()
