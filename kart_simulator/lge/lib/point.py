@@ -2,9 +2,18 @@ class Point:
     _x: float
     _y: float
 
+    def createFromVector(vector):
+        return Point(vector.x(), vector.y())
+
     def __init__(self, x: float = 0, y: float = 0) -> None:
         self._x = x
         self._y = y
+
+    def x(self) -> float:
+        return self._x
+
+    def y(self) -> float:
+        return self._y
 
     def get_x(self) -> float:
         return self._x

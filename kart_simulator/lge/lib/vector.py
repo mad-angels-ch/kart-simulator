@@ -6,11 +6,30 @@ class Vector:
         self._x = x
         self._y = y
 
+    def x(self) -> float:
+        return self._x
+
+    def y(self) -> float:
+        return self._y
+
     def get_x(self) -> float:
         return self._x
 
     def get_y(self) -> float:
         return self._y
+
+    def scale(self, factor: float) -> None:
+        "Multiplie le vecteur par le facteur donné"
+        self._x *= factor
+        self._y *= factor
+
+    def scaleX(self, factor: float) -> None:
+        "Multiplie la composante du vecteur par le facteur donné"
+        self._x *= factor
+
+    def scaleY(self, factor: float) -> None:
+        "Multiplie la composante du vecteur par le facteur donné"
+        self._y *= factor
 
     def __iter__(self):
         return VectorIterator(self)
