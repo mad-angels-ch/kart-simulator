@@ -3,6 +3,7 @@ import os
 import threading
 import time
 
+import lib.tests
 import core.objects as objects
 import modules
 
@@ -31,8 +32,14 @@ class Core(threading.Thread):
         self.io = modules.IO(self._config["io"], self)
         self.physics = modules.Physics(self._config["physics"], self)
 
+        if self._config.getboolean("core", "tests"):
+            self._tests()
+
     def run(self) -> None:
         self.io.run(self._startGame)
+
+    def _tests(self) -> None:
+        lib.tests.run()
 
     def _startGame(self) -> None:
         self._mainLoop()
