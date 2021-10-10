@@ -82,6 +82,38 @@ def test():
     # isNormal/collinear
     assert v1.isNormal(Vector(0, 0))
     assert v1.isCollinear(Vector(0, 0))
-    assert v1.isCollinear(v1 * random.randint(0, 10000) / 100)
+    assert not v1.isCollinear(Vector(0, 1))
+    assert not v1.isCollinear(Vector(1, 0))
     assert not v1.isCollinear(Vector(1, 1))
+    assert v1.isCollinear(v1 * random.randint(0, 10000) / 100)
     assert not v1.isCollinear(v1.normalVector() * random.randint(0, 10000) / 10)
+    assert Vector(0, 0).isCollinear(v1)
+    assert Vector(0, 0).isNormal(v1)
+
+    # direction + rotation
+    v2 = Vector(1, 0)
+    assert v2.direction() == 0
+    assert Vector(0, 1).direction() == math.pi / 2
+    assert Vector(1, 1).direction() == math.pi / 4
+    assert Vector(-1, 0).direction() == math.pi
+    assert Vector(0, -1).direction() == math.pi / 2 * 3
+    assert Vector(math.cos(1), math.sin(1)).direction() == 1
+    v2.rotate(math.pi)
+    assert v2.direction() == math.pi
+    # v2.rotate(math.pi / 3)
+    # print(v2.direction())
+    # print(math.pi / 3 * 4)
+    # assert v2.direction() == math.pi + math.pi / 3
+
+    # orthogonal projection
+    assert v1.orthogonalProjection(Vector(1, 0)) == Vector(1, 0)
+    assert v1.orthogonalProjection(Vector(0, 1)) == Vector(0, 2)
+    assert v1.orthogonalProjection(v1) == v1
+    assert Vector(0, 0).orthogonalProjection(v1) == Vector(0, 0)
+
+    # scale
+    v2 = Vector(1, 7)
+    v2.scaleX(3)
+    assert v2 == Vector(3, 7)
+    v2.scaleY(-1/7)
+    assert v2 == Vector(3, -1)
