@@ -1,19 +1,14 @@
 import math
 from typing import overload
 
+
 class Vector:
     _x: float
     _y: float
 
-    # @overload
     def __init__(self, x: float = 0, y: float = 0):
         self._x = x
         self._y = y
-
-    # @overload
-    # def __init__(self, vector: "Vector"):
-    #     self._x = vector._x
-    #     self._y = vector._y
 
     def __len__(self) -> int:
         return 2
@@ -33,7 +28,6 @@ class Vector:
     def __sub__(self, other: "Vector") -> "Vector":
         return self + (-other)
 
-    # @overload
     def __mul__(self, other: float) -> "Vector":
         return Vector(self._x * other, self._y * other)
 
