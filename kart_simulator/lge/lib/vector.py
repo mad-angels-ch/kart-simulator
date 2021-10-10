@@ -1,10 +1,12 @@
 import math
-from typing import overload
 
 
 class Vector:
     _x: float
     _y: float
+
+    def fromPoints(point1: "Point", point2: "Point") -> "Vector":
+        return Vector(*[point2[i] - point1[i] for i in range(len(point1))])
 
     def __init__(self, x: float = 0, y: float = 0):
         self._x = x
