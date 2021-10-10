@@ -1,6 +1,7 @@
 import math
 import random
 from lib.vector import Vector
+from lib.point import Point
 
 
 def test():
@@ -74,7 +75,9 @@ def test():
     assert Vector(1, 1).scalarProduct(Vector(1, -1)) == 0
     assert Vector(1, 1).scalarProduct(Vector(-1, 1)) == 0
     assert Vector(1, 1).scalarProduct(Vector(-1, -1)) != 0
-    assert Vector(1, 1).scalarProduct(Vector(-1, -1) * random.randint(0, 10000) / 10) != 0
+    assert (
+        Vector(1, 1).scalarProduct(Vector(-1, -1) * random.randint(0, 10000) / 10) != 0
+    )
 
     # normalvector
     assert v2.scalarProduct(v2.normalVector()) == 0
@@ -115,5 +118,9 @@ def test():
     v2 = Vector(1, 7)
     v2.scaleX(3)
     assert v2 == Vector(3, 7)
-    v2.scaleY(-1/7)
+    v2.scaleY(-1 / 7)
     assert v2 == Vector(3, -1)
+
+    # fromPoints
+    assert Vector.fromPoints(Point(0, 0), Point(1, 2)) == v1
+    assert Vector.fromPoints(Point(*v1), Point(0, 3)) == Vector(-1, 1)
