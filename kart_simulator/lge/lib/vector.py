@@ -5,24 +5,24 @@ class Vector:
     _x: float
     _y: float
 
-    @overload
+    # @overload
     def __init__(self, x: float = 0, y: float = 0):
         self._x = x
         self._y = y
 
-    @overload
-    def __init__(self, vector: "Vector"):
-        self._x = vector._x
-        self._y = vector._y
+    # @overload
+    # def __init__(self, vector: "Vector"):
+    #     self._x = vector._x
+    #     self._y = vector._y
 
     def __len__(self) -> int:
         return 2
 
     def __iter__(self):
-        return (self._x, self._y)
+        return iter((self._x, self._y))
 
     def __neg__(self) -> "Vector":
-        return Vector(-self._x, self._y)
+        return Vector(-self._x, -self._y)
 
     def __pos__(self) -> "Vector":
         return self
@@ -30,36 +30,15 @@ class Vector:
     def __add__(self, other: "Vector") -> "Vector":
         return Vector(self._x + other._x, self._y + other._y)
 
-    def __iadd__(self, other: "Vector") -> None:
-        for i in range(len(self)):
-            self[i] = self[i] + other[i]
-
     def __sub__(self, other: "Vector") -> "Vector":
         return self + (-other)
 
-    def __isub__(self, other: "Vector") -> None:
-        for i in range(len(self)):
-            self[i] = self[i] - other[i]
-
-    @overload
+    # @overload
     def __mul__(self, other: float) -> "Vector":
         return Vector(self._x * other, self._y * other)
 
-    def __imul__(self, other: float) -> None:
-        for i in range(len(self)):
-            self[i] = self[i] * other[i]
-
-    @overload
-    def __mul__(self, other: "Vector") -> float:
-        "Retourne le produit scalaire des deux vecteurs"
-        return self._x * other._x + self._y * other._y
-
     def __truediv__(self, other: float) -> "Vector":
         return Vector(self._x / other, self._y / other)
-
-    def __idiv__(self, other: float) -> None:
-        for i in range(len(self)):
-            self[i] = self[i] / other[i]
 
     def __pow__(self, other: int) -> float:
         if other != 2:
@@ -72,29 +51,44 @@ class Vector:
     def __ne__(self, o: object) -> bool:
         return not self == o
 
-    @overload
-    def __getitem__(self, index: int) -> float:
-        if index == 0:
+    def __getitem__(self, index: "int | str") -> float:
+        if type(index) == str:
+            index = index.lower()
+        if index == 0 or index == "x":
             return self._x
-        elif index == 1:
+        elif index == 1 or index == "y":
             return self._y
         else:
             raise ValueError()
 
-    @overload
-    def __getitem__(self, index: str) -> float:
-        if index.lower() == "x":
-            return self._x
-        elif index.lower() == "y":
-            return self._y
+    def __setitem__(self, index: "int | str", value: float) -> None:
+        if type(index) == str:
+            index = index.lower()
+        if index == 0 or index == "x":
+            self._x = value
+        elif index == 1 or index == "y":
+            self._y = value
         else:
             raise ValueError()
 
     def norm(self) -> None:
-        return math.hypot(self._x, self._y)
+        return math.hypot(*self)
 
     def set_norm(self, newNorm: float) -> None:
-        self._x, self._y *= newNorm / self.norm()
+        newVector = self * (newNorm / self.norm())
+        for i in range(len(self)):
+            self[i] = newVector[i]
+
+    def scalarProduct(self, other: "Vector") -> float:
+        return self._x * other._x + self._y * other._y
+
+    def isNormal(self, other: "Vector") -> bool:
+        return self.scalarProduct(other) == 0
+
+    def isCollinear(self, other: "Vector") -> bool:
+        if self == Vector(0, 0) or other == Vector(0, 0):
+            return True
+        return not self.isNormal(other)
 
     def normalVector(self) -> "Vector":
         return Vector(-self._y, self._x)
