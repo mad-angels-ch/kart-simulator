@@ -13,12 +13,12 @@
 
 Un circuit de Kart jouable pour un joueur.
 \begin{itemize}
-    \item La page d'acceuil du jeu est un menu avec les options suivantes: \begin{itemize}
+    \item La page d'accueil du jeu est un menu avec les options suivantes: \begin{itemize}
               \item Quitter le jeu
               \item Règles du jeu qui sont les suivantes: \begin{itemize}
                         \item Le but est de compléter le nombre de tours requis le plus rapidement possible (avant les autres joueurs pour la version finale)
                         \item Les karts perdent de la vitesse lorsqu'ils touchent le bord de la piste ou des obstacles quelconques
-                        \item La partie est perdue si le joueur sort de la piste (par un bout sans barrière)
+                        \item La partie est perdue si le joueur sort de la piste (par un bout sans barrières)
                     \end{itemize}
               \item Afficher les contrôles: \begin{itemize}
                         \item W, A, S, D sont les touches directionelles
@@ -45,8 +45,8 @@ Un circuit de Kart jouable pour un joueur.
                     \end{itemize}
               \item Le jeu se termine lorsque: \begin{itemize}
                         \item Lorsque le kart franchi la ligne d'arrivée à la fin du dernier tour
-                        \item Lorsque le kart sort de la piste. Dans ce cas, la partie n'est pas comptabilisée
-                        \item Le joueur quitte la partie. Dans quel cas, la partie n'est pas comptabilisée non plus
+                        \item Lorsque le kart sort de la piste.
+                        \item Le joueur quitte la partie.
                     \end{itemize}
               \item Physique du jeu: \begin{itemize}
                         \item Les karts rebondissent contre les bords de piste, les autres karts et les autres obstacles
@@ -66,22 +66,23 @@ Un circuit de Kart jouable pour un joueur.
 
 Le jeu peut être joué en multi-joueurs.
 \begin{itemize}
-    \item Modifications de la page d'acceuil: \begin{itemize}
+    \item Ajout d'une database contenant les informations suivantes: \begin{itemize}
+              \item Utilisateurs
+              \item Les différents circuits
+              \item Les données des parties jouées (les scores)
+          \end{itemize}
+    \item Modifications de la page d'accueil: \begin{itemize}
               \item Ajout des options suivantes: \begin{itemize}
                         \item S'identifier ou créer un compte avec les fonctionnalités suivantes: \begin{itemize}
                                   \item Comptes enregistrés sur le cloud (possibilité de s'identifier depuis n'importe quel ordinateur)
-                                  \item Accéder à sa liste de scores et comparer ceux-ci aux meilleurs scores (d'autres joueurs)
+                                  \item Accéder à sa liste de scores et comparer ceux-ci aux meilleurs scores (d'autres joueurs) (le fonctionnement des scores reste à déterminer)
                                   \item Choix du pseudo
-                                  \item Choix du modèle de kart
                               \end{itemize}
                         \item Choix du mode de jeu: \begin{itemize}
                                   \item Solo (identique à la version intermédiaire)
-                                  \item Créer une partie multi-joueurs (un lien/numéro de partie est créé, permettant à d'autre joueurs de la rejoindre)
+                                  \item Créer une partie multi-joueurs (un lien/numéro de partie est créé, permettant à d'autres joueurs de la rejoindre). Il pourra, à l'aide d'un boutton dédié, démarrer le compte à rebours du départ de la course, au moment qu'il estime le plus opportun.
                                   \item Rejoindre une partie multi-joueurs
                               \end{itemize}
-                    \end{itemize}
-              \item Ajout de contrôles: \begin{itemize}
-                        \item R pour changer de POV, plus d'information ci-dessous
                     \end{itemize}
           \end{itemize}
     \item Modifications du déroulement de la course: \begin{itemize}
@@ -91,15 +92,11 @@ Le jeu peut être joué en multi-joueurs.
                         \item L'option "Quitter la partie" déconnecte le joueur et l'amène au menu principal
                     \end{itemize}
               \item Le jeu se termine lorsque tous les karts ont franchi la ligne d'arrivée. Si un joueur ayant terminé la course décide de ne pas attendre les autres joueur pour quitter la partie, son score est tout de même comptabilisé
-              \item Choix de la POV \begin{enumerate}
-                        \item Identique à celle de la version intermédiaire
-                        \item Le kart est immobile et au centre de l'écran, c'est le circuit qui bouge et tourne
-                    \end{enumerate}
               \item Affichage du pseudo du joueur à côté du kart
           \end{itemize}
     \item Technologies utilisées: \begin{itemize}
               \item Interface graphique: \href{https://kivy.org/#home}{Kivy}
-              \item Communication serveur-clien: \href{https://python-socketio.readthedocs.io/en/latest/index.html}{Python-socketio}
+              \item Communication serveur-client: \href{https://python-socketio.readthedocs.io/en/latest/index.html}{Python-socketio}
               \item Webframework: \href{https://flask.palletsprojects.com/en/2.0.x/}{Flask}
           \end{itemize}
 
@@ -122,6 +119,7 @@ Le jeu peut être joué en multi-joueurs.
     \item Minimap
     \item Possibilité de récompenses en cas de bonne performance: pièces de kart (aileron, roues, skin, ...)
     \item Kart: \begin{itemize}
+              \item Choix du modèle
               \item Possibilité de dérapage
               \item Customisation (aileron, roues, skin, ...)
           \end{itemize}
@@ -129,6 +127,10 @@ Le jeu peut être joué en multi-joueurs.
     \item Mondes sur plusieurs niveaux (fausse 3D) (ex: ponts, tunnels)
     \item Choix du pilote, avec différentes exclamations de ceux-ci durant la course
     \item Nouveaux types d'obstacles, par exemple des obstacles ralentissants ou accélérants
+    \item Choix de la POV \begin{enumerate}
+              \item Identique à celle de la version intermédiaire
+              \item Le kart est immobile et au centre de l'écran, c'est le circuit qui bouge et tourne
+          \end{enumerate}
     \item ...
 \end{itemize}
 
