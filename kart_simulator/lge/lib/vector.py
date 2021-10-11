@@ -1,6 +1,7 @@
 import math
 from typing import overload
 
+
 class Vector:
     _x: float
     _y: float
@@ -88,7 +89,8 @@ class Vector:
     def isCollinear(self, other: "Vector") -> bool:
         if self == Vector(0, 0) or other == Vector(0, 0):
             return True
-        return not self.isNormal(other)
+        return self._x / other._x == self._y / other._y
+        # return not self.isNormal(other)
 
     def normalVector(self) -> "Vector":
         return Vector(-self._y, self._x)
@@ -101,8 +103,7 @@ class Vector:
     def rotate(self, angle: float) -> None:
         cos = math.cos(angle)
         sin = math.sin(angle)
-        self._x = self._x * cos - self._y * sin
-        self._y = self._x * sin + self._y * cos
+        self._x, self._y = self._x * cos - self._y * sin, self._x * sin + self._y * cos
 
     def orthogonalProjection(self, vector: "Vector") -> "Vector":
         "Projete ce vecteur sur le vecteur donné en paramètre"
