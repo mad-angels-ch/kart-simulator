@@ -1,20 +1,17 @@
 import math
-from typing import overload
+
 
 
 class Vector:
     _x: float
     _y: float
 
-    # @overload
+    def fromPoints(point1: "Point", point2: "Point") -> "Vector":
+        return Vector(*[point2[i] - point1[i] for i in range(len(point1))])
+
     def __init__(self, x: float = 0, y: float = 0):
         self._x = x
         self._y = y
-
-    # @overload
-    # def __init__(self, vector: "Vector"):
-    #     self._x = vector._x
-    #     self._y = vector._y
 
     def __len__(self) -> int:
         return 2
@@ -34,7 +31,6 @@ class Vector:
     def __sub__(self, other: "Vector") -> "Vector":
         return self + (-other)
 
-    # @overload
     def __mul__(self, other: float) -> "Vector":
         return Vector(self._x * other, self._y * other)
 
@@ -44,7 +40,7 @@ class Vector:
     def __pow__(self, other: int) -> float:
         if other != 2:
             raise ValueError()
-        return self * self
+        return self.scalarProduct(self)
 
     def __eq__(self, o: "Vector") -> bool:
         return self._x == o._x and self._y == o._y
@@ -87,10 +83,7 @@ class Vector:
         return self.scalarProduct(other) == 0
 
     def isCollinear(self, other: "Vector") -> bool:
-        if self == Vector(0, 0) or other == Vector(0, 0):
-            return True
-        return self._x / other._x == self._y / other._y
-        # return not self.isNormal(other)
+        return self.normalVector().isNormal(other)
 
     def normalVector(self) -> "Vector":
         return Vector(-self._y, self._x)
@@ -98,7 +91,10 @@ class Vector:
     def direction(self) -> float:
         """Retourne l'angle formé par ce vecteur et un vecteur de composantes 1 et 0.
         L'angle est situé entre 0 et 2 Pi"""
-        return math.atan2(self._y, self._x)
+        angle = math.atan2(self._y, self._x)
+        if angle < 0:
+            angle += 2 * math.pi
+        return angle
 
     def rotate(self, angle: float) -> None:
         cos = math.cos(angle)
@@ -107,7 +103,7 @@ class Vector:
 
     def orthogonalProjection(self, vector: "Vector") -> "Vector":
         "Projete ce vecteur sur le vecteur donné en paramètre"
-        return self * (self * vector) / (vector._x ** 2)
+        return vector * ((self.scalarProduct(vector)) / (vector ** 2))
 
     def scaleX(self, factor: float) -> None:
         "Multiplie la composante du vecteur par le facteur donné"
