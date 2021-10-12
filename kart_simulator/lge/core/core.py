@@ -10,7 +10,7 @@ import modules
 
 class Core(threading.Thread):
     _path = os.path.abspath("")
-    _config = configparser.ConfigParser()
+    config: configparser.SectionProxy
 
     events = object()
 
@@ -24,15 +24,17 @@ class Core(threading.Thread):
 
     def __init__(self, configPath: str = None) -> None:
         super().__init__()
-        self._config.read(os.path.join(self._path, "default.ini"))
+        config = configparser.ConfigParser()
+        config.read(os.path.join(self._path, "default.ini"))
         if configPath:
-            self._config.read(configPath)
+            config.read(configPath)
 
-        self.graphics = modules.Graphics(self._config["graphics"], self)
-        self.io = modules.IO(self._config["io"], self)
-        self.physics = modules.Physics(self._config["physics"], self)
+        self.config = config["core"]
+        self.graphics = modules.Graphics(config["graphics"], self)
+        self.io = modules.IO(config["io"], self)
+        self.physics = modules.Physics(config["physics"], self)
 
-        if self._config.getboolean("core", "tests"):
+        if self.config.getboolean("tests"):
             self._tests()
 
     def run(self) -> None:
