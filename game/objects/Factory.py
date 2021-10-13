@@ -2,8 +2,8 @@ from typing import Dict, List
 
 from lib.point import Point
 
-from core.objects.circle import Object
-from core.objects.circle import Circle
+from .Object import Object
+from .Circle import Circle
 
 
 class Factory:

@@ -8,7 +8,7 @@
             "name": "Launch the Kart Simulator (__main__.py)",
             "type": "python",
             "request": "launch",
-            "module": "kart_simulator"
+            "module": "client"
         }
     ]
 }
