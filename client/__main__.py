@@ -1,6 +1,7 @@
 from os import path
 import time
 import os.path
+from typing import List
 
 import game
 
@@ -9,12 +10,12 @@ print(f"GameData: {dataUrl}")
 eventsList = list()
 
 
-def output(objects):
+def output(objects: List[game.objects.Object]):
     for object in objects:
-        print(f"Object {object}:")
-        print(f"Center: {object.center()}")
-        print(f"Angle: {object.angle()}")
-        print()
+        print(f"Object {object.formID()}:")
+        print(f"\tCenter: {object.center()}")
+        print(f"\tAngle: {object.angle()}")
+    print()
 
 
 theGame = game.Game(dataUrl, eventsList, output)
