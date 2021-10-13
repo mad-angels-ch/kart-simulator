@@ -1,7 +1,6 @@
 import math
 import random
-from lib.vector import Vector
-from lib.point import Point
+from lib import Point, Vector
 
 
 def test():
@@ -88,15 +87,12 @@ def test():
     assert not v1.isCollinear(Vector(0, 1))
     assert not v1.isCollinear(Vector(1, 0))
     assert not v1.isCollinear(Vector(1, 1))
-<<<<<<< HEAD
     assert not v1.isCollinear(v1.normalVector() * random.randint(0, 10000) / 10)
 
-
     # Rotation
-    v3=Vector(1,0)
-    v3.rotate(angle=(math.pi/2))
+    v3 = Vector(1, 0)
+    v3.rotate(angle=(math.pi / 2))
     # print("x:",v3[0],"y:",v3[1])
-=======
     assert v1.isCollinear(v1 * random.randint(0, 10000) / 100)
     assert not v1.isCollinear(v1.normalVector() * random.randint(0, 10000) / 10)
     assert Vector(0, 0).isCollinear(v1)
@@ -112,10 +108,8 @@ def test():
     assert Vector(math.cos(1), math.sin(1)).direction() == 1
     v2.rotate(math.pi)
     assert v2.direction() == math.pi
-    # v2.rotate(math.pi / 3)
-    # print(v2.direction())
-    # print(math.pi / 3 * 4)
-    # assert v2.direction() == math.pi + math.pi / 3
+    v2.rotate(math.pi / 3)
+    assert v2.direction() == math.pi + math.pi / 3
 
     # orthogonal projection
     assert v1.orthogonalProjection(Vector(1, 0)) == Vector(1, 0)
@@ -133,4 +127,3 @@ def test():
     # fromPoints
     assert Vector.fromPoints(Point(0, 0), Point(1, 2)) == v1
     assert Vector.fromPoints(Point(*v1), Point(0, 3)) == Vector(-1, 1)
->>>>>>> bcb557e717c8ff10748d04722d6e180e9510ff00
