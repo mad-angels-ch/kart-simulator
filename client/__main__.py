@@ -5,7 +5,7 @@ from typing import List
 
 import game
 
-dataUrl = path.join("client", "circles.json")
+dataUrl = path.join("client", "circle.json")
 print(f"GameData: {dataUrl}")
 eventsList = list()
 
