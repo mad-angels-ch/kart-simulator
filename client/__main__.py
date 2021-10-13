@@ -1,8 +1,11 @@
+from os import path
 import time
+import os.path
 
 import game
 
-dataUrl = ""
+dataUrl = path.join("client", "circles.json")
+print(f"GameData: {dataUrl}")
 eventsList = list()
 
 
