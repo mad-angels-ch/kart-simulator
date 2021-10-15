@@ -3,6 +3,7 @@ import time
 import os.path
 from typing import List
 
+import client
 import game
 
 dataUrl = path.join("client", "circle.json")

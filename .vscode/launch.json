@@ -5,6 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Launch ks client",
+            "type": "python",
+            "request": "launch",
+            "program": "kart-simulator.py",
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal"
+        },
+        {
             "name": "Launch the Kart Simulator (__main__.py)",
             "type": "python",
             "request": "launch",
