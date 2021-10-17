@@ -52,7 +52,7 @@ class MainWidget(Widget):
         Clock.schedule_interval(theGame.nextFrame,1/60)
 
 
-    def updateObstacle(self, obstacleID = None, obstacle = None, relativeMouvement: list[float,float] = None, absolutePosition: list[float,float] = None):
+    def updateObstacle(self, obstacleID = None, obstacle = None, relativeMouvement: List[float] = None, absolutePosition: List[float] = None):
 
         if obstacleID or obstacleID == 0:
             obs = self.dict_objects.get(obstacleID)

@@ -10,7 +10,7 @@
       "flipY": false, 
       "globalCompositeOperation": "source-over", 
       "height": 50, 
-      "left": 0, 
+      "left": 100, 
       "lge": {
         "friction": 0, 
         "mass": 0, 
@@ -29,10 +29,10 @@
               "x": 0, 
               "y": 0
             }, 
-            "type": "none", 
+            "type": "uam", 
             "velocity": {
               "x": 0,
-              "y": 200
+              "y": 100
             }
           }
         }, 
@@ -58,7 +58,7 @@
       "strokeMiterLimit": 4, 
       "strokeUniform": false, 
       "strokeWidth": 1, 
-      "top": 0, 
+      "top": 100, 
       "type": "circle", 
       "version": "4.4.0", 
       "visible": true, 

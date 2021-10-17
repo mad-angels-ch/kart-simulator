@@ -1,3 +1,4 @@
+from typing import List
 from kivy.graphics import Ellipse
 
 
@@ -24,6 +25,6 @@ class IO_Circle(Ellipse):
     def diametre(self) -> int:
         return self.size[0]
     
-    def updatePosition(self,newPos: list[float,float] = None):
+    def updatePosition(self,newPos: List[float] = None):
         if newPos:
             self.position = (self.get_pos_x() + newPos[0], self.get_pos_y() + newPos[1])
