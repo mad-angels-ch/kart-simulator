@@ -1,0 +1,31 @@
+#:import navigation_screen_manager navigation_screen_manager
+#:import layouts layouts
+# :import tests tests
+#:import action_bar action_bar
+
+<MainMenu@BoxLayout>:
+    orientation: "vertical"
+    Button:
+        text: "Sign in / Log in"
+        on_press: app.manager.push("connection")
+    Button:
+        text: "Play"
+        on_press: app.manager.push("Kart_Simulator")
+
+
+
+
+<MyScreenManager>:
+    Screen:
+        name: "MainMenu"
+        MainMenu:
+    Screen:
+        name: "Kart_Simulator"
+        BoxLayoutWithActionBar:
+            title: "Kart_simulator"
+            MainWidget:
+    Screen:
+        name: "connection"
+        BoxLayoutWithActionBar:
+            title: "Sign in / Log in"
+            MenuTabbedPanel:

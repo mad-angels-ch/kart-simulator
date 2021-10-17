@@ -8,7 +8,7 @@
             "name": "Launch ks client",
             "type": "python",
             "request": "launch",
-            "program": "kart-simulator.py",
+            "program": "kart_simulator_launcher.py",
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal"
         },
