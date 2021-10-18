@@ -12,6 +12,7 @@ import game
 ######################  App de lancement de kivy  #######################
 
 from kivy.app import App
+from game.objects.motions.angulars.AngularMotion import AngularMotion
 from navigation_screen_manager import ObjectProperty, MyScreenManager
 
 
@@ -48,11 +49,11 @@ class MainWidget(Widget):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-
+        
         Clock.schedule_interval(theGame.nextFrame,1/60)
 
 
-    def updateObstacle(self, obstacleID = None, obstacle = None, relativeMouvement: List[float] = None, absolutePosition: List[float] = None):
+    def updateObstacle(self, dt = 0, obstacleID = None, obstacle = None, relativeMouvement: List[float] = None, absolutePosition: List[float] = None):
 
         if obstacleID or obstacleID == 0:
             obs = self.dict_objects.get(obstacleID)
@@ -61,19 +62,17 @@ class MainWidget(Widget):
             obs = obstacle
             io_obs = self.instanciateObstacle(obs)
 
-        
-
         if relativeMouvement:
             new_pos_x = relativeMouvement[0]+obs.center().get_x()
             new_pos_y = relativeMouvement[1]+obs.center().get_x()
             new_pos = list(new_pos_x,new_pos_y)
-            io_obs.updatePosition(new_pos)
 
         elif absolutePosition:
             new_pos = absolutePosition
-            io_obs.updatePosition(new_pos)
-
+        else:
+            new_pos = obs.relativePosition(dt)
         
+        io_obs.updatePosition(newPos=new_pos)
 
 
     def instanciateObstacle(self, obstacle = None):
@@ -112,15 +111,9 @@ eventsList = list()
 from game.objects import Circle,Object
 from lib.point import Point
 
-def output(objects: List[game.objects.Object]):
+def output(elapsedTime, objects: list[game.objects.Object]):
     for object in objects:
-        aa.updateObstacle(obstacle = object)
-        # print("object detected")
-        cercle_test = Circle()
-        cercle_test._radius = 100
-        cercle_test._center = Point(100,100)
-        cercle_test._formID = 1
-    # aa.updateObstacle(obstacle = cercle_test)
+        aa.updateObstacle(dt = elapsedTime, obstacle = object)
 
 
 theGame = game.Game(dataUrl, eventsList, output)

@@ -1,6 +1,8 @@
 from typing import List
 from kivy.graphics import Ellipse
 
+from lib.vector import Vector
+
 
 class IO_Circle(Ellipse):
     def __init__(self, diametre=30, position=[100, 100], vitesse_x=4, vitesse_y=7):
@@ -14,10 +16,10 @@ class IO_Circle(Ellipse):
 
 
     def get_pos_x(self) -> float:
-        return self.position[0]
+        return self.pos[0]
 
     def get_pos_y(self) -> float:
-        return self.position[1]
+        return self.pos[1]
 
     def radius(self) -> int:
         return self.size[0] / 2
@@ -25,6 +27,6 @@ class IO_Circle(Ellipse):
     def diametre(self) -> int:
         return self.size[0]
     
-    def updatePosition(self,newPos: List[float] = None):
+    def updatePosition(self, newPos: List[float] = None, anglularMotion = 0, vectorialMotion = Vector(0,0), deltaTime = 0):
         if newPos:
-            self.position = (self.get_pos_x() + newPos[0], self.get_pos_y() + newPos[1])
+            self.pos = (self.get_pos_x() + newPos[0], self.get_pos_y() + newPos[1])
