@@ -18,18 +18,18 @@
           "angle": {
             "acceleration": 0, 
             "center": {
-              "x": 0, 
-              "y": 0
+              "x": 200, 
+              "y": 200
             }, 
-            "type": "none", 
-            "velocity": 3.14
+            "type": "uacm", 
+            "velocity": 1
           }, 
           "vector": {
             "acceleration": {
               "x": 0, 
-              "y": 0
+              "y": -20
             }, 
-            "type": "uam", 
+            "type": "none", 
             "velocity": {
               "x": 0,
               "y": 100
@@ -59,6 +59,70 @@
       "strokeUniform": false, 
       "strokeWidth": 1, 
       "top": 100, 
+      "type": "circle", 
+      "version": "4.4.0", 
+      "visible": true, 
+      "width": 50
+    },
+    {
+      "angle": 0, 
+      "backgroundColor": "", 
+      "endAngle": 6.283185307179586, 
+      "fill": "#000000", 
+      "fillRule": "nonzero", 
+      "flipX": false, 
+      "flipY": false, 
+      "globalCompositeOperation": "source-over", 
+      "height": 50, 
+      "left": 200, 
+      "lge": {
+        "friction": 0, 
+        "mass": 0, 
+        "motion": {
+          "angle": {
+            "acceleration": 0, 
+            "center": {
+              "x": 200, 
+              "y": 200
+            }, 
+            "type": "none", 
+            "velocity": 1
+          }, 
+          "vector": {
+            "acceleration": {
+              "x": 0, 
+              "y": -20
+            }, 
+            "type": "none", 
+            "velocity": {
+              "x": 0,
+              "y": 100
+            }
+          }
+        }, 
+        "score": 0, 
+        "version": "1.0.0"
+      }, 
+      "opacity": 1, 
+      "originX": "center", 
+      "originY": "center", 
+      "paintFirst": "fill", 
+      "radius": 10, 
+      "scaleX": 1, 
+      "scaleY": 1, 
+      "shadow": null, 
+      "skewX": 0, 
+      "skewY": 0, 
+      "startAngle": 0, 
+      "stroke": null, 
+      "strokeDashArray": null, 
+      "strokeDashOffset": 0, 
+      "strokeLineCap": "butt", 
+      "strokeLineJoin": "miter", 
+      "strokeMiterLimit": 4, 
+      "strokeUniform": false, 
+      "strokeWidth": 1, 
+      "top": 200, 
       "type": "circle", 
       "version": "4.4.0", 
       "visible": true, 

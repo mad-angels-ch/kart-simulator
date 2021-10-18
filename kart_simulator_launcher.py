@@ -111,7 +111,7 @@ eventsList = list()
 from game.objects import Circle,Object
 from lib.point import Point
 
-def output(elapsedTime, objects: list[game.objects.Object]):
+def output(elapsedTime, objects: List[game.objects.Object]):
     for object in objects:
         aa.updateObstacle(dt = elapsedTime, obstacle = object)
 
