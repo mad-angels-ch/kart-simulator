@@ -29,4 +29,4 @@ class IO_Circle(Ellipse):
     
     def updatePosition(self, newPos: List[float] = None, anglularMotion = 0, vectorialMotion = Vector(0,0), deltaTime = 0):
         if newPos:
-            self.pos = (self.get_pos_x() + newPos[0], self.get_pos_y() + newPos[1])
+            self.pos = (newPos[0], newPos[1])
