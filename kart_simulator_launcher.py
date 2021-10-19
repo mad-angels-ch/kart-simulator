@@ -58,20 +58,25 @@ class MainWidget(Widget):
         if obstacleID or obstacleID == 0:
             obs = self.dict_objects.get(obstacleID)
             io_obs = self.instanciateObstacle(obs)
+            
         elif obstacle:
             obs = obstacle
             io_obs = self.instanciateObstacle(obs)
 
+
         if relativeMouvement:
             new_pos_x = relativeMouvement[0]+obs.center().get_x()
-            new_pos_y = relativeMouvement[1]+obs.center().get_x()
-            new_pos = list(new_pos_x,new_pos_y)
+            new_pos_y = relativeMouvement[1]+obs.center().get_y()
+            new_pos = [new_pos_x,new_pos_y]
 
         elif absolutePosition:
             new_pos = absolutePosition
+
         else:
-            new_pos = obs.relativePosition(dt)
-        
+            new_pos_x = obs.center().get_x()
+            new_pos_y = obs.center().get_y()
+            new_pos = [new_pos_x,new_pos_y]
+
         io_obs.updatePosition(newPos=new_pos)
 
 
