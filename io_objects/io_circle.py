@@ -1,11 +1,14 @@
 from typing import List
 from kivy.graphics import Ellipse
+from kivy.utils import get_color_from_hex
 
 from lib.vector import Vector
-
+from kivy.properties import ListProperty
 
 class IO_Circle(Ellipse):
-    def __init__(self, diametre=30, position=[100, 100], vitesse_x=4, vitesse_y=7):
+
+
+    def __init__(self, diametre=30, position=[100, 100], vitesse_x=4, vitesse_y=7, couleur = '#000000'):
 
 
         Ellipse.__init__(
@@ -14,6 +17,7 @@ class IO_Circle(Ellipse):
             size=(diametre, diametre),
         )
 
+        self.color = couleur
 
     def get_pos_x(self) -> float:
         return self.pos[0]
@@ -27,6 +31,6 @@ class IO_Circle(Ellipse):
     def diametre(self) -> int:
         return self.size[0]
     
-    def updatePosition(self, newPos: List[float] = None, anglularMotion = 0, vectorialMotion = Vector(0,0), deltaTime = 0):
+    def updatePosition(self, newPos: List[float] = None):
         if newPos:
             self.pos = (newPos[0], newPos[1])

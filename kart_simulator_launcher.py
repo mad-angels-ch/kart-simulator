@@ -1,9 +1,11 @@
 from os import path
+from re import S
 import time
 import os.path
 from typing import List
 
 from kivy.properties import Clock
+from kivy.utils import get_color_from_hex, rgba
 
 import client
 import game
@@ -79,12 +81,27 @@ class MainWidget(Widget):
 
         io_obs.updatePosition(newPos=new_pos)
 
+        if obs._fill != io_obs.color:
+            self.canvas.remove(io_obs)
+            if type(obs).__name__ == "Circle":
+                self.dict_circles.pop(obs.formID())
+                self.color = get_color_from_hex(obs._fill)
+                with self.canvas:
+                    Color(rgba=self.color)
+                io_obs = IO_Circle(diametre = 2*obs.radius(), position=[obs.center()[0],obs.center()[1]], couleur=obs._fill)
+                self.canvas.add(io_obs)
+                self.dict_circles[obs.formID()] = io_obs
+
+
 
     def instanciateObstacle(self, obstacle = None):
         if obstacle:
             if type(obstacle).__name__ == "Circle" and obstacle.formID() not in self.dict_circles:
                 # with self.canvas.before:
-                io_obstacle = IO_Circle(diametre = 2*obstacle.radius(), position=[obstacle.center()[0],obstacle.center()[1]])
+                self.color = get_color_from_hex(obstacle._fill)
+                with self.canvas:
+                    Color(rgba=self.color)
+                io_obstacle = IO_Circle(diametre = 2*obstacle.radius(), position=[obstacle.center()[0],obstacle.center()[1]], couleur=obstacle._fill)
                 self.canvas.add(io_obstacle)
                 self.dict_circles[obstacle.formID()] = io_obstacle
             else:
@@ -104,6 +121,7 @@ class MenuApp(App):
         super().__init__(**kwargs)
         self.canvas = canvas
     def build(self):
+        Window.clearcolor=get_color_from_hex('#ffffff')
         self.manager = self.canvas
         return self.manager
 
