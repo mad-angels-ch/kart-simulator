@@ -36,3 +36,8 @@ def test():
     assert v2 == Point(1, 2)
     v2.translate(Vector(0, -3))
     assert v2 == Point(1, -1)
+
+    # distanceOf
+    assert p1.distanceOf(Point(1, 2)) == 0
+    assert p1.distanceOf(Point(0, 0)) == math.hypot(1, 2)
+    assert p1.distanceOf(Point(-1, -1)) == Vector.fromPoints(p1, Point(-1, -1)).norm()
