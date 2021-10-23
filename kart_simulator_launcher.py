@@ -127,23 +127,24 @@ class MenuApp(App):
 
 #########################################################################
 
-dataUrl = path.join("client", "circle.json")
-print(f"GameData: {dataUrl}")
-eventsList = list()
+if __name__ == "__main__":
+    dataUrl = path.join("client", "circle.json")
+    print(f"GameData: {dataUrl}")
+    eventsList = list()
 
-from game.objects import Circle,Object
-from lib.point import Point
+    from game.objects import Circle,Object
+    from lib.point import Point
 
-def output(elapsedTime, objects: List[game.objects.Object]):
-    for object in objects:
-        aa.updateObstacle(dt = elapsedTime, obstacle = object)
+    def output(elapsedTime, objects: List[game.objects.Object]):
+        for object in objects:
+            aa.updateObstacle(dt = elapsedTime, obstacle = object)
 
 
-theGame = game.Game(dataUrl, eventsList, output)
+    theGame = game.Game(dataUrl, eventsList, output)
 
-print("Starting ...")
-aa = MainWidget()
-bb = MenuApp(aa)
-bb.run()
+    print("Starting ...")
+    aa = MainWidget()
+    bb = MenuApp(aa)
+    bb.run()
 
-print("Finisched!")
+    print("Finisched!")
