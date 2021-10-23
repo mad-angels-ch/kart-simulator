@@ -22,7 +22,7 @@
               "y": 200
             }, 
             "type": "uacm", 
-            "velocity": 1
+            "velocity": 3.14
           }, 
           "vector": {
             "acceleration": {
