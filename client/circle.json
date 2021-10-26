@@ -16,22 +16,22 @@
         "mass": 0, 
         "motion": {
           "angle": {
-            "acceleration": 0, 
+            "acceleration": 0.5,
             "center": {
               "x": 200, 
               "y": 200
             }, 
             "type": "uacm", 
-            "velocity": 1
+            "velocity": -3.14
           }, 
           "vector": {
             "acceleration": {
-              "x": 0, 
+              "x": -10, 
               "y": 0
             }, 
             "type": "uam", 
             "velocity": {
-              "x": 10,
+              "x": 30,
               "y": 0
             }
           }
