@@ -67,16 +67,16 @@ class MainWidget(Widget):
 
 
         if relativeMouvement:
-            new_pos_x = relativeMouvement[0]+obs.center().get_x()
-            new_pos_y = relativeMouvement[1]+obs.center().get_y()
+            new_pos_x = relativeMouvement[0]+obs.center()[0]
+            new_pos_y = relativeMouvement[1]+obs.center()[1]
             new_pos = [new_pos_x,new_pos_y]
 
         elif absolutePosition:
             new_pos = absolutePosition
 
         else:
-            new_pos_x = obs.center().get_x()
-            new_pos_y = obs.center().get_y()
+            new_pos_x = obs.center()[0]
+            new_pos_y = obs.center()[1]
             new_pos = [new_pos_x,new_pos_y]
 
         io_obs.updatePosition(newPos=new_pos)
@@ -93,7 +93,6 @@ class MainWidget(Widget):
                 self.dict_circles[obs.formID()] = io_obs
 
 
-
     def instanciateObstacle(self, obstacle = None):
         if obstacle:
             if type(obstacle).__name__ == "Circle" and obstacle.formID() not in self.dict_circles:
@@ -101,7 +100,9 @@ class MainWidget(Widget):
                 self.color = get_color_from_hex(obstacle._fill)
                 with self.canvas:
                     Color(rgba=self.color)
-                io_obstacle = IO_Circle(diametre = 2*obstacle.radius(), position=[obstacle.center()[0],obstacle.center()[1]], couleur=obstacle._fill)
+                pos_x = obstacle.center()[0] - obstacle.radius()
+                pos_y = obstacle.center()[1] - obstacle.radius()
+                io_obstacle = IO_Circle(diametre = 2*obstacle.radius(), position=[pos_x,pos_y], couleur=obstacle._fill)
                 self.canvas.add(io_obstacle)
                 self.dict_circles[obstacle.formID()] = io_obstacle
             else:

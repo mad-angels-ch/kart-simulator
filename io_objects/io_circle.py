@@ -18,12 +18,13 @@ class IO_Circle(Ellipse):
         )
 
         self.color = couleur
+        
 
     def get_pos_x(self) -> float:
-        return self.pos[0]
+        return self.pos[0] + self.radius()
 
     def get_pos_y(self) -> float:
-        return self.pos[1]
+        return self.pos[1] + self.radius()
 
     def radius(self) -> int:
         return self.size[0] / 2
@@ -33,4 +34,4 @@ class IO_Circle(Ellipse):
     
     def updatePosition(self, newPos: List[float] = None):
         if newPos:
-            self.pos = (newPos[0], newPos[1])
+            self.pos = (newPos[0] - self.radius(), newPos[1] - self.radius())
