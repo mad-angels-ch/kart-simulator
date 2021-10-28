@@ -33,13 +33,19 @@ from io_objects.io_circle import IO_Circle
 from io_objects.kart import Kart
 
 
-from kivy.graphics.context_instructions import PushMatrix, PopMatrix, Rotate, Translate, Scale, MatrixInstruction
+from kivy.graphics.context_instructions import (
+    PushMatrix,
+    PopMatrix,
+    Rotate,
+    Translate,
+    Scale,
+    MatrixInstruction,
+)
 
 Builder.load_file("layouts.kv")
 
 
 class MainWidget(Widget):
-
 
     dict_objects = dict()
     dict_circles = dict()
@@ -51,25 +57,29 @@ class MainWidget(Widget):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        
-        Clock.schedule_interval(theGame.nextFrame,1/60)
+        Clock.schedule_interval(theGame.nextFrame, 1 / 60)
 
-
-    def updateObstacle(self, dt = 0, obstacleID = None, obstacle = None, relativeMouvement: List[float] = None, absolutePosition: List[float] = None):
+    def updateObstacle(
+        self,
+        dt=0,
+        obstacleID=None,
+        obstacle=None,
+        relativeMouvement: List[float] = None,
+        absolutePosition: List[float] = None,
+    ):
 
         if obstacleID or obstacleID == 0:
             obs = self.dict_objects.get(obstacleID)
             io_obs = self.instanciateObstacle(obs)
-            
+
         elif obstacle:
             obs = obstacle
             io_obs = self.instanciateObstacle(obs)
 
-
         if relativeMouvement:
-            new_pos_x = relativeMouvement[0]+obs.center()[0]
-            new_pos_y = relativeMouvement[1]+obs.center()[1]
-            new_pos = [new_pos_x,new_pos_y]
+            new_pos_x = relativeMouvement[0] + obs.center()[0]
+            new_pos_y = relativeMouvement[1] + obs.center()[1]
+            new_pos = [new_pos_x, new_pos_y]
 
         elif absolutePosition:
             new_pos = absolutePosition
@@ -77,7 +87,7 @@ class MainWidget(Widget):
         else:
             new_pos_x = obs.center()[0]
             new_pos_y = obs.center()[1]
-            new_pos = [new_pos_x,new_pos_y]
+            new_pos = [new_pos_x, new_pos_y]
 
         io_obs.updatePosition(newPos=new_pos)
 
@@ -88,58 +98,72 @@ class MainWidget(Widget):
                 self.color = get_color_from_hex(obs._fill)
                 with self.canvas:
                     Color(rgba=self.color)
-                io_obs = IO_Circle(diametre = 2*obs.radius(), position=[obs.center()[0],obs.center()[1]], couleur=obs._fill)
+                io_obs = IO_Circle(
+                    diametre=2 * obs.radius(),
+                    position=[obs.center()[0], obs.center()[1]],
+                    couleur=obs._fill,
+                )
                 self.canvas.add(io_obs)
                 self.dict_circles[obs.formID()] = io_obs
 
-
-    def instanciateObstacle(self, obstacle = None):
+    def instanciateObstacle(self, obstacle=None):
         if obstacle:
-            if type(obstacle).__name__ == "Circle" and obstacle.formID() not in self.dict_circles:
+            if (
+                type(obstacle).__name__ == "Circle"
+                and obstacle.formID() not in self.dict_circles
+            ):
                 # with self.canvas.before:
                 self.color = get_color_from_hex(obstacle._fill)
                 with self.canvas:
                     Color(rgba=self.color)
                 pos_x = obstacle.center()[0] - obstacle.radius()
                 pos_y = obstacle.center()[1] - obstacle.radius()
-                io_obstacle = IO_Circle(diametre = 2*obstacle.radius(), position=[pos_x,pos_y], couleur=obstacle._fill)
+                io_obstacle = IO_Circle(
+                    diametre=2 * obstacle.radius(),
+                    position=[pos_x, pos_y],
+                    couleur=obstacle._fill,
+                )
                 self.canvas.add(io_obstacle)
                 self.dict_circles[obstacle.formID()] = io_obstacle
             else:
                 io_obstacle = self.dict_circles.get(obstacle.formID())
 
             # elif type(obstacle).__name__ == "Polygon" and obstacle.formID() not in self.dict_objects:
-                # with self.canvas.before:
-                #     io_obstacle = IO_Polygon() #A compléter !!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                #     pass
-                # self.dict_objects[obstacle.formID()] = io_obstacle
+            # with self.canvas.before:
+            #     io_obstacle = IO_Polygon() #A compléter !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            #     pass
+            # self.dict_objects[obstacle.formID()] = io_obstacle
 
         return io_obstacle
 
+
 class MenuApp(App):
     manager = ObjectProperty(None)
-    def __init__(self,canvas,**kwargs):
+
+    def __init__(self, canvas, **kwargs):
         super().__init__(**kwargs)
         self.canvas = canvas
+
     def build(self):
-        Window.clearcolor=get_color_from_hex('#ffffff')
+        Window.clearcolor = get_color_from_hex("#ffffff")
         self.manager = self.canvas
         return self.manager
+
 
 #########################################################################
 
 if __name__ == "__main__":
-    dataUrl = path.join("client", "circle.json")
+    dataUrl = path.join("client", "testpolygon.json")
+    # dataUrl = "https://lj44.ch/creator/kart/worlds/1/fabric"
     print(f"GameData: {dataUrl}")
     eventsList = list()
 
-    from game.objects import Circle,Object
+    from game.objects import Circle, Object
     from lib.point import Point
 
     def output(elapsedTime, objects: List[game.objects.Object]):
         for object in objects:
-            aa.updateObstacle(dt = elapsedTime, obstacle = object)
-
+            aa.updateObstacle(dt=elapsedTime, obstacle=object)
 
     theGame = game.Game(dataUrl, eventsList, output)
 
