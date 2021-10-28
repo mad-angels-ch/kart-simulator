@@ -13,7 +13,7 @@
       "left": 100, 
       "lge": {
         "friction": 0, 
-        "mass": 1, 
+        "mass": 0, 
         "motion": {
           "angle": {
             "acceleration": 0,
