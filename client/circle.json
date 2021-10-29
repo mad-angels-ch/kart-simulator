@@ -13,7 +13,7 @@
       "left": 100, 
       "lge": {
         "friction": 0, 
-        "mass": 0, 
+        "mass": 0.5, 
         "motion": {
           "angle": {
             "acceleration": 0,
@@ -21,7 +21,7 @@
               "x": 200, 
               "y": 200
             }, 
-            "type": "uacm", 
+            "type": "none", 
             "velocity": 0.5
           }, 
           "vector": {
@@ -31,7 +31,7 @@
             }, 
             "type": "uam", 
             "velocity": {
-              "x": 0,
+              "x": 100,
               "y": 0
             }
           }
@@ -43,7 +43,7 @@
       "originX": "center", 
       "originY": "center", 
       "paintFirst": "fill", 
-      "radius": 25, 
+      "radius": 1, 
       "scaleX": 1, 
       "scaleY": 1, 
       "shadow": null, 
@@ -171,7 +171,7 @@
       "originX": "center", 
       "originY": "center", 
       "paintFirst": "fill", 
-      "radius": 10, 
+      "radius": 2, 
       "scaleX": 1, 
       "scaleY": 1, 
       "shadow": null, 
