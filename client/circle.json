@@ -13,7 +13,7 @@
       "left": 100, 
       "lge": {
         "friction": 0, 
-        "mass": 0.5, 
+        "mass": 0.8, 
         "motion": {
           "angle": {
             "acceleration": 0,
@@ -31,7 +31,7 @@
             }, 
             "type": "uam", 
             "velocity": {
-              "x": 100,
+              "x": 500,
               "y": 0
             }
           }
@@ -138,7 +138,7 @@
       "flipY": false, 
       "globalCompositeOperation": "source-over", 
       "height": 50, 
-      "left": 300, 
+      "left": 600, 
       "lge": {
         "friction": 0, 
         "mass": 1, 
@@ -155,12 +155,12 @@
           "vector": {
             "acceleration": {
               "x": 0, 
-              "y": -20
+              "y": 0
             }, 
-            "type": "none", 
+            "type": "uam", 
             "velocity": {
-              "x": 0,
-              "y": 100
+              "x": -600,
+              "y": 0
             }
           }
         }, 
