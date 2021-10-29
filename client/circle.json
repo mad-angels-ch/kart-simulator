@@ -13,7 +13,7 @@
       "left": 100, 
       "lge": {
         "friction": 0, 
-        "mass": 0.8, 
+        "mass": 0, 
         "motion": {
           "angle": {
             "acceleration": 0,
@@ -31,7 +31,7 @@
             }, 
             "type": "uam", 
             "velocity": {
-              "x": 500,
+              "x": 100,
               "y": 0
             }
           }
@@ -43,7 +43,7 @@
       "originX": "center", 
       "originY": "center", 
       "paintFirst": "fill", 
-      "radius": 1, 
+      "radius": 10, 
       "scaleX": 1, 
       "scaleY": 1, 
       "shadow": null, 
@@ -159,7 +159,7 @@
             }, 
             "type": "uam", 
             "velocity": {
-              "x": -600,
+              "x": -100,
               "y": 0
             }
           }
@@ -171,7 +171,7 @@
       "originX": "center", 
       "originY": "center", 
       "paintFirst": "fill", 
-      "radius": 2, 
+      "radius": 10, 
       "scaleX": 1, 
       "scaleY": 1, 
       "shadow": null, 
@@ -186,7 +186,7 @@
       "strokeMiterLimit": 4, 
       "strokeUniform": false, 
       "strokeWidth": 1, 
-      "top": 100, 
+      "top": 110, 
       "type": "circle", 
       "version": "4.4.0", 
       "visible": true, 
