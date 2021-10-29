@@ -1,4 +1,5 @@
 from os import path
+from posixpath import abspath
 from re import S
 import time
 import os.path
@@ -6,7 +7,8 @@ from typing import List
 
 from kivy.properties import Clock
 from kivy.utils import get_color_from_hex, rgba
-
+from lib import vector
+from lib.point import Point
 import client
 import game
 
@@ -15,6 +17,7 @@ import game
 
 from kivy.app import App
 from game.objects.motions.angulars.AngularMotion import AngularMotion
+from lib.vector import Vector
 from navigation_screen_manager import ObjectProperty, MyScreenManager
 
 
@@ -57,15 +60,12 @@ class MainWidget(Widget):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        Clock.schedule_interval(theGame.nextFrame, 1 / 2)
+        Clock.schedule_interval(theGame.nextFrame, 1 / 60)
 
     def updateObstacle(
         self,
-        dt=0,
         obstacleID=None,
-        obstacle=None,
-        relativeMouvement: List[float] = None,
-        absolutePosition: List[float] = None,
+        obstacle=None
     ):
 
         if obstacleID or obstacleID == 0:
@@ -76,22 +76,19 @@ class MainWidget(Widget):
             obs = obstacle
             io_obs = self.instanciateObstacle(obs)
 
-        if relativeMouvement:
-            new_pos_x = relativeMouvement[0] + obs.center()[0]
-            new_pos_y = relativeMouvement[1] + obs.center()[1]
-            new_pos = [new_pos_x, new_pos_y]
 
-        elif absolutePosition:
-            new_pos = absolutePosition
+        if type(obs).__name__ == "Circle":
+            new_pos = obs.center()
 
-        else:
-            new_pos_x = obs.center()[0]
-            new_pos_y = obs.center()[1]
-            new_pos = [new_pos_x, new_pos_y]
-
+        elif type(obs).__name__ == "Polygon":
+            new_pos = obs.abs_vertices()
+        
         io_obs.updatePosition(newPos=new_pos)
 
-        if obs._fill != io_obs.color:
+
+
+        if obs._fill != io_obs.color:       #En cas de changement de couleur de l'obstacle, kivy nous oblige à le redessiner
+
             self.canvas.remove(io_obs)
             if type(obs).__name__ == "Circle":
                 self.dict_circles.pop(obs.formID())
@@ -103,8 +100,18 @@ class MainWidget(Widget):
                     position=[obs.center()[0], obs.center()[1]],
                     couleur=obs._fill,
                 )
-                self.canvas.add(io_obs)
                 self.dict_circles[obs.formID()] = io_obs
+            elif type(obs).__name__ == "Polygon":
+                self.dict_polygons.pop(obs.formID())
+                self.color = get_color_from_hex(obs._fill)
+                with self.canvas:
+                    Color(rgba=self.color)
+                io_obs = IO_Polygon(summits=obs.abs_vertices(), couleur=obs._fill)
+                self.dict_polygons[obs.formID()] = io_obs
+            
+            
+            self.canvas.add(io_obs)
+
 
     def instanciateObstacle(self, obstacle=None):
         if obstacle:
@@ -170,7 +177,7 @@ if __name__ == "__main__":
 
     def output(elapsedTime, objects: List[game.objects.Object]):
         for object in objects:
-            aa.updateObstacle(dt=elapsedTime, obstacle=object)
+            aa.updateObstacle(obstacle=object)
     theGame = game.Game(dataUrl, eventsList, output)
 
     print("Starting ...")

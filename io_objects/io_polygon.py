@@ -31,4 +31,16 @@ class IO_Polygon(Mesh):
         return self._vertices
 
     def updatePosition(self, newPos: list[float] = None):
-        pass
+        if newPos:
+            newVertices = list()
+
+            for vertex in newPos:
+                newVertices.append(vertex[0])
+                newVertices.append(vertex[1])
+                newVertices.append(0)
+                newVertices.append(0)
+            
+            self._vertices = newVertices
+            self.vertices = self._vertices
+
+
