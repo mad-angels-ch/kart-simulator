@@ -47,7 +47,7 @@ Builder.load_file("layouts.kv")
 
 class MainWidget(Widget):
 
-    dict_objects = dict()
+    dict_polygons = dict()
     dict_circles = dict()
 
     vertices = list()
@@ -57,7 +57,7 @@ class MainWidget(Widget):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        Clock.schedule_interval(theGame.nextFrame, 1 / 60)
+        Clock.schedule_interval(theGame.nextFrame, 1 / 2)
 
     def updateObstacle(
         self,
@@ -69,7 +69,7 @@ class MainWidget(Widget):
     ):
 
         if obstacleID or obstacleID == 0:
-            obs = self.dict_objects.get(obstacleID)
+            obs = self.dict_polygons.get(obstacleID)
             io_obs = self.instanciateObstacle(obs)
 
         elif obstacle:
@@ -125,16 +125,23 @@ class MainWidget(Widget):
                 )
                 self.canvas.add(io_obstacle)
                 self.dict_circles[obstacle.formID()] = io_obstacle
-            else:
+
+            elif type(obstacle).__name__ == "Circle":
                 io_obstacle = self.dict_circles.get(obstacle.formID())
 
-            # elif type(obstacle).__name__ == "Polygon" and obstacle.formID() not in self.dict_objects:
-            # with self.canvas.before:
-            #     io_obstacle = IO_Polygon() #A compléter !!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            #     pass
-            # self.dict_objects[obstacle.formID()] = io_obstacle
 
-        return io_obstacle
+            elif type(obstacle).__name__ == "Polygon" and obstacle.formID() not in self.dict_polygons:
+                self.color = get_color_from_hex(obstacle._fill)
+                with self.canvas:
+                    Color(rgba=self.color)
+                io_obstacle = IO_Polygon(summits=obstacle.abs_vertices(), couleur=obstacle._fill)
+                self.canvas.add(io_obstacle)
+                self.dict_polygons[obstacle.formID()] = io_obstacle
+
+            elif type(obstacle).__name__ == "Polygon":
+                io_obstacle = self.dict_polygons.get(obstacle.formID())
+
+            return io_obstacle
 
 
 class MenuApp(App):
@@ -154,7 +161,7 @@ class MenuApp(App):
 
 if __name__ == "__main__":
     # dataUrl = path.join("client", "testpolygon.json")
-    dataUrl = path.join("client", "circle.json")
+    dataUrl = path.join("client", "testpolygon.json")
     print(f"GameData: {dataUrl}")
     eventsList = list()
 
@@ -164,7 +171,6 @@ if __name__ == "__main__":
     def output(elapsedTime, objects: List[game.objects.Object]):
         for object in objects:
             aa.updateObstacle(dt=elapsedTime, obstacle=object)
-
     theGame = game.Game(dataUrl, eventsList, output)
 
     print("Starting ...")

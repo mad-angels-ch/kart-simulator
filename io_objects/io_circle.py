@@ -32,6 +32,6 @@ class IO_Circle(Ellipse):
     def diametre(self) -> int:
         return self.size[0]
     
-    def updatePosition(self, newPos: List[float] = None):
+    def updatePosition(self, newPos: list[float] = None):
         if newPos:
             self.pos = (newPos[0] - self.radius(), newPos[1] - self.radius())
