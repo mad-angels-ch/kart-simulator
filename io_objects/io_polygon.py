@@ -1,3 +1,4 @@
+from typing import List
 from kivy.graphics import Mesh
 
 from lib import point
@@ -30,7 +31,7 @@ class IO_Polygon(Mesh):
     def get_vertices(self):
         return self._vertices
 
-    def updatePosition(self, newPos: list[float] = None):
+    def updatePosition(self, newPos: List[float] = None):
         if newPos:
             newVertices = list()
 
