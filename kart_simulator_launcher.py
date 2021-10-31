@@ -81,7 +81,7 @@ class MainWidget(Widget):
             new_pos = obs.center()
 
         elif type(obs).__name__ == "Polygon":
-            new_pos = obs.abs_vertices()
+            new_pos = obs.vertices()
         
         io_obs.updatePosition(newPos=new_pos)
 
@@ -141,7 +141,7 @@ class MainWidget(Widget):
                 self.color = get_color_from_hex(obstacle._fill)
                 with self.canvas:
                     Color(rgba=self.color)
-                io_obstacle = IO_Polygon(summits=obstacle.abs_vertices(), couleur=obstacle._fill)
+                io_obstacle = IO_Polygon(summits=obstacle.vertices(), couleur=obstacle._fill)
                 self.canvas.add(io_obstacle)
                 self.dict_polygons[obstacle.formID()] = io_obstacle
 
@@ -167,8 +167,8 @@ class MenuApp(App):
 #########################################################################
 
 if __name__ == "__main__":
-    # dataUrl = path.join("client", "testpolygon.json")
-    dataUrl = path.join("client", "circle.json")
+    dataUrl = path.join("client", "testpolygon.json")
+    # dataUrl = path.join("client", "circle.json")
     print(f"GameData: {dataUrl}")
     eventsList = list()
 
