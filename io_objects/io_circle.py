@@ -3,12 +3,13 @@ from kivy.graphics import Ellipse
 from kivy.utils import get_color_from_hex
 
 from lib.vector import Vector
+from lib.point import Point
 from kivy.properties import ListProperty
 
 class IO_Circle(Ellipse):
 
 
-    def __init__(self, diametre=30, position=[100, 100], vitesse_x=4, vitesse_y=7, couleur = '#000000'):
+    def __init__(self, diametre=30, position=Point(100, 100), vitesse_x=4, vitesse_y=7, couleur = '#000000'):
 
 
         Ellipse.__init__(
@@ -32,6 +33,6 @@ class IO_Circle(Ellipse):
     def diametre(self) -> int:
         return self.size[0]
     
-    def updatePosition(self, newPos: List[float] = None):
+    def updatePosition(self, newPos: list[float] = None):
         if newPos:
             self.pos = (newPos[0] - self.radius(), newPos[1] - self.radius())
