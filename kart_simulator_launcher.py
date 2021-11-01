@@ -167,8 +167,9 @@ class MenuApp(App):
 #########################################################################
 
 if __name__ == "__main__":
-    dataUrl = path.join("client", "testpolygon.json")
+    # dataUrl = path.join("client", "testpolygon.json")
     # dataUrl = path.join("client", "circle.json")
+    dataUrl = path.join("client", "fabric.json")
     print(f"GameData: {dataUrl}")
     eventsList = list()
 
