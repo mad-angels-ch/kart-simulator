@@ -1,6 +1,5 @@
 #:import navigation_screen_manager navigation_screen_manager
 #:import layouts layouts
-# :import tests tests
 #:import action_bar action_bar
 
 <MainMenu@BoxLayout>:
@@ -10,22 +9,31 @@
         on_press: app.manager.push("connection")
     Button:
         text: "Play"
-        on_press: app.manager.push("Kart_Simulator")
+        on_press: app.start_ks()
 
 
-
+<KS_screen>:
+    name: "Kart_Simulator"
+    BoxLayoutWithActionBar:
+        title: "Kart_simulator"
+        KS:
 
 <MyScreenManager>:
     Screen:
         name: "MainMenu"
         MainMenu:
     Screen:
-        name: "Kart_Simulator"
-        BoxLayoutWithActionBar:
-            title: "Kart_simulator"
-            MainWidget:
-    Screen:
         name: "connection"
         BoxLayoutWithActionBar:
             title: "Sign in / Log in"
             MenuTabbedPanel:
+
+
+<KS>:
+    orientation: 'horizontal'
+
+    Button:
+        text: root.button_text
+        size_hint: .1,.1
+        pos_hint: {'x': 0 , 'y': 0 }
+        on_press: root.pause()
