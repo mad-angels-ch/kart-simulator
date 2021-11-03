@@ -1,5 +1,6 @@
 from typing import List
 from kivy.graphics import Mesh
+from typing import List
 
 from lib import point
 
