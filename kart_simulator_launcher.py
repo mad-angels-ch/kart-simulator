@@ -18,8 +18,9 @@ import game
 from kivy.app import App
 from game.objects.motions.angulars.AngularMotion import AngularMotion
 from lib.vector import Vector
-from navigation_screen_manager import ObjectProperty, MyScreenManager
+from navigation_screen_manager import MyScreenManager
 
+from kivy.properties import ObjectProperty, StringProperty
 
 from kivy.context import register_context
 from kivy.core import window
@@ -50,6 +51,7 @@ Builder.load_file("layouts.kv")
 
 class MainWidget(Widget):
 
+
     dict_polygons = dict()
     dict_circles = dict()
 
@@ -57,10 +59,41 @@ class MainWidget(Widget):
     indices = list()
     step = int()
 
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        Clock.schedule_interval(theGame.nextFrame, 1 / 60)
+
+##################### Création de la partie #####################
+        dataUrl = path.join("client", "fabric.json")
+        print(f"GameData: {dataUrl}")
+        eventsList = list()
+
+        from game.objects import Circle, Object
+        from lib.point import Point
+        
+        self.theGame = game.Game(dataUrl, eventsList, self.output)
+        print("Starting ...")
+
+        print("Finisched!")
+#################################################################
+
+
+        self.fps = 60
+
+        self.my_clock = Clock
+        self.my_clock.schedule_interval(self.theGame.nextFrame, 1 / self.fps)
+
+    def pause(self):
+        self.my_clock.unschedule(self.theGame.nextFrame)
+    
+    def resume(self):
+        self.my_clock.schedule_interval(self.theGame.nextFrame, 1 / self.fps)
+
+    def output(self, elapsedTime, objects: List[game.objects.Object]):
+        for object in objects:
+            self.updateObstacle(obstacle=object)
+    
 
     def updateObstacle(
         self,
@@ -149,39 +182,80 @@ class MainWidget(Widget):
             return io_obstacle
 
 
+
+#################### Gestion des différents screens ###################
+
+from kivy.uix.screenmanager import ScreenManager, Screen
+
+
+class NavigationScreenManager(ScreenManager):
+    screen_stack = []
+
+    def push(self, screen_name):
+        if screen_name not in self.screen_stack:
+            self.screen_stack.append(self.current)
+            self.transition.direction = "left"
+            self.current = screen_name
+
+    def pop(self):
+        if len(self.screen_stack) > 0:
+            screen_name = self.screen_stack[-1]
+            del self.screen_stack[-1]
+            self.transition.direction = "right"
+            self.current = screen_name
+
+class MyScreenManager(NavigationScreenManager):
+    pass
+
+class KS_screen(Screen):
+    pass
+
+
+class KS(BoxLayout):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.aa = MainWidget()
+        self.add_widget(self.aa)
+
+    def pause(self, button = None):
+        if self.button_text == "Pause":
+            self.button_text = "Resume"
+            self.aa.pause()
+        elif self.button_text == "Resume":
+            self.button_text = "Pause"
+            self.aa.resume()
+
+
+
+    button_text = StringProperty("Pause")
+
+
+        
+##########################################################################
+
+
+
+
+######################## App de lancement de kivy ########################
+
 class MenuApp(App):
     manager = ObjectProperty(None)
 
-    def __init__(self, canvas, **kwargs):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.canvas = canvas
 
     def build(self):
         Window.clearcolor = get_color_from_hex("#ffffff")
-        self.manager = self.canvas
+        self.manager = MyScreenManager()
         return self.manager
 
+    def start_ks(self):
+        game_instance = KS_screen()
+        self.manager.add_widget(game_instance)
+        self.manager.push("Kart_Simulator")
 
-#########################################################################
+        
+MenuApp().run()
 
-if __name__ == "__main__":
-    # dataUrl = path.join("client", "testpolygon.json")
-    # dataUrl = path.join("client", "circle.json")
-    dataUrl = path.join("client", "fabric.json")
-    print(f"GameData: {dataUrl}")
-    eventsList = list()
 
-    from game.objects import Circle, Object
-    from lib.point import Point
-
-    def output(elapsedTime, objects: List[game.objects.Object]):
-        for object in objects:
-            aa.updateObstacle(obstacle=object)
-    theGame = game.Game(dataUrl, eventsList, output)
-
-    print("Starting ...")
-    aa = MainWidget()
-    bb = MenuApp(aa)
-    bb.run()
-
-    print("Finisched!")
+##########################################################################
