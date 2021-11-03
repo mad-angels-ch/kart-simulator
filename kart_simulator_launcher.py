@@ -86,7 +86,6 @@ class MainWidget(Widget):
         io_obs.updatePosition(newPos=new_pos)
 
 
-
         if obs._fill != io_obs.color:       #En cas de changement de couleur de l'obstacle, kivy nous oblige à le redessiner
 
             self.canvas.remove(io_obs)
@@ -147,7 +146,6 @@ class MainWidget(Widget):
 
             elif type(obstacle).__name__ == "Polygon":
                 io_obstacle = self.dict_polygons.get(obstacle.formID())
-
             return io_obstacle
 
 
