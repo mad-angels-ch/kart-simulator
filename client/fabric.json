@@ -243,7 +243,7 @@
             "fill": "rgb(0,0,0)",
             "fillRule": "nonzero",
             "flipX": false,
-            "flipY": false,
+            "flipY": true,
             "globalCompositeOperation": "source-over",
             "height": 63.1,
             "left": 90.02,
@@ -329,7 +329,7 @@
             "left": 250,
             "lge": {
                 "friction": 0,
-                "mass": 0,
+                "mass": 1,
                 "motion": {
                     "angle": {
                         "acceleration": 0,
@@ -343,9 +343,9 @@
                     "vector": {
                         "acceleration": {
                             "x": 0,
-                            "y": -1
+                            "y": -100
                         },
-                        "type": "none",
+                        "type": "uam",
                         "velocity": {
                             "x": 0,
                             "y": 0
@@ -383,13 +383,13 @@
         {
             "angle": 0,
             "backgroundColor": "",
-            "fill": "rgb(0,0,0)",
+            "fill": "#ffffff",
             "fillRule": "nonzero",
             "flipX": false,
             "flipY": false,
             "globalCompositeOperation": "source-over",
             "height": 35.36,
-            "left": 500,
+            "left": -5,
             "lge": {
                 "friction": 0,
                 "mass": 0,
@@ -441,7 +441,7 @@
                 }
             ],
             "scaleX": 1,
-            "scaleY": 14.22,
+            "scaleY": 15.44,
             "shadow": null,
             "skewX": 0,
             "skewY": 0,
@@ -453,7 +453,7 @@
             "strokeMiterLimit": 4,
             "strokeUniform": false,
             "strokeWidth": 1,
-            "top": 250,
+            "top": 238.62,
             "type": "polygon",
             "version": "4.4.0",
             "visible": true,
@@ -462,13 +462,13 @@
         {
             "angle": 0,
             "backgroundColor": "",
-            "fill": "#000000",
+            "fill": "#ffffff",
             "fillRule": "nonzero",
             "flipX": false,
             "flipY": false,
             "globalCompositeOperation": "source-over",
             "height": 35.36,
-            "left": 0,
+            "left": 517,
             "lge": {
                 "friction": 0,
                 "mass": 0,
@@ -520,7 +520,7 @@
                 }
             ],
             "scaleX": 1,
-            "scaleY": 14.22,
+            "scaleY": 15.44,
             "shadow": null,
             "skewX": 0,
             "skewY": 0,
@@ -532,22 +532,22 @@
             "strokeMiterLimit": 4,
             "strokeUniform": false,
             "strokeWidth": 1,
-            "top": 250,
+            "top": 259.62,
             "type": "polygon",
             "version": "4.4.0",
             "visible": true,
             "width": 35.36
         },
         {
-            "angle": 90,
+            "angle": 89.95,
             "backgroundColor": "",
-            "fill": "#00ff00",
+            "fill": "#ffffff",
             "fillRule": "nonzero",
             "flipX": false,
             "flipY": false,
             "globalCompositeOperation": "source-over",
             "height": 35.36,
-            "left": 250,
+            "left": 258,
             "lge": {
                 "friction": 0,
                 "mass": 0,
@@ -599,7 +599,7 @@
                 }
             ],
             "scaleX": 1,
-            "scaleY": 14.22,
+            "scaleY": 15.44,
             "shadow": null,
             "skewX": 0,
             "skewY": 0,
@@ -611,22 +611,22 @@
             "strokeMiterLimit": 4,
             "strokeUniform": false,
             "strokeWidth": 1,
-            "top": 0,
+            "top": -17.38,
             "type": "polygon",
             "version": "4.4.0",
             "visible": true,
             "width": 35.36
         },
         {
-            "angle": 90,
+            "angle": 89.95,
             "backgroundColor": "",
-            "fill": "rgb(0,0,0)",
+            "fill": "#ffffff",
             "fillRule": "nonzero",
             "flipX": false,
             "flipY": false,
             "globalCompositeOperation": "source-over",
             "height": 35.36,
-            "left": 250,
+            "left": 262,
             "lge": {
                 "friction": 0,
                 "mass": 0,
@@ -678,7 +678,7 @@
                 }
             ],
             "scaleX": 1,
-            "scaleY": 14.22,
+            "scaleY": 15.44,
             "shadow": null,
             "skewX": 0,
             "skewY": 0,
@@ -690,7 +690,7 @@
             "strokeMiterLimit": 4,
             "strokeUniform": false,
             "strokeWidth": 1,
-            "top": 500,
+            "top": 518.62,
             "type": "polygon",
             "version": "4.4.0",
             "visible": true,

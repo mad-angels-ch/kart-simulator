@@ -65,7 +65,7 @@ class MainWidget(Widget):
 
 
 ##################### Création de la partie #####################
-        dataUrl = path.join("client", "testpolygon.json")
+        dataUrl = path.join("client", "fabric.json")
         print(f"GameData: {dataUrl}")
         eventsList = list()
 
