@@ -92,7 +92,6 @@ def test():
     # Rotation
     v3 = Vector(1, 0)
     v3.rotate(angle=(math.pi / 2))
-    # print("x:",v3[0],"y:",v3[1])
     assert v1.isCollinear(v1 * random.randint(0, 10000) / 100)
     assert not v1.isCollinear(v1.normalVector() * random.randint(0, 10000) / 10)
     assert Vector(0, 0).isCollinear(v1)
