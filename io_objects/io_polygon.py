@@ -2,9 +2,6 @@ from typing import List
 from kivy.graphics import Mesh
 from typing import List
 
-from lib import point
-
-
 
 class IO_Polygon(Mesh):
     def __init__(self,summits, couleur = '#000000'):

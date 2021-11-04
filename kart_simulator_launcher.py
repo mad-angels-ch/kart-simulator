@@ -7,8 +7,7 @@ from typing import List
 
 from kivy.properties import Clock
 from kivy.utils import get_color_from_hex, rgba
-from lib import vector
-from lib.point import Point
+from lib import Point
 import client
 import game
 
@@ -17,7 +16,7 @@ import game
 
 from kivy.app import App
 from game.objects.motions.angulars.AngularMotion import AngularMotion
-from lib.vector import Vector
+from lib import Vector
 from navigation_screen_manager import MyScreenManager
 
 from kivy.properties import ObjectProperty, StringProperty
@@ -51,7 +50,6 @@ Builder.load_file("layouts.kv")
 
 class MainWidget(Widget):
 
-
     dict_polygons = dict()
     dict_circles = dict()
 
@@ -59,25 +57,22 @@ class MainWidget(Widget):
     indices = list()
     step = int()
 
-
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-
-##################### Création de la partie #####################
+        ##################### Création de la partie #####################
         dataUrl = path.join("client", "fabric.json")
         print(f"GameData: {dataUrl}")
         eventsList = list()
 
         from game.objects import Circle, Object
-        from lib.point import Point
-        
+        from lib import Point
+
         self.theGame = game.Game(dataUrl, eventsList, self.output)
         print("Starting ...")
 
         print("Finisched!")
-#################################################################
-
+        #################################################################
 
         self.fps = 60
 
@@ -86,20 +81,15 @@ class MainWidget(Widget):
 
     def pause(self):
         self.my_clock.unschedule(self.theGame.nextFrame)
-    
+
     def resume(self):
         self.my_clock.schedule_interval(self.theGame.nextFrame, 1 / self.fps)
 
     def output(self, elapsedTime, objects: List[game.objects.Object]):
         for object in objects:
             self.updateObstacle(obstacle=object)
-    
 
-    def updateObstacle(
-        self,
-        obstacleID=None,
-        obstacle=None
-    ):
+    def updateObstacle(self, obstacleID=None, obstacle=None):
 
         if obstacleID or obstacleID == 0:
             obs = self.dict_polygons.get(obstacleID)
@@ -109,17 +99,17 @@ class MainWidget(Widget):
             obs = obstacle
             io_obs = self.instanciateObstacle(obs)
 
-
         if type(obs).__name__ == "Circle":
             new_pos = obs.center()
 
         elif type(obs).__name__ == "Polygon":
             new_pos = obs.vertices()
-        
+
         io_obs.updatePosition(newPos=new_pos)
 
-
-        if obs._fill != io_obs.color:       #En cas de changement de couleur de l'obstacle, kivy nous oblige à le redessiner
+        if (
+            obs._fill != io_obs.color
+        ):  # En cas de changement de couleur de l'obstacle, kivy nous oblige à le redessiner
 
             self.canvas.remove(io_obs)
             if type(obs).__name__ == "Circle":
@@ -140,10 +130,8 @@ class MainWidget(Widget):
                     Color(rgba=self.color)
                 io_obs = IO_Polygon(summits=obs.abs_vertices(), couleur=obs._fill)
                 self.dict_polygons[obs.formID()] = io_obs
-            
-            
-            self.canvas.add(io_obs)
 
+            self.canvas.add(io_obs)
 
     def instanciateObstacle(self, obstacle=None):
         if obstacle:
@@ -168,19 +156,22 @@ class MainWidget(Widget):
             elif type(obstacle).__name__ == "Circle":
                 io_obstacle = self.dict_circles.get(obstacle.formID())
 
-
-            elif type(obstacle).__name__ == "Polygon" and obstacle.formID() not in self.dict_polygons:
+            elif (
+                type(obstacle).__name__ == "Polygon"
+                and obstacle.formID() not in self.dict_polygons
+            ):
                 self.color = get_color_from_hex(obstacle._fill)
                 with self.canvas:
                     Color(rgba=self.color)
-                io_obstacle = IO_Polygon(summits=obstacle.vertices(), couleur=obstacle._fill)
+                io_obstacle = IO_Polygon(
+                    summits=obstacle.vertices(), couleur=obstacle._fill
+                )
                 self.canvas.add(io_obstacle)
                 self.dict_polygons[obstacle.formID()] = io_obstacle
 
             elif type(obstacle).__name__ == "Polygon":
                 io_obstacle = self.dict_polygons.get(obstacle.formID())
             return io_obstacle
-
 
 
 #################### Gestion des différents screens ###################
@@ -204,8 +195,10 @@ class NavigationScreenManager(ScreenManager):
             self.transition.direction = "right"
             self.current = screen_name
 
+
 class MyScreenManager(NavigationScreenManager):
     pass
+
 
 class KS_screen(Screen):
     pass
@@ -217,7 +210,7 @@ class KS(BoxLayout):
         self.aa = MainWidget()
         self.add_widget(self.aa)
 
-    def pause(self, button = None):
+    def pause(self, button=None):
         if self.button_text == "Pause":
             self.button_text = "Resume"
             self.aa.pause()
@@ -225,18 +218,14 @@ class KS(BoxLayout):
             self.button_text = "Pause"
             self.aa.resume()
 
-
-
     button_text = StringProperty("Pause")
 
 
-        
 ##########################################################################
 
 
-
-
 ######################## App de lancement de kivy ########################
+
 
 class MenuApp(App):
     manager = ObjectProperty(None)
@@ -254,7 +243,7 @@ class MenuApp(App):
         self.manager.add_widget(game_instance)
         self.manager.push("Kart_Simulator")
 
-        
+
 MenuApp().run()
 
 
