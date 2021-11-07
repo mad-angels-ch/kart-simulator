@@ -1,1 +1,0 @@
-# fichier lancé lors de l'importation de kart_simulator
