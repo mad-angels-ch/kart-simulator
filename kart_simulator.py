@@ -47,7 +47,7 @@ class MainWidget(Widget):
         super().__init__(**kwargs)
 
         ##################### Création de la partie #####################
-        self.dataUrl = path.join("client", "2triangles.json")
+        self.dataUrl = path.join("client", "fabric.json")
         print(f"GameData: {self.dataUrl}")
         self.eventsList = list()
 
