@@ -1,7 +1,7 @@
 
 def keyboard_closed(self):
-    self._keyboard.unbind(on_key_down=self._on_keyboard_down)
-    self._keyboard.unbind(on_key_up=self._on_keyboard_up)
+    self._keyboard.unbind(on_key_down=on_keyboard_down)
+    self._keyboard.unbind(on_key_up=on_keyboard_up)
     self._keyboard = None
 
 def on_keyboard_down(self, keyboard, keycode, text, modifiers):
