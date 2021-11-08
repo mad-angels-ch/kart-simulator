@@ -1,6 +1,70 @@
 {
     "objects": [
         {
+            "angle": 0,
+            "backgroundColor": "",
+            "endAngle": 6.283185307179586,
+            "fill": "#ff0000",
+            "fillRule": "nonzero",
+            "flipX": false,
+            "flipY": false,
+            "globalCompositeOperation": "source-over",
+            "height": 50,
+            "left": 220,
+            "lge": {
+                "friction": 0,
+                "mass": 1,
+                "motion": {
+                    "angle": {
+                        "acceleration": 0,
+                        "center": {
+                            "x": 0,
+                            "y": 0
+                        },
+                        "type": "none",
+                        "velocity": 0
+                    },
+                    "vector": {
+                        "acceleration": {
+                            "x": 0,
+                            "y": -100
+                        },
+                        "type": "uam",
+                        "velocity": {
+                            "x": 0,
+                            "y": 0
+                        }
+                    }
+                },
+                "score": 0,
+                "version": "1.0.0"
+            },
+            "opacity": 1,
+            "originX": "center",
+            "originY": "center",
+            "paintFirst": "fill",
+            "radius": 25,
+            "scaleX": 1,
+            "scaleY": 1,
+            "shadow": null,
+            "skewX": 0,
+            "skewY": 0,
+            "startAngle": 0,
+            "stroke": null,
+            "strokeDashArray": null,
+            "strokeDashOffset": 0,
+            "strokeLineCap": "butt",
+            "strokeLineJoin": "miter",
+            "strokeMiterLimit": 4,
+            "strokeUniform": false,
+            "strokeWidth": 1,
+            "top": 250,
+            "type": "circle",
+            "version": "4.4.0",
+            "visible": true,
+            "width": 50
+        },
+        {
             "angle": 287.91,
             "backgroundColor": "",
             "fill": "#0000ff",
@@ -321,70 +385,6 @@
             "version": "4.4.0",
             "visible": true,
             "width": 35.49
-        },
-        {
-            "angle": 0,
-            "backgroundColor": "",
-            "endAngle": 6.283185307179586,
-            "fill": "#ff0000",
-            "fillRule": "nonzero",
-            "flipX": false,
-            "flipY": false,
-            "globalCompositeOperation": "source-over",
-            "height": 50,
-            "left": 250,
-            "lge": {
-                "friction": 0,
-                "mass": 1,
-                "motion": {
-                    "angle": {
-                        "acceleration": 0,
-                        "center": {
-                            "x": 0,
-                            "y": 0
-                        },
-                        "type": "none",
-                        "velocity": 0
-                    },
-                    "vector": {
-                        "acceleration": {
-                            "x": 0,
-                            "y": -100
-                        },
-                        "type": "uam",
-                        "velocity": {
-                            "x": 0,
-                            "y": 0
-                        }
-                    }
-                },
-                "score": 0,
-                "version": "1.0.0"
-            },
-            "opacity": 1,
-            "originX": "center",
-            "originY": "center",
-            "paintFirst": "fill",
-            "radius": 25,
-            "scaleX": 1,
-            "scaleY": 1,
-            "shadow": null,
-            "skewX": 0,
-            "skewY": 0,
-            "startAngle": 0,
-            "stroke": null,
-            "strokeDashArray": null,
-            "strokeDashOffset": 0,
-            "strokeLineCap": "butt",
-            "strokeLineJoin": "miter",
-            "strokeMiterLimit": 4,
-            "strokeUniform": false,
-            "strokeWidth": 1,
-            "top": 250,
-            "type": "circle",
-            "version": "4.4.0",
-            "visible": true,
-            "width": 50
         },
         {
             "angle": 0,
