@@ -23,8 +23,11 @@ def on_keyboard_down(self, keyboard, keycode, text, modifiers):
     return True
 
 def on_keyboard_up(self, keyboard, keycode):
-    # return True
-    pass
+    if keycode[1] == 'left':
+        self.eventsList.append(game.events.FlipperEvent(upward=False, targetsName="leftFlipper"))
+
+    if keycode[1] == 'right':
+        self.eventsList.append(game.events.FlipperEvent(upward=False, targetsName="rightFlipper"))
 
 
 def on_touch_down(self, touch):

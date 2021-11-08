@@ -14,7 +14,7 @@
                 "name": "rightFlipper",
                 "friction": 0,
                 "mass": 0,
-                "flipperMaxAngle": -60,
+                "flipperMaxAngle": -1,
                 "flipperUpwardSpeed": -1,
                 "motion": {
                     "angle": {
@@ -175,7 +175,7 @@
                 "name": "leftFlipper",
                 "friction": 0,
                 "mass": 0,
-                "flipperMaxAngle": 60,
+                "flipperMaxAngle": 1,
                 "flipperUpwardSpeed": 1,
                 "motion": {
                     "angle": {
