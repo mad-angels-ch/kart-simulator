@@ -4,6 +4,18 @@
 
 <MainMenu@BoxLayout>:
     orientation: "vertical"
+    Label:
+        bold: True
+        text: "Kart Simulator"
+        font_size: 50
+        color: 0,1,1,1 # <-----------
+        size_hint: 1,.25
+        canvas.before:
+            Color:
+                rgba: 0, 0, 0, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
     Button:
         text: "Sign in / Log in"
         on_press: app.manager.push("connection")
@@ -13,6 +25,54 @@
     Button:
         text: "Rules of the game"
         on_press: app.manager.push("Rules")
+
+<MainMenu2@FloatLayout>:
+    GridLayout:
+        canvas.before:
+            BorderImage:
+                # BorderImage behaves like the CSS BorderImage
+                border: 10, 10, 10, 10
+                source: 'Images/LJ44.jpeg'
+                pos: self.pos
+                size: self.size
+    Label:
+        bold: True
+        text: "Kart Simulator"
+        font_size: 50
+        color: 1,0,0,1 # <-----------
+        pos_hint: {'x':0,'y':.85}
+        size_hint: 1,.15
+        canvas.before:
+            Color:
+                rgba: 0, 0, 0, .75
+            Rectangle:
+                pos: self.pos
+                size: self.size
+    Button:
+        pos_hint: {'x':.8,'y':.8}
+        size_hint: .2, .05
+        # background_color: (1.0, 0.0, 0.0, .75)
+        text: "Sign in / Log in"
+        on_press: app.manager.push("connection")
+    Button:
+        pos_hint: {'x':0,'y':.8}
+        size_hint: .2, .05
+        # background_color: (1.0, 0.0, 0.0, .75)
+        text: "Rules of the game"
+        on_press: app.manager.push("Rules")
+
+    Button:
+        pos_hint: {'x':.3,'y':.3}
+        size_hint: .4, .3
+        text: "Play"
+        background_color: (1.0, 0.0, 0.0, .75)
+        on_press: app.start_ks()
+
+
+
+    # Button:
+    #     text: "Rules of the game"
+    #     on_press: app.manager.push("Rules")
 
 
 <KS_screen>:
@@ -24,7 +84,7 @@
 <MyScreenManager>:
     Screen:
         name: "MainMenu"    
-        MainMenu:
+        MainMenu2:
     Screen:
         name: "connection"
         BoxLayoutWithActionBar:
@@ -45,12 +105,31 @@
         pos_hint: {'x': 0 , 'y': 0 }
         on_press: root.pause()
 
+
 <Rules@BoxLayout>:
-    orientation: "horizontal"
-    Button:
-        text:"essai"
-    Color:
-        rgb: 0, 1, 0
+    orientation: "vertical"
     Label:
-    
-        text: "TESTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+        bold: True
+        text: "Rules of the Kart Simulator"
+        font_size: 32
+        color: .8,.4,.2,1 # <-----------
+        size_hint: 1,.1
+        canvas.before:
+            Color:
+                rgba: 0, 0, 0, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+    Label:
+        italic: True
+        text: ' - Le but est de compléter le nombre de tours requis le plus rapidement possible\n\n - Les karts perdent de la vitesse lorsquils touchent le bord de la piste ou des obstacles quelconques\n\n - La partie est perdue si le joueur sort de la piste (par un bout sans barrières)'
+        font_size: 16
+        color: 0,0,0,1 # <-----------
+        size_hint: 1,.9
+        canvas.before:
+            Color:
+                rgba: .8,.4,.2,1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+

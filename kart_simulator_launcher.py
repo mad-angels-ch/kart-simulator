@@ -24,9 +24,10 @@ class MenuApp(App):
 
     def build(self):
         Window.clearcolor = get_color_from_hex("#ffffff")
-        # self.manager = MyScreenManager()
-        # return self.manager
-        return MainWidget()
+        self.manager = MyScreenManager()
+        return self.manager
+        # return MainWidget()
+    
 
     def start_ks(self):
         if self.manager.has_screen("Kart_Simulator"):
@@ -35,6 +36,7 @@ class MenuApp(App):
         game_instance = KS_screen()
         self.manager.add_widget(game_instance)
         self.manager.push("Kart_Simulator")
+
 
         
         
