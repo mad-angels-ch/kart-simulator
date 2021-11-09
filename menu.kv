@@ -10,6 +10,9 @@
     Button:
         text: "Play"
         on_press: app.start_ks()
+    Button:
+        text: "Rules of the game"
+        on_press: app.manager.push("Rules")
 
 
 <KS_screen>:
@@ -20,20 +23,34 @@
 
 <MyScreenManager>:
     Screen:
-        name: "MainMenu"
+        name: "MainMenu"    
         MainMenu:
     Screen:
         name: "connection"
         BoxLayoutWithActionBar:
             title: "Sign in / Log in"
             MenuTabbedPanel:
+    Screen:
+        name: "Rules"
+        BoxLayoutWithActionBar:
+            title: "Rules of the game"
+            Rules:
 
 
 <KS>:
     orientation: 'horizontal'
-
     Button:
         text: root.button_text
         size_hint: .1,.1
         pos_hint: {'x': 0 , 'y': 0 }
         on_press: root.pause()
+
+<Rules@BoxLayout>:
+    orientation: "horizontal"
+    Button:
+        text:"essai"
+    Color:
+        rgb: 0, 1, 0
+    Label:
+    
+        text: "TESTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
