@@ -48,10 +48,9 @@ class Polygon(Object):
         elif math.isclose(angle, self._angleCosSin2Angle, abs_tol=Polygon.precision):
             return self._angleCosSin2
         else:
-            info(f"{__name__}.angleCosSin(): {self.formID()} has changed his angle!")
-
+            # info(f"{__name__}.angleCosSin(): {self.formID()} has changed his angle!")
             self._angleCosSin2 = [fun(angle) for fun in [cos, sin]]
-            self._angleCosSin2 = angle
+            self._angleCosSin2Angle = angle
             return self._angleCosSin2
 
     def set_angle(self, newAngle: float) -> None:
@@ -95,6 +94,9 @@ class Polygon(Object):
             return False
 
         elif isinstance(other, Circle):
+            # if self.fill() == "#ff00ff":
+            #     print("here")
+
             newSelf = lib.Polygon(*self.vertices(timeInterval))
             newOther = lib.Circle(other.center(timeInterval), other.radius())
             if newSelf.collides(newOther):

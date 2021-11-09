@@ -42,19 +42,19 @@ class MainWidget(Widget):
     vertices = list()
     indices = list()
     step = int()
-
+    
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
         ##################### Création de la partie #####################
-        self.dataUrl = path.join("client", "fabric.json")
-        print(f"GameData: {self.dataUrl}")
+        dataUrl = path.join("client", "fabric.json")
+        print(f"GameData: {dataUrl}")
         self.eventsList = list()
 
         from game.objects import Circle, Object
         from lib import Point
 
-        self.theGame = game.Game(self.dataUrl, self.eventsList, self.output)
+        self.theGame = game.Game(dataUrl, self.eventsList, self.output)
         print("Starting ...")
 
         print("Finisched!")

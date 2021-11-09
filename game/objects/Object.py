@@ -47,7 +47,7 @@ class Object:
             self.angularMotion.center(), self.center()
         )
         fromRotationCenterAfter = lib.Vector(fromRotationCenterBefore)
-        fromRotationCenterAfter.rotate(self.angularMotion.relativeAngle(deltaTime))
+        fromRotationCenterAfter.rotate(self.relativeAngle(deltaTime))
         return (
             self.vectorialMotion.relativePosition(deltaTime)
             - fromRotationCenterBefore
@@ -75,15 +75,13 @@ class Object:
         self._center.translate(vector)
 
     def updateReferences(self, deltaTime: float) -> None:
-        # mise à jour de la vitesse angulaire
         self.rotate(self.relativeAngle(deltaTime))
-        self.angularMotion.updateReferences(deltaTime)
-        rotationCenter = lib.Point(self.angularMotion.center())
-        rotationCenter.translate(self.vectorialMotion.relativePosition(deltaTime))
-        self.angularMotion.set_center(rotationCenter)
-
-        # mise à jour de la vitesse vectorielle
         self.translate(self.relativePosition(deltaTime))
+
+        self.angularMotion.updateReferences(deltaTime)
+        self.angularMotion.center().translate(
+            self.vectorialMotion.relativePosition(deltaTime)
+        )
         self.vectorialMotion.updateReferences(deltaTime)
 
     def fill(self) -> str:
