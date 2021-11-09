@@ -66,13 +66,17 @@
         size_hint: .4, .3
         text: "Play"
         background_color: (1.0, 0.0, 0.0, .75)
-        on_press: app.start_ks()
+        on_press: app.start_ks(root.chosen_world)
+
+    Spinner:
+        id:spinner_id
+        pos_hint: {'x':0,'y':.7}
+        size_hint: .2, .1
+        text: 'choose your world'
+        values: ['circle.json', 'fabric.json','circles.json']
+        on_text: root.chosen_world = spinner_id.text
 
 
-
-    # Button:
-    #     text: "Rules of the game"
-    #     on_press: app.manager.push("Rules")
 
 
 <KS_screen>:
@@ -80,6 +84,8 @@
     BoxLayoutWithActionBar:
         title: "Kart_simulator"
         KS:
+            world:"test"
+
 
 <MyScreenManager>:
     Screen:

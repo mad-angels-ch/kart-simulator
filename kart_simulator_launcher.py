@@ -26,10 +26,10 @@ class MenuApp(App):
         Window.clearcolor = get_color_from_hex("#ffffff")
         self.manager = MyScreenManager()
         return self.manager
-        # return MainWidget()
     
 
-    def start_ks(self):
+    def start_ks(self, world):
+        self.world = world
         if self.manager.has_screen("Kart_Simulator"):
             screen = self.manager.get_screen("Kart_Simulator")
             self.manager.remove_widget(screen)

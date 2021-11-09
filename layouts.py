@@ -1,8 +1,12 @@
 
+from kivy.uix.button import Button
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kart_simulator import MainWidget
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import StringProperty
+from kivy.uix.dropdown import DropDown
+from action_bar import BoxLayoutWithActionBar
 
 #################### Gestion des différents screens ###################
 
@@ -28,13 +32,14 @@ class MyScreenManager(NavigationScreenManager):
 
 
 class KS_screen(Screen):
-    # def on_leave(self):
     pass
+        
+
 
 
 
 class KS(BoxLayout):
-    def __init__(self, **kwargs):
+    def __init__(self,world=None, **kwargs):
         super().__init__(**kwargs)
         self.aa = MainWidget()
         self.add_widget(self.aa)
@@ -48,5 +53,9 @@ class KS(BoxLayout):
             self.aa.resume()
 
     button_text = StringProperty("Pause")
+    
+    
+class MainMenu2(FloatLayout):
+    chosen_world = "2triangles.json"
 
 ##########################################################################

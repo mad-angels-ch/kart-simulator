@@ -43,11 +43,11 @@ class MainWidget(Widget):
     indices = list()
     step = int()
     
-    def __init__(self, **kwargs):
+    def __init__(self,world="2triangles.json", **kwargs):
         super().__init__(**kwargs)
-
+        self.world = world
         ##################### Création de la partie #####################
-        dataUrl = path.join("client", "fabric.json")
+        dataUrl = path.join("client", self.world)
         print(f"GameData: {dataUrl}")
         self.eventsList = list()
 
