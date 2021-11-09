@@ -79,7 +79,7 @@
                 "friction": 0,
                 "mass": 0,
                 "flipperMaxAngle": -1,
-                "flipperUpwardSpeed": -1,
+                "flipperUpwardSpeed": -5,
                 "motion": {
                     "angle": {
                         "acceleration": 0,
@@ -240,7 +240,7 @@
                 "friction": 0,
                 "mass": 0,
                 "flipperMaxAngle": 1,
-                "flipperUpwardSpeed": 1,
+                "flipperUpwardSpeed": 5,
                 "motion": {
                     "angle": {
                         "acceleration": 0,
