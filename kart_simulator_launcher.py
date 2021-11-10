@@ -33,9 +33,10 @@ class MenuApp(App):
         if self.manager.has_screen("Kart_Simulator"):
             screen = self.manager.get_screen("Kart_Simulator")
             self.manager.remove_widget(screen)
-        game_instance = KS_screen()
+        game_instance = KS_screen(world)
         self.manager.add_widget(game_instance)
         self.manager.push("Kart_Simulator")
+        
 
 
         

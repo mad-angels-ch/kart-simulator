@@ -25,11 +25,7 @@ from kivy.properties import StringProperty
 
 
 
-Builder.load_file("layouts.kv")
-
-
-
-class MainWidget(Widget):
+class preView(Widget):
     from user_actions import (
     keyboard_closed,
     on_keyboard_down,
@@ -42,6 +38,7 @@ class MainWidget(Widget):
     
     def __init__(self,world="2triangles.json", **kwargs):
         super().__init__(**kwargs)
+        
         self.world = world
         if isinstance(self.world,StringProperty):
             self.world = "2triangles.json"
@@ -60,26 +57,10 @@ class MainWidget(Widget):
         print("Finisched!")
         #################################################################
 
-        self.fps = 60
 
-
-        self._keyboard = Window.request_keyboard(self.keyboard_closed, self)
-        self._keyboard.bind(on_key_down=self.on_keyboard_down)
-        self._keyboard.bind(on_key_up=self.on_keyboard_up)
-
-        self.my_clock = Clock
-        self.my_clock.schedule_interval(self.theGame.nextFrame, 1 / self.fps)
-
-    def clear(self):
+    def changePreView(self):
         print("LEAVED")
         self.canvas.clear()
-        self.pause()
-
-    def pause(self):
-        self.my_clock.unschedule(self.theGame.nextFrame)
-
-    def resume(self):
-        self.my_clock.schedule_interval(self.theGame.nextFrame, 1 / self.fps)
 
     def output(self, objects: List[game.objects.Object]):
         for object in objects:
@@ -94,26 +75,6 @@ class MainWidget(Widget):
             obs = obstacle
             io_obs = self.instanciateObstacle(obs)
 
-        if isinstance(obs,Circle):
-            new_pos = obs.center()
-
-        elif isinstance(obs,Polygon):
-            new_pos = obs.vertices()
-
-        io_obs.updatePosition(newPos=new_pos)
-
-        if (
-            obs._fill != io_obs.color
-        ):  # En cas de changement de couleur de l'obstacle, kivy nous oblige à le redessiner
-            self.canvas.remove(io_obs)
-            if isinstance(obs,Circle):
-                self.dict_circles.pop(obs.formID())
-            elif isinstance(obs,Polygon):
-                self.dict_polygons.pop(obs.formID())
-                
-            self.instanciateObstacle(obstacle=obs)
-
-
 
     def instanciateObstacle(self, obstacle=None):
         if obstacle:
@@ -125,18 +86,16 @@ class MainWidget(Widget):
                 self.color = get_color_from_hex(obstacle._fill)
                 with self.canvas:
                     Color(rgba=self.color)
-                pos_x = obstacle.center()[0] - obstacle.radius()
-                pos_y = obstacle.center()[1] - obstacle.radius()
+                pos_x = (obstacle.center()[0] - obstacle.radius())/10
+                pos_y = (obstacle.center()[1] - obstacle.radius())/10
                 io_obstacle = IO_Circle(
-                    diametre=2 * obstacle.radius(),
+                    diametre=2 * obstacle.radius()/10,
                     position=[pos_x, pos_y],
                     couleur=obstacle._fill,
                 )
                 self.canvas.add(io_obstacle)
                 self.dict_circles[obstacle.formID()] = io_obstacle
 
-            elif isinstance(obstacle,Circle):
-                io_obstacle = self.dict_circles.get(obstacle.formID())
 
             elif (
                 isinstance(obstacle,Polygon)
@@ -151,7 +110,4 @@ class MainWidget(Widget):
                 self.canvas.add(io_obstacle)
                 self.dict_polygons[obstacle.formID()] = io_obstacle
 
-            elif isinstance(obstacle,Polygon):
-                io_obstacle = self.dict_polygons.get(obstacle.formID())
-            return io_obstacle
 

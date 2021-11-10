@@ -4,7 +4,7 @@ from typing import List
 
 
 class IO_Polygon(Mesh):
-    def __init__(self,summits, couleur = '#000000'):
+    def __init__(self,summits, couleur = '#000000', scale = 1):
 
         self.color = couleur
 
@@ -15,8 +15,8 @@ class IO_Polygon(Mesh):
         i = 0
         j = 0
         while i < len(summits):
-            self._vertices.append(summits[i][0])
-            self._vertices.append(summits[i][1])
+            self._vertices.append(summits[i][0]/scale)
+            self._vertices.append(summits[i][1]/scale)
             self._vertices.append(0)
             self._vertices.append(0)
             self._step += 1
