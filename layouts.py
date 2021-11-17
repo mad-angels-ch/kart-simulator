@@ -3,7 +3,7 @@ from kivy.uix.button import Button
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.widget import Widget
 from kivy.utils import rgba
-from kart_simulator import MainWidget
+from kart_simulator import MainWidget, PauseMode
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import StringProperty, ObjectProperty
@@ -38,7 +38,19 @@ class KS_screen(Screen):
     def __init__(self, world, **kw):
         super().__init__(**kw)
         self.world = world
-        self.layout_id.add_widget(MainWidget(self.world))
+        self.game = MainWidget(self.world)
+        self.layout_id.add_widget(self.game)
+        test="test"
+    def quit(self):
+        self.game.clear()
+    
+    def pauseMode(self):
+        # self.manager.push("pauseMenu")
+        self.pauseMenu = PauseMode(width=Window.width, height = Window.height)
+        self.add_widget(self.pauseMenu)
+    def resumeGame(self):
+        self.remove_widget(self.pauseMenu)
+        self.game.resume()
         
 
 
@@ -191,6 +203,7 @@ class MainMenu2(FloatLayout):
     # def preView(self):
     #     print("previewed")
     #     preView()
+
 
 
 

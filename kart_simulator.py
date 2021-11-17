@@ -1,11 +1,15 @@
 from os import path
 from posixpath import abspath
 from re import S
+from sys import hexversion
 import time
 import os.path
 from typing import List
 
 from kivy.core.window import Window
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.button import Button
+from kivy.uix.floatlayout import FloatLayout
 
 
 from lib import Point
@@ -23,7 +27,11 @@ from kivy.graphics import Rectangle, Color
 from kivy.properties import Clock
 from kivy.properties import StringProperty
 
-
+class PauseMode(FloatLayout):
+    def __init__(self,width,height, **kwargs):
+        super().__init__(**kwargs)
+        self.width = width
+        self.height = height
 
 Builder.load_file("layouts.kv")
 
@@ -33,12 +41,14 @@ class MainWidget(Widget):
     from user_actions import (
     keyboard_closed,
     on_keyboard_down,
-    on_touch_up,
+    # on_touch_up,
     on_keyboard_up,
-    on_touch_down,
+    # on_touch_down,
     )
     dict_polygons = dict()
     dict_circles = dict()
+    kart_ID = 0
+    
     
     def __init__(self,world="2triangles.json", **kwargs):
         super().__init__(**kwargs)
@@ -70,16 +80,29 @@ class MainWidget(Widget):
         self.my_clock = Clock
         self.my_clock.schedule_interval(self.theGame.nextFrame, 1 / self.fps)
 
+        
+        self.play = True
+        
     def clear(self):
         print("LEAVED")
         self.canvas.clear()
-        self.pause()
-
+        if self.play:
+            self.pause()
+            
+    def change_gameState(self):
+        if self.play:
+            self.pause()
+        else:
+            self.resume()
+            
     def pause(self):
         self.my_clock.unschedule(self.theGame.nextFrame)
+        self.play = False
+        self.parent.parent.pauseMode()
 
     def resume(self):
         self.my_clock.schedule_interval(self.theGame.nextFrame, 1 / self.fps)
+        self.play = True
 
     def output(self, objects: List[game.objects.Object]):
         for object in objects:
@@ -142,6 +165,10 @@ class MainWidget(Widget):
                 isinstance(obstacle,Polygon)
                 and obstacle.formID() not in self.dict_polygons
             ):
+                
+                if type(obstacle).__name__ == "Kart":
+                    self.kart_ID = obstacle.formID()
+                
                 self.color = get_color_from_hex(obstacle._fill)
                 with self.canvas:
                     Color(rgba=self.color)

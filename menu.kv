@@ -87,6 +87,13 @@
         #     Color:
         #         rgba: 1,0,0,1
         #     Rectangle:
+
+    Button:
+        id:btnExit
+        pos_hint: {'x':.95,'y':.95}
+        size_hint: .05,.05
+        text:"Exit"
+        on_press: app.stop()
                 
 
 
@@ -116,6 +123,14 @@
         BoxLayoutWithActionBar:
             title: "Rules of the game"
             Rules:
+    Screen:
+        name: "pauseMenu"
+        BoxLayout:
+            orientation: "horizontal"
+            Button:
+                size:100,100
+                text: "Resume game"
+                on_press: app.manager.pop()
 
 
 <KS>:
@@ -153,4 +168,16 @@
             Rectangle:
                 pos: self.pos
                 size: self.size
-
+  
+<PauseMode>:
+    Button:
+        size_hint:.2,.1
+        pos_hint: {'x': .4 , 'y': .5 }
+        text:"Resume"
+        on_release: app.game_instance.resumeGame()
+    
+    Button:
+        size_hint:.2,.1
+        pos_hint: {'x': .4 , 'y': .4 }
+        text:"Quit game"
+        on_release: app.manager.pop(),app.clear_game()
