@@ -113,7 +113,7 @@ class PreView(Widget):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         
-        self.world = "circles.json"
+        self.world = "fabric.json"
             
         ##################### Création de la partie #####################
         self.dataUrl = path.join("client", self.world)
@@ -129,7 +129,7 @@ class PreView(Widget):
         print("Finisched!")
         #################################################################
         
-        self.theGame.nextFrame(0.0)
+        self.theGame.callOutput()
         with self.canvas:
             Color(rgba=(1,1,1,1))
             Rectangle(pos=(0,0), size=(200,200))
@@ -143,7 +143,7 @@ class PreView(Widget):
             Rectangle(pos=(0,0), size=(200,200))
         self.dataUrl = self.dataUrl = path.join("client", world)
         self.theGame = game.Game(self.dataUrl, self.eventsList, self.output)
-        self.theGame.nextFrame(0.01)
+        self.theGame.callOutput()
         
 
     def output(self, objects: List[game.objects.Object]):
