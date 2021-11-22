@@ -45,12 +45,15 @@ class KS_screen(Screen):
         self.game.clear()
     
     def pauseMode(self):
-        # self.manager.push("pauseMenu")
+        self.game.play = False
+        self.game.my_clock.unschedule(self.game.theGame.nextFrame)
         self.pauseMenu = PauseMode(width=Window.width, height = Window.height)
         self.add_widget(self.pauseMenu)
+        
     def resumeGame(self):
+        self.game.play = True
+        self.game.my_clock.schedule_interval(self.game.theGame.nextFrame, 1 / self.game.fps)
         self.remove_widget(self.pauseMenu)
-        self.game.resume()
         
 
 
@@ -75,7 +78,7 @@ class KS(BoxLayout):
     
     
 from kart_simulator import game, path, Rectangle, Color
-from os import path
+from os import path, listdir
 from posixpath import abspath
 from re import S
 import time
@@ -86,7 +89,8 @@ from kivy.core.window import Window
 
 
 from lib import Point
-import client
+# from client.worlds import *
+import client.worlds
 from game.objects import *
 import game
 
@@ -102,69 +106,28 @@ from kivy.properties import StringProperty
 
 
 class PreView(Widget):
-    from user_actions import (
-        keyboard_closed,
-        on_keyboard_down,
-        on_touch_up,
-        on_keyboard_up,
-        on_touch_down,
-        )
     
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        
-        self.world = "circles.json"
-            
-        ##################### Création de la partie #####################
-        self.dataUrl = path.join("client", self.world)
-        print(f"GameData: {self.dataUrl}")
-        self.eventsList = list()
-
-        from game.objects import Circle, Object
-        from lib import Point
-
-        self.theGame = game.Game(self.dataUrl, self.eventsList, self.output)
-        print("Starting ...")
-
-        print("Finisched!")
-        #################################################################
-        
-        self.theGame.nextFrame(0.0)
-        with self.canvas:
-            Color(rgba=(1,1,1,1))
-            Rectangle(pos=(0,0), size=(200,200))
 
     def changePreView(self, world):
-        print("CLEARED")
-        self.canvas.clear()
-        self.canvas.after.clear()
-        with self.canvas:
-            Color(rgba=(1,1,1,1))
-            Rectangle(pos=(0,0), size=(200,200))
-        self.dataUrl = self.dataUrl = path.join("client", world)
-        self.theGame = game.Game(self.dataUrl, self.eventsList, self.output)
-        self.theGame.nextFrame(0.01)
-        
-
-    def output(self, objects: List[game.objects.Object]):
-        for object in objects:
-            self.updateObstacle(obstacle=object)
-
-    def updateObstacle(self, obstacleID=None, obstacle=None):
-        if obstacleID or obstacleID == 0:
-            obs = self.dict_polygons.get(obstacleID)
-            
-
-        elif obstacle:
-            obs = obstacle
-        self.instanciateObstacle(obs)
+        if not isinstance(world,StringProperty):
+            self.canvas.before.clear()
+            self.canvas.clear()
+            self.canvas.after.clear()
+            print("PREVIEW CLEARED")
+            with self.canvas.before:
+                Color(rgba=(1,1,1,1))
+                Rectangle(pos=(0,0), size=(200,200))
+            self.dataUrl = self.dataUrl = path.join("client/worlds", world) + ".json"
+            self.theGame = game.Game(self.dataUrl, [], self.instanciateObstacle)
+            self.theGame.callOutput()
 
 
-    def instanciateObstacle(self, obstacle=None):
-        if obstacle:
+    def instanciateObstacle(self, objects: List[game.objects.Object]):
+        for obstacle in objects:
             if (
                 isinstance(obstacle,Circle)
-                and obstacle.formID()
             ):
                 # with self.canvas.before:
                 self.color = get_color_from_hex(obstacle._fill)
@@ -179,11 +142,10 @@ class PreView(Widget):
                         couleur=obstacle._fill,
                     
                     )
-
+                    
 
             elif (
                 isinstance(obstacle,Polygon)
-                and obstacle.formID()
             ):
                 self.color = get_color_from_hex(obstacle._fill)
                 with self.canvas:
@@ -192,17 +154,19 @@ class PreView(Widget):
                         summits=obstacle.vertices(), couleur=obstacle._fill, scale = 3
                     )
 
-        
 
 class MainMenu2(FloatLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.chosen_world = StringProperty("Chose your world")
+        self.worlds_list=self.generateWorldsList()
+        
     def changeText(self,text):
         self.chosen_world = text
-    # def preView(self):
-    #     print("previewed")
-    #     preView()
+        
+    def generateWorldsList(self):
+        return list(world[:-5] for world in listdir("client/worlds"))
+            
 
 
 

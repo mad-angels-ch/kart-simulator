@@ -44,7 +44,7 @@ class preView(Widget):
             self.world = "2triangles.json"
             
         ##################### Création de la partie #####################
-        dataUrl = path.join("client", self.world)
+        dataUrl = path.join("client/worlds", self.world)
         print(f"GameData: {dataUrl}")
         self.eventsList = list()
 

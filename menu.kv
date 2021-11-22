@@ -70,17 +70,21 @@
 
     Spinner:
         id:spinner_id
-        pos_hint: {'x':0,'y':.7}
+        pos_hint: {'x':0,'y':.6}
         size_hint: .2, .1
         text: "Chose your world !"
-        values: ['circle.json', 'fabric.json','circles.json']
+        values: root.worlds_list
         on_text:
-            root.changeText(spinner_id.text),
-            preView_id.changePreView(root.chosen_world),
-            print("The spinner {} has text {}".format(self, self.text))
+            root.changeText(spinner_id.text)
+    Button:
+        id: prewViewButton_ID
+        pos_hint: {'x':.2,'y':.6}
+        size_hint: .08, .1
+        text: "Preview"
+        on_press: preView_ID.changePreView(root.chosen_world)
 
     PreView:
-        id: preView_id
+        id: preView_ID
         pos_hint: {'x':0,'y':.1}
         size_hint: .2, .1
         # canvas.after:
@@ -94,7 +98,8 @@
         size_hint: .05,.05
         text:"Exit"
         on_press: app.stop()
-                
+    
+
 
 
 
@@ -107,6 +112,7 @@
         title: "Kart_simulator"
         # MainWidget:
         #     world: app.world
+
 
 
 <MyScreenManager>:

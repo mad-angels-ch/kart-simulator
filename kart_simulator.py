@@ -33,6 +33,7 @@ class PauseMode(FloatLayout):
         self.width = width
         self.height = height
 
+
 Builder.load_file("layouts.kv")
 
 
@@ -50,14 +51,14 @@ class MainWidget(Widget):
     kart_ID = 0
     
     
-    def __init__(self,world="2triangles.json", **kwargs):
+    def __init__(self,world=None, **kwargs):
         super().__init__(**kwargs)
         self.world = world
         if isinstance(self.world,StringProperty):
-            self.world = "2triangles.json"
+            self.world = "2triangles"
             
         ##################### Création de la partie #####################
-        dataUrl = path.join("client", self.world)
+        dataUrl = path.join("client/worlds", self.world) + ".json"
         print(f"GameData: {dataUrl}")
         self.eventsList = list()
 
@@ -91,18 +92,14 @@ class MainWidget(Widget):
             
     def change_gameState(self):
         if self.play:
-            self.pause()
+            # self.pause()
+            self.parent.parent.pauseMode()
         else:
-            self.resume()
-            
-    def pause(self):
-        self.my_clock.unschedule(self.theGame.nextFrame)
-        self.play = False
-        self.parent.parent.pauseMode()
+            # self.resume()
+            self.parent.parent.resumeGame()
 
-    def resume(self):
-        self.my_clock.schedule_interval(self.theGame.nextFrame, 1 / self.fps)
-        self.play = True
+        
+        
 
     def output(self, objects: List[game.objects.Object]):
         for object in objects:
