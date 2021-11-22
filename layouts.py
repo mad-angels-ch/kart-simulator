@@ -109,7 +109,6 @@ class PreView(Widget):
     
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-<<<<<<< HEAD
 
     def changePreView(self, world):
         if not isinstance(world,StringProperty):
@@ -127,58 +126,6 @@ class PreView(Widget):
 
     def instanciateObstacle(self, objects: List[game.objects.Object]):
         for obstacle in objects:
-=======
-        
-        self.world = "fabric.json"
-            
-        ##################### Création de la partie #####################
-        self.dataUrl = path.join("client", self.world)
-        print(f"GameData: {self.dataUrl}")
-        self.eventsList = list()
-
-        from game.objects import Circle, Object
-        from lib import Point
-
-        self.theGame = game.Game(self.dataUrl, self.eventsList, self.output)
-        print("Starting ...")
-
-        print("Finisched!")
-        #################################################################
-        
-        self.theGame.callOutput()
-        with self.canvas:
-            Color(rgba=(1,1,1,1))
-            Rectangle(pos=(0,0), size=(200,200))
-
-    def changePreView(self, world):
-        print("CLEARED")
-        self.canvas.clear()
-        self.canvas.after.clear()
-        with self.canvas:
-            Color(rgba=(1,1,1,1))
-            Rectangle(pos=(0,0), size=(200,200))
-        self.dataUrl = self.dataUrl = path.join("client", world)
-        self.theGame = game.Game(self.dataUrl, self.eventsList, self.output)
-        self.theGame.callOutput()
-        
-
-    def output(self, objects: List[game.objects.Object]):
-        for object in objects:
-            self.updateObstacle(obstacle=object)
-
-    def updateObstacle(self, obstacleID=None, obstacle=None):
-        if obstacleID or obstacleID == 0:
-            obs = self.dict_polygons.get(obstacleID)
-            
-
-        elif obstacle:
-            obs = obstacle
-        self.instanciateObstacle(obs)
-
-
-    def instanciateObstacle(self, obstacle=None):
-        if obstacle:
->>>>>>> 6c2376aa07a78f558b98e07ea56c6330c8144ef7
             if (
                 isinstance(obstacle,Circle)
             ):
