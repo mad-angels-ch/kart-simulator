@@ -88,7 +88,7 @@ class MainWidget(Widget):
         print("LEAVED")
         self.canvas.clear()
         if self.play:
-            self.pause()
+            self.my_clock.unschedule(self.theGame.nextFrame)
             
     def change_gameState(self):
         if self.play:
