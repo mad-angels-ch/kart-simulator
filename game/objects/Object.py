@@ -1,4 +1,6 @@
 from typing import Tuple
+import math
+
 import lib
 
 from . import motions
@@ -10,8 +12,8 @@ class Object:
     _name: str
     _formID: int
 
-    _center: lib.Point
     _angle: float
+    _center: lib.Point
     angularMotion: motions.angulars.AngularMotion
     vectorialMotion: motions.vectorials.VectorialMotion
 
@@ -19,6 +21,22 @@ class Object:
     _opacity: float
     _mass: float
     _friction: float
+
+    def __init__(self, **kwargs) -> None:
+        self._name = kwargs.get("name", None)
+        self._formID = kwargs["formID"]
+        self._angle = kwargs.get("angle", 0)
+        self._center = kwargs.get("center", lib.Point())
+        self.angularMotion = kwargs.get(
+            "angularMotion", motions.angulars.AngularMotion()
+        )
+        self.vectorialMotion = kwargs.get(
+            "vectorialMotion", motions.vectorials.VectorialMotion()
+        )
+        self._fill = kwargs.get("fill", "")
+        self._opacity = kwargs.get("opacity", 1)
+        self._mass = kwargs.get("mass", 0)
+        self._friction = kwargs.get("friction", 0)
 
     def formID(self) -> int:
         return self._formID
@@ -38,6 +56,12 @@ class Object:
         newCenter = lib.Point(self.center())
         newCenter.translate(self.relativePosition(deltaTime))
         return newCenter
+
+    def potentialCollisionZone(self, timeInterval: float) -> lib.AlignedRectangle:
+        pass
+
+    def isStatic(self) -> bool:
+        return self.angularMotion.isStatic() and self.vectorialMotion.isStatic()
 
     def relativeAngle(self, deltaTime: float) -> float:
         return self.angularMotion.relativeAngle(deltaTime)
@@ -102,9 +126,19 @@ class Object:
     def collides(self, other: "Object", timeInterval: float) -> bool:
         """Retourne vrai si les deux objets se collisionnent dans l'intervalle de temps donné
         Les collisions entres deux objets fixés sont ignorés (ceux qui ont une masse nulle)"""
-        return False
 
     def collisionPointAndTangent(self, other: "Object") -> Tuple[lib.Point, lib.Vector]:
         """Retourne une approximation du point par lequel les deux objets se touchent
         ainsi qu'une approximation d'un vecteur directeur de la tangente passant par ce point"""
         return other.center(), lib.Vector(0, 0)
+
+    # def xyz(self, other: "Object", deltaTime: float = 0) -> bool:
+    #     point, tangent = self.collisionPointAndTangent(other)
+    #     selfNetForce = self.netForceAtPoint()
+    #     if selfNetForce:
+
+    # def netForceAtPoint(self, point: lib.Point, deltaTime: float = 0) -> lib.Vector:
+    #     return self.mass() * (
+    #         self.angularMotion.accelerationAtPoint(point, deltaTime)
+    #         + self.vectorialMotion.acceleration(deltaTime)
+    #     )
