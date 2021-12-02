@@ -26,7 +26,7 @@
         text: "Rules of the game"
         on_press: app.manager.push("Rules")
 
-<MainMenu2@FloatLayout>:
+<MainMenu2>:
     GridLayout:
         canvas.before:
             BorderImage:
@@ -106,12 +106,9 @@
 
 <KS_screen>:
     name: "Kart_Simulator"
-    layout_id: actionBar
-    BoxLayoutWithActionBar:
-        id: actionBar
-        title: "Kart_simulator"
-        # MainWidget:
-        #     world: app.world
+    layout_id: noActionBar
+    BoxLayout:
+        id: noActionBar
 
 
 
