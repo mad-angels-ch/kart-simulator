@@ -66,13 +66,6 @@ class KS(BoxLayout):
         self.aa = MainWidget()
         self.add_widget(self.aa)
         self.world = StringProperty(world)
-    def pause(self, button=None):
-        if self.button_text == "Pause":
-            self.button_text = "Resume"
-            self.aa.pause()
-        elif self.button_text == "Resume":
-            self.button_text = "Pause"
-            self.aa.resume()
 
     button_text = StringProperty("Pause")
     

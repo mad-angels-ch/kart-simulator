@@ -4,7 +4,7 @@ from kivy.properties import StringProperty, ObjectProperty
 from kivy.utils import get_color_from_hex, rgba
 from kivy.core.window import Window
 from kart_simulator import MainWidget
-
+from kivy.core.audio import SoundLoader
 
 
 from navigation_screen_manager import MyScreenManager
@@ -22,6 +22,7 @@ class MenuApp(App):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.game_instance = None
+        
     def build(self):
         Window.clearcolor = get_color_from_hex("#ffffff")
         self.manager = MyScreenManager()
@@ -29,6 +30,7 @@ class MenuApp(App):
         # return MainWidget()
 
     def start_ks(self, world):
+        
         self.world = world
         if self.manager.has_screen("Kart_Simulator"):
             screen = self.manager.get_screen("Kart_Simulator")
@@ -41,6 +43,10 @@ class MenuApp(App):
         if self.game_instance:
             self.game_instance.quit()
             self.game_instance = None
+            
+    def ButtonSound(self):
+        sound = SoundLoader.load('sounds/ButtonClick2.wav')
+        sound.play()
         
 
 

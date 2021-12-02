@@ -18,13 +18,13 @@
                 size: self.size
     Button:
         text: "Sign in / Log in"
-        on_press: app.manager.push("connection")
+        on_press: app.manager.push("connection"),app.ButtonSound()
     Button:
         text: "Play"
-        on_press: app.start_ks()
+        on_press: app.start_ks(),app.ButtonSound()
     Button:
         text: "Rules of the game"
-        on_press: app.manager.push("Rules")
+        on_press: app.manager.push("Rules"),app.ButtonSound()
 
 <MainMenu2>:
     GridLayout:
@@ -53,20 +53,20 @@
         size_hint: .2, .05
         # background_color: (1.0, 0.0, 0.0, .75)
         text: "Sign in / Log in"
-        on_press: app.manager.push("connection")
+        on_press: app.manager.push("connection"),app.ButtonSound()
     Button:
         pos_hint: {'x':0,'y':.8}
         size_hint: .2, .05
         # background_color: (1.0, 0.0, 0.0, .75)
         text: "Rules of the game"
-        on_press: app.manager.push("Rules")
+        on_press: app.manager.push("Rules"),app.ButtonSound()
 
     Button:
         pos_hint: {'x':.3,'y':.3}
         size_hint: .4, .3
         text: "Play"
         background_color: (1.0, 0.0, 0.0, .75)
-        on_press: app.start_ks(root.chosen_world)
+        on_press: app.start_ks(root.chosen_world),app.ButtonSound()
 
     Spinner:
         id:spinner_id
@@ -75,13 +75,13 @@
         text: "Chose your world !"
         values: root.worlds_list
         on_text:
-            root.changeText(spinner_id.text)
+            root.changeText(spinner_id.text),app.ButtonSound()
     Button:
         id: prewViewButton_ID
         pos_hint: {'x':.2,'y':.6}
         size_hint: .08, .1
         text: "Preview"
-        on_press: preView_ID.changePreView(root.chosen_world)
+        on_press: preView_ID.changePreView(root.chosen_world), app.ButtonSound()
 
     PreView:
         id: preView_ID
@@ -97,7 +97,7 @@
         pos_hint: {'x':.95,'y':.95}
         size_hint: .05,.05
         text:"Exit"
-        on_press: app.stop()
+        on_press: app.stop(),app.ButtonSound()
     
 
 
@@ -133,7 +133,7 @@
             Button:
                 size:100,100
                 text: "Resume game"
-                on_press: app.manager.pop()
+                on_press: app.manager.pop(),app.ButtonSound()
 
 
 <KS>:
@@ -142,7 +142,7 @@
         text: root.button_text
         size_hint: .1,.1
         pos_hint: {'x': 0 , 'y': 0 }
-        on_press: root.pause()
+        on_press: root.pause(),app.ButtonSound()
 
 
 <Rules@BoxLayout>:
@@ -177,10 +177,10 @@
         size_hint:.2,.1
         pos_hint: {'x': .4 , 'y': .5 }
         text:"Resume"
-        on_release: app.game_instance.resumeGame()
+        on_release: app.game_instance.resumeGame(),app.ButtonSound()
     
     Button:
         size_hint:.2,.1
         pos_hint: {'x': .4 , 'y': .4 }
         text:"Quit game"
-        on_release: app.manager.pop(),app.clear_game()
+        on_release: app.manager.pop(),app.clear_game(),app.ButtonSound()
