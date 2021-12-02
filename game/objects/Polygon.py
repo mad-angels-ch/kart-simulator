@@ -1,10 +1,11 @@
 import math
-from typing import List, Tuple
+from typing import Dict, List, Tuple
 from logging import info
 from math import sin, cos
 import time
 
 import lib
+from lib.Point import Point
 
 from .Object import Object
 from .Circle import Circle
@@ -36,6 +37,7 @@ class Polygon(Object):
         self._angleCosSin2 = self._angleCosSin
 
     def __len__(self) -> int:
+        """Retourne le nombre de sommets"""
         return len(self._vertices)
 
     def convex(self) -> bool:
@@ -68,6 +70,8 @@ class Polygon(Object):
         self.updateAngleCosSin()
 
     def vertex(self, vertexIndex: int, deltaTime: float = 0) -> lib.Point:
+        """NE PAS MODIFIER
+        Retourne le sommet correspondant"""
         vertexV = lib.Vector(self._vertices[vertexIndex])
         vertexV.rotateCosSin(*self.angleCosSin(deltaTime))
         vertex = lib.Point(vertexV)
@@ -75,9 +79,13 @@ class Polygon(Object):
         return vertex
 
     def vertices(self, deltaTime: float = 0) -> List[lib.Point]:
+        """NE PAS MODIFIER
+        Retourne la liste des sommets"""
         return [self.vertex(i, deltaTime) for i in range(len(self))]
 
     def edge(self, startVertexIndex: int, deltaTime: float = 0) -> lib.Segment:
+        """NE PAS MODIFIER
+        Retourne le côté reliant le sommet correspondant et le suivant"""
         endVertexIndex = startVertexIndex + 1
         if endVertexIndex == len(self):
             endVertexIndex = 0
@@ -87,6 +95,8 @@ class Polygon(Object):
         )
 
     def edges(self, deltaTime: float = 0) -> List[lib.Segment]:
+        """NE PAS MODIFER
+        Retourne la liste des côtés"""
         edges = []
         vertices = self.vertices(deltaTime)
         second = len(vertices) - 1
@@ -94,6 +104,58 @@ class Polygon(Object):
             edges.append(lib.Segment(vertices[first], vertices[second]))
             second = first
         return edges
+
+    def updatePotentialCollisionZone(self, timeInterval: float) -> None:
+        def englobingAlignedRetangle(points: List[lib.Point]) -> lib.AlignedRectangle:
+            xes = [point.x() for point in points]
+            yes = [point.y() for point in points]
+            leftBottom = lib.Point((min(xes), min(yes)))
+            return lib.AlignedRectangle(
+                max(xes) - leftBottom.x(),
+                max(yes) - leftBottom.y(),
+                leftBottom=leftBottom,
+            )
+
+        vertices = self.vertices()
+        if self.isStatic():
+            self._potentialCollisionZone = englobingAlignedRetangle(vertices)
+        else:
+            self._potentialCollisionZone = englobingAlignedRetangle(
+                vertices + self.vertices(timeInterval)
+            )
+        return super().updatePotentialCollisionZone(timeInterval)
+
+    # def potentialCollisionZone(self, timeInterval: float) -> lib.Circle:
+    #     translation = self.relativePosition(timeInterval)
+    #     vertices = self.vertices()
+    #     if self.isStatic():
+    #         xes = [point.x() for point in vertices]
+    #         yes = [point.y() for point in vertices]
+    #         left = min(xes)
+    #         right = max(xes)
+    #         bottom = min(yes)
+    #         top = max(yes)
+    #         halfWidth = (right - left) / 2
+    #         halfHeight = (top - bottom) / 2
+    #         return lib.Circle(
+    #             lib.Point((left + halfWidth, bottom + halfHeight)),
+    #             max(halfWidth, halfHeight),
+    #         )
+
+    #     else:
+    #         endVertices = self.vertices(timeInterval)
+    #         xes = [point.x() for point in vertices + endVertices]
+    #         yes = [point.y() for point in vertices + endVertices]
+    #         left = min(xes)
+    #         right = max(xes)
+    #         bottom = min(yes)
+    #         top = max(yes)
+    #         halfWidth = (right - left) / 2
+    #         halfHeight = (top - bottom) / 2
+    #         return lib.Circle(
+    #             lib.Point((left + halfWidth, bottom + halfHeight)),
+    #             max(halfWidth, halfHeight),
+    #         )
 
     def collides(self, other: "Object", timeInterval: float) -> bool:
         if not (self.mass() or other.mass()):
