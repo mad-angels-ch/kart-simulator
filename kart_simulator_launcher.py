@@ -18,7 +18,7 @@ from layouts import KS_screen, KS
 
 class MenuApp(App):
     manager = ObjectProperty(None)
-
+    musicName = ""
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.game_instance = None
@@ -29,13 +29,13 @@ class MenuApp(App):
         return self.manager
         # return MainWidget()
 
-    def start_ks(self, world):
-        
+    def start_ks(self, world, music):
         self.world = world
+        self.music = music
         if self.manager.has_screen("Kart_Simulator"):
             screen = self.manager.get_screen("Kart_Simulator")
             self.manager.remove_widget(screen)
-        self.game_instance = KS_screen(world)
+        self.game_instance = KS_screen(world,music)
         self.manager.add_widget(self.game_instance)
         self.manager.push("Kart_Simulator")
         
@@ -43,15 +43,19 @@ class MenuApp(App):
         if self.game_instance:
             self.game_instance.quit()
             self.game_instance = None
+        
+        
             
     def ButtonSound(self):
-        sound = SoundLoader.load('sounds/ButtonClick2.wav')
+        sound = SoundLoader.load('client/sounds/ButtonClick2.wav')
+        sound.volume = 0.05
         sound.play()
-        
 
 
-        
-        
+
+
+
+
 
 from kivy.config import Config
 from kivy.core.window import Window

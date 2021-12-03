@@ -1,4 +1,4 @@
-
+from kivy.core.audio import SoundLoader
 from kivy.uix.button import Button
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.widget import Widget
@@ -35,26 +35,55 @@ class MyScreenManager(NavigationScreenManager):
 
 class KS_screen(Screen):
     layout_id = ObjectProperty()
-    def __init__(self, world, **kw):
+    
+    def __init__(self, world, music, **kw):
+        #Initialization of the music (with repetitions)
+        self.musicPath = path.join("client/sounds/music", music) + ".wav"
+        self.music = SoundLoader.load(self.musicPath)
+        # self.music_pos = 0
+        self.music.volume = 0.05
+        self.startMusic()
+        
         super().__init__(**kw)
         self.world = world
         self.game = MainWidget(self.world)
         self.layout_id.add_widget(self.game)
-        test="test"
+        
     def quit(self):
         self.game.clear()
     
     def pauseMode(self):
+        self.pauseMusic()
+        
         self.game.play = False
         self.game.my_clock.unschedule(self.game.theGame.nextFrame)
         self.pauseMenu = PauseMode(width=Window.width, height = Window.height)
         self.add_widget(self.pauseMenu)
         
+        
     def resumeGame(self):
+        self.resumeMusic()
+        
         self.game.play = True
         self.game.my_clock.schedule_interval(self.game.theGame.nextFrame, 1 / self.game.fps)
         self.remove_widget(self.pauseMenu)
         
+    def startMusic(self):
+        self.music.play()
+        # self.music.seek(self.music_pos)
+        self.music.loop = True
+    
+    def pauseMusic(self):
+        # self.music_pos = self.music.get_pos()     #Bug in the kivy sounds class, doesn't work yet...
+        self.music.stop()
+        self.music.loop = False
+        
+    def resumeMusic(self):
+        self.startMusic()
+
+
+
+
 
 
 
@@ -151,14 +180,22 @@ class PreView(Widget):
 class MainMenu2(FloatLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.chosen_world = StringProperty("Chose your world")
+        self.chosen_world = StringProperty("Choose your world")
+        self.chosen_music = StringProperty("Choose your music")
         self.worlds_list=self.generateWorldsList()
+        self.music_list = self.generateMusicList()
         
-    def changeText(self,text):
+    def changeWorldSpinnerText(self, text):
         self.chosen_world = text
+    
+    def changeMusicSpinnerText(self,text):
+        self.chosen_music = text
         
     def generateWorldsList(self):
         return list(world[:-5] for world in listdir("client/worlds"))
+    
+    def generateMusicList(self):
+        return list(music[:-4] for music in listdir("client/sounds/music"))
             
 
 
