@@ -5,7 +5,7 @@ from sys import hexversion
 import time
 import os.path
 from typing import List
-
+from os import listdir
 from kivy.core.window import Window
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
@@ -27,11 +27,22 @@ from kivy.graphics import Rectangle, Color
 from kivy.properties import Clock
 from kivy.properties import StringProperty
 
+
 class PauseMode(FloatLayout):
-    def __init__(self,width,height, **kwargs):
+    def __init__(self,width,height, music, **kwargs):
         super().__init__(**kwargs)
+        self.chosen_music = StringProperty(music)
         self.width = width
         self.height = height
+    
+    
+    def changeMusicSpinnerText(self,text):
+        self.chosen_music = text
+        
+    def generateMusicsList(self):
+        music_list = list(music[:-4] for music in listdir("client/sounds/music"))
+        music_list.append("No music")
+        return music_list
 
 
 Builder.load_file("layouts.kv")
@@ -51,9 +62,10 @@ class MainWidget(Widget):
     kart_ID = 0
     
     
-    def __init__(self,world=None, **kwargs):
+    def __init__(self,world=None, parentScreen=None, **kwargs):
         super().__init__(**kwargs)
         self.world = world
+        self.parentScreen = parentScreen
         if isinstance(self.world,StringProperty):
             self.world = "2triangles"
             
@@ -72,7 +84,6 @@ class MainWidget(Widget):
         #################################################################
 
         self.fps = 60
-
 
         self._keyboard = Window.request_keyboard(self.keyboard_closed, self)
         self._keyboard.bind(on_key_down=self.on_keyboard_down)

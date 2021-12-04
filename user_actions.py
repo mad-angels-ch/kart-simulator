@@ -1,5 +1,6 @@
 import game.events
 from kivy.lang import Builder
+
 def keyboard_closed(self):
     self._keyboard.unbind(on_key_down=self.on_keyboard_down)
     self._keyboard.unbind(on_key_up=self.on_keyboard_up)
@@ -27,7 +28,12 @@ def on_keyboard_down(self, keyboard, keycode, text, modifiers):
         print("DOWN")
         
     if keycode[1] == 'escape':
-        self.change_gameState()
+        if self.play:
+            self.play = False
+            self.parentScreen.pauseMode()
+        else:
+            self.parentScreen.resumeGame(self.parentScreen.pauseMenu.chosen_music)
+            self.play = True
         print("PAUSE/RESUME")
         
     return True

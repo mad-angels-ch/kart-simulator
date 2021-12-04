@@ -32,7 +32,7 @@
             BorderImage:
                 # BorderImage behaves like the CSS BorderImage
                 border: 10, 10, 10, 10
-                source: 'Images/LJ44.jpeg'
+                source: 'client/Images/LJ44.jpeg'
                 pos: self.pos
                 size: self.size
     Label:
@@ -73,7 +73,7 @@
         pos_hint: {'x':0,'y':.6}
         size_hint: .2, .1
         text: "Chose your world !"
-        values: root.worlds_list
+        values: root.generateWorldsList()
         on_text:
             root.changeWorldSpinnerText(worlds_spinner_id.text), app.ButtonSound()
 
@@ -81,8 +81,8 @@
         id: music_spinner_id
         pos_hint: {'x':.8,'y':.6}
         size_hint: .2, .1
-        text: "Chose your music !"
-        values: root.music_list
+        text: "Choose your music !"
+        values: root.generateMusicsList()
         on_text:
             root.changeMusicSpinnerText(music_spinner_id.text), app.ButtonSound()
 
@@ -108,9 +108,6 @@
         size_hint: .05,.05
         text:"Exit"
         on_press: app.ButtonSound(), app.stop()
-    
-
-
 
 
 
@@ -124,7 +121,7 @@
 
 <MyScreenManager>:
     Screen:
-        name: "MainMenu"    
+        name: "MainMenu"
         MainMenu2:
     Screen:
         name: "connection"
@@ -136,23 +133,10 @@
         BoxLayoutWithActionBar:
             title: "Rules of the game"
             Rules:
-    Screen:
-        name: "pauseMenu"
-        BoxLayout:
-            orientation: "horizontal"
-            Button:
-                size: 100,100
-                text: "Resume game"
-                on_press: app.manager.pop(), app.ButtonSound()
+    # Screen:
+    #     name: "pauseMenu"
+    #     PauseMode:
 
-
-<KS>:
-    orientation: 'horizontal'
-    Button:
-        text: root.button_text
-        size_hint: .1,.1
-        pos_hint: {'x': 0 , 'y': 0 }
-        on_press: root.pause(), app.ButtonSound()
 
 
 <Rules@BoxLayout>:
@@ -182,15 +166,27 @@
                 pos: self.pos
                 size: self.size
   
+
 <PauseMode>:
+
     Button:
         size_hint:.2,.1
         pos_hint: {'x': .4 , 'y': .5 }
         text:"Resume"
-        on_release: app.game_instance.resumeGame(), app.ButtonSound()
+        on_release: app.game_instance.resumeGame(root.chosen_music), app.ButtonSound()
     
     Button:
         size_hint:.2,.1
         pos_hint: {'x': .4 , 'y': .4 }
         text:"Quit game"
         on_release: app.manager.pop(),app.clear_game(), app.ButtonSound()
+
+    Spinner:
+        id: music_spinner_id
+        pos_hint: {'x':.8,'y':.6}
+        size_hint: .2, .1
+        text: "Choose your music !"
+        # values: root.music_list
+        values: root.generateMusicsList()
+        on_text:
+            root.changeMusicSpinnerText(music_spinner_id.text), app.ButtonSound(), app.game_instance.changeMusic(root.chosen_music)

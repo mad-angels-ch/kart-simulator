@@ -37,31 +37,28 @@ class KS_screen(Screen):
     layout_id = ObjectProperty()
     
     def __init__(self, world, music, **kw):
-        #Initialization of the music (with repetitions)
-        self.musicPath = path.join("client/sounds/music", music) + ".wav"
-        self.music = SoundLoader.load(self.musicPath)
-        # self.music_pos = 0
-        self.music.volume = 0.05
+        self.musicName = music
         self.startMusic()
         
         super().__init__(**kw)
         self.world = world
-        self.game = MainWidget(self.world)
+        self.game = MainWidget(self.world,self)
         self.layout_id.add_widget(self.game)
         
     def quit(self):
         self.game.clear()
-    
+        
     def pauseMode(self):
-        self.pauseMusic()
+        if self.musicName:
+            self.pauseMusic()
         
         self.game.play = False
         self.game.my_clock.unschedule(self.game.theGame.nextFrame)
-        self.pauseMenu = PauseMode(width=Window.width, height = Window.height)
+        self.pauseMenu = PauseMode(width=Window.width, height = Window.height, music=self.music)
         self.add_widget(self.pauseMenu)
         
         
-    def resumeGame(self):
+    def resumeGame(self, new_music):
         self.resumeMusic()
         
         self.game.play = True
@@ -69,34 +66,41 @@ class KS_screen(Screen):
         self.remove_widget(self.pauseMenu)
         
     def startMusic(self):
-        self.music.play()
+        #Initialization of the music (with repetitions)
+        
+        # if self.music != "No music" and not isinstance(self.music,StringProperty) and self.music.name != "":
+        try:
+            musicPath = path.join("client/sounds/music", self.musicName) + ".wav"
+            self.music = SoundLoader.load(musicPath)
+        # self.music_pos = 0
+            self.music.volume = 0.05
+            self.music.play()
         # self.music.seek(self.music_pos)
-        self.music.loop = True
-    
+            self.music.loop = True
+            
+        except:
+            pass
+
+    def changeMusic(self,new_music):
+        self.musicName = new_music
+
     def pauseMusic(self):
-        # self.music_pos = self.music.get_pos()     #Bug in the kivy sounds class, doesn't work yet...
-        self.music.stop()
-        self.music.loop = False
+        try:
+            # self.music_pos = self.music.get_pos()     #Bug in the kivy sounds class, doesn't work yet...
+            self.music.stop()
+            self.music.loop = False
+        except:
+            pass
         
     def resumeMusic(self):
+        print("ok")
         self.startMusic()
+        
 
 
 
 
 
-
-
-
-class KS(BoxLayout):
-    
-    def __init__(self,world=None, **kwargs):
-        super().__init__(**kwargs)
-        self.aa = MainWidget()
-        self.add_widget(self.aa)
-        self.world = StringProperty(world)
-
-    button_text = StringProperty("Pause")
     
     
 from kart_simulator import game, path, Rectangle, Color
@@ -111,7 +115,6 @@ from kivy.core.window import Window
 
 
 from lib import Point
-# from client.worlds import *
 import client.worlds
 from game.objects import *
 import game
@@ -182,8 +185,6 @@ class MainMenu2(FloatLayout):
         super().__init__(**kwargs)
         self.chosen_world = StringProperty("Choose your world")
         self.chosen_music = StringProperty("Choose your music")
-        self.worlds_list=self.generateWorldsList()
-        self.music_list = self.generateMusicList()
         
     def changeWorldSpinnerText(self, text):
         self.chosen_world = text
@@ -194,8 +195,10 @@ class MainMenu2(FloatLayout):
     def generateWorldsList(self):
         return list(world[:-5] for world in listdir("client/worlds"))
     
-    def generateMusicList(self):
-        return list(music[:-4] for music in listdir("client/sounds/music"))
+    def generateMusicsList(self):
+        music_list = list(music[:-4] for music in listdir("client/sounds/music"))
+        music_list.append("No music")
+        return music_list
             
 
 

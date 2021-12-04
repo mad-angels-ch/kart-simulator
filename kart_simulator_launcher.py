@@ -8,7 +8,7 @@ from kivy.core.audio import SoundLoader
 
 
 from navigation_screen_manager import MyScreenManager
-from layouts import KS_screen, KS
+from layouts import KS_screen
 
 
 
