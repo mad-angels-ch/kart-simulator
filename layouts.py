@@ -1,5 +1,6 @@
 from kivy.core.audio import SoundLoader
 from kivy.uix.button import Button
+from kivy.uix.label import Label
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.widget import Widget
 from kivy.utils import rgba
@@ -37,7 +38,7 @@ class KS_screen(Screen):
     layout_id = ObjectProperty()
     
     def __init__(self, world, music, **kw):
-        self.musicName = music
+        self.musicName = self.get_musicName(music)
         self.startMusic()
         
         super().__init__(**kw)
@@ -54,7 +55,7 @@ class KS_screen(Screen):
         
         self.game.play = False
         self.game.my_clock.unschedule(self.game.theGame.nextFrame)
-        self.pauseMenu = PauseMode(width=Window.width, height = Window.height, music=self.music)
+        self.pauseMenu = PauseMode(width=Window.width, height = Window.height, music=self.musicName)
         self.add_widget(self.pauseMenu)
         
         
@@ -95,6 +96,12 @@ class KS_screen(Screen):
     def resumeMusic(self):
         print("ok")
         self.startMusic()
+    
+    def get_musicName(self, music):
+        if isinstance(music,StringProperty):
+            return music.defaultvalue
+        else:
+            return music
         
 
 
@@ -199,7 +206,11 @@ class MainMenu2(FloatLayout):
         music_list = list(music[:-4] for music in listdir("client/sounds/music"))
         music_list.append("No music")
         return music_list
+    
+
             
+            
+
 
 
 

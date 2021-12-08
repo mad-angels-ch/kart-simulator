@@ -111,6 +111,9 @@
 
 
 
+
+
+
 <KS_screen>:
     name: "Kart_Simulator"
     layout_id: noActionBar
@@ -133,9 +136,6 @@
         BoxLayoutWithActionBar:
             title: "Rules of the game"
             Rules:
-    # Screen:
-    #     name: "pauseMenu"
-    #     PauseMode:
 
 
 
@@ -185,8 +185,7 @@
         id: music_spinner_id
         pos_hint: {'x':.8,'y':.6}
         size_hint: .2, .1
-        text: "Choose your music !"
-        # values: root.music_list
+        text: root.chosen_music
         values: root.generateMusicsList()
         on_text:
             root.changeMusicSpinnerText(music_spinner_id.text), app.ButtonSound(), app.game_instance.changeMusic(root.chosen_music)
