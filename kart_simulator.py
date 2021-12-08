@@ -30,11 +30,11 @@ from kivy.properties import StringProperty
 
 class PauseMode(FloatLayout):
     def __init__(self,width,height, music, **kwargs):
-        super().__init__(**kwargs)
-        self.chosen_music = StringProperty(music)
+        
+        self.chosen_music = str(music)
         self.width = width
         self.height = height
-    
+        super().__init__(**kwargs)
     
     def changeMusicSpinnerText(self,text):
         self.chosen_music = text
