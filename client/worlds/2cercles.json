@@ -58,7 +58,7 @@
             "strokeMiterLimit": 4,
             "strokeUniform": false,
             "strokeWidth": 1,
-            "top": 218,
+            "top": 217,
             "type": "circle",
             "version": "4.4.0",
             "visible": true,
@@ -95,7 +95,7 @@
                         },
                         "type": "none",
                         "velocity": {
-                            "x": 0,
+                            "x": 20,
                             "y": 0
                         }
                     }
