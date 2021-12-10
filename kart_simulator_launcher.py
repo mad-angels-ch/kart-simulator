@@ -60,7 +60,7 @@ class MenuApp(App):
             
     def ButtonSound(self):
         sound = SoundLoader.load('client/sounds/ButtonClick2.wav')
-        sound.volume = 0.05
+        sound.volume = 0.25
         sound.play()
 
     def isWorldChosen(self,world):
@@ -73,7 +73,7 @@ class MenuApp(App):
 
 from kivy.config import Config
 from kivy.core.window import Window
-Window.fullscreen = 'auto'
+# Window.fullscreen = 'auto'
 Config.set('kivy', 'exit_on_escape', '0')
 Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 

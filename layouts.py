@@ -74,7 +74,7 @@ class KS_screen(Screen):
             musicPath = path.join("client/sounds/music", self.musicName) + ".wav"
             self.music = SoundLoader.load(musicPath)
         # self.music_pos = 0
-            self.music.volume = 0.05
+            self.music.volume = 0.25
             self.music.play()
         # self.music.seek(self.music_pos)
             self.music.loop = True
