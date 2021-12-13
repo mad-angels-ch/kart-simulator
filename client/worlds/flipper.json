@@ -37,6 +37,7 @@
                         }
                     }
                 },
+                "name": "rightFlipper",
                 "score": 0,
                 "version": "1.0.0"
             },
@@ -197,6 +198,7 @@
                         }
                     }
                 },
+                "name": "leftFlipper",
                 "score": 0,
                 "version": "1.0.0"
             },
