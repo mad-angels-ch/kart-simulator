@@ -20,6 +20,9 @@ class Vector:
         self._x = components[0]
         self._y = components[1]
 
+    def __bool__(self) -> bool:
+        return self != Vector()
+
     def __len__(self) -> int:
         return 2
 
@@ -139,3 +142,7 @@ class Vector:
 
     def y(self) -> float:
         return self._y
+
+    def copy(self) -> "Vector":
+        """Retourne une copie"""
+        return Vector(self)
