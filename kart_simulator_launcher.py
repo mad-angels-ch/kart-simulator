@@ -60,7 +60,7 @@ class MenuApp(App):
             
     def ButtonSound(self):
         sound = SoundLoader.load('client/sounds/ButtonClick2.wav')
-        sound.volume = 0.05
+        sound.volume = 0.25
         sound.play()
 
     def isWorldChosen(self,world):
