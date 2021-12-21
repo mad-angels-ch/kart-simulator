@@ -335,7 +335,7 @@
             "left": 250,
             "lge": {
                 "friction": 0,
-                "mass": 0,
+                "mass": 1000000,
                 "motion": {
                     "angle": {
                         "acceleration": 0,
@@ -349,7 +349,7 @@
                     "vector": {
                         "acceleration": {
                             "x": 0,
-                            "y": -1
+                            "y": -10
                         },
                         "type": "uam",
                         "velocity": {
