@@ -82,7 +82,6 @@ class MainWidget(Widget):
 
         print("Finisched!")
         #################################################################
-
         self.fps = 60
 
         self._keyboard = Window.request_keyboard(self.keyboard_closed, self)
@@ -120,7 +119,6 @@ class MainWidget(Widget):
         if obstacleID or obstacleID == 0:
             obs = self.dict_polygons.get(obstacleID)
             io_obs = self.instanciateObstacle(obs)
-
         elif obstacle:
             obs = obstacle
             io_obs = self.instanciateObstacle(obs)
@@ -185,7 +183,7 @@ class MainWidget(Widget):
                 )
                 self.canvas.add(io_obstacle)
                 self.dict_polygons[obstacle.formID()] = io_obstacle
-
+            
             elif isinstance(obstacle,Polygon):
                 io_obstacle = self.dict_polygons.get(obstacle.formID())
             return io_obstacle
