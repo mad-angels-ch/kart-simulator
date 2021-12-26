@@ -134,7 +134,7 @@ class MainWidget(Widget):
         io_obs.updatePosition(newPos=new_pos)
 
         if (
-            obs._fill != io_obs.color
+            obs.fill().value() != io_obs.color
         ):  # En cas de changement de couleur de l'obstacle, kivy nous oblige à le redessiner
             self.canvas.remove(io_obs)
             if isinstance(obs,Circle):
@@ -153,7 +153,7 @@ class MainWidget(Widget):
                 and obstacle.formID() not in self.dict_circles
             ):
                 # with self.canvas.before:
-                self.color = get_color_from_hex(obstacle._fill)
+                self.color = get_color_from_hex(obstacle.fill().value())
                 with self.canvas:
                     Color(rgba=self.color)
                 pos_x = obstacle.center()[0] - obstacle.radius()
@@ -161,7 +161,7 @@ class MainWidget(Widget):
                 io_obstacle = IO_Circle(
                     diametre=2 * obstacle.radius(),
                     position=[pos_x, pos_y],
-                    couleur=obstacle._fill,
+                    couleur=obstacle.fill().value(),
                 )
                 self.canvas.add(io_obstacle)
                 self.dict_circles[obstacle.formID()] = io_obstacle
@@ -177,11 +177,11 @@ class MainWidget(Widget):
                 if type(obstacle).__name__ == "Kart":
                     self.kart_ID = obstacle.formID()
                 
-                self.color = get_color_from_hex(obstacle._fill)
+                self.color = get_color_from_hex(obstacle.fill().value())
                 with self.canvas:
                     Color(rgba=self.color)
                 io_obstacle = IO_Polygon(
-                    summits=obstacle.vertices(), couleur=obstacle._fill
+                    summits=obstacle.vertices(), couleur=obstacle.fill().value()
                 )
                 self.canvas.add(io_obstacle)
                 self.dict_polygons[obstacle.formID()] = io_obstacle

@@ -162,7 +162,7 @@ class PreView(Widget):
                 isinstance(obstacle,Circle)
             ):
                 # with self.canvas.before:
-                self.color = get_color_from_hex(obstacle._fill)
+                self.color = get_color_from_hex(obstacle.fill().value())
                 pos_x = (obstacle.center()[0] - obstacle.radius())/3
                 pos_y = (obstacle.center()[1] - obstacle.radius())/3
                 with self.canvas.after:
@@ -171,7 +171,7 @@ class PreView(Widget):
                     IO_Circle(
                         diametre=2 * obstacle.radius()/3,
                         position=[pos_x, pos_y],
-                        couleur=obstacle._fill,
+                        couleur=obstacle.fill().value(),
                     
                     )
                     
@@ -179,11 +179,11 @@ class PreView(Widget):
             elif (
                 isinstance(obstacle,Polygon)
             ):
-                self.color = get_color_from_hex(obstacle._fill)
+                self.color = get_color_from_hex(obstacle.fill().value())
                 with self.canvas:
                     Color(rgba=self.color)
                     IO_Polygon(
-                        summits=obstacle.vertices(), couleur=obstacle._fill, scale = 3
+                        summits=obstacle.vertices(), couleur=obstacle.fill().value(), scale = 3
                     )
 
 
