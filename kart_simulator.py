@@ -59,6 +59,7 @@ class MainWidget(Widget):
     )
     dict_polygons = dict()
     dict_circles = dict()
+    dict_finishLine = dict()
     kart_ID = 0
     
     
@@ -171,18 +172,22 @@ class MainWidget(Widget):
                 isinstance(obstacle,Polygon)
                 and obstacle.formID() not in self.dict_polygons
             ):
-                
-                if type(obstacle).__name__ == "Kart":
-                    self.kart_ID = obstacle.formID()
-                
-                self.color = get_color_from_hex(obstacle._fill)
-                with self.canvas:
-                    Color(rgba=self.color)
-                io_obstacle = IO_Polygon(
-                    summits=obstacle.vertices(), couleur=obstacle._fill
-                )
-                self.canvas.add(io_obstacle)
-                self.dict_polygons[obstacle.formID()] = io_obstacle
+                if type(obstacle).__name__ == "FinishLine":
+                    with self.canvas:
+                        finish_line = Rectangle(pos=obstacle.pos(), size=obstacle.size(), source="client/images/finish_line.jpg")
+                    self.dict_finishLine[obstacle.formID()] = finish_line
+                else:
+                    if type(obstacle).__name__ == "Kart":
+                        self.kart_ID = obstacle.formID()
+                    
+                    self.color = get_color_from_hex(obstacle._fill)
+                    with self.canvas:
+                        Color(rgba=self.color)
+                    io_obstacle = IO_Polygon(
+                        summits=obstacle.vertices(), couleur=obstacle._fill
+                    )
+                    self.canvas.add(io_obstacle)
+                    self.dict_polygons[obstacle.formID()] = io_obstacle
             
             elif isinstance(obstacle,Polygon):
                 io_obstacle = self.dict_polygons.get(obstacle.formID())
