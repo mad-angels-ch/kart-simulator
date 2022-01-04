@@ -80,81 +80,6 @@
             "width": 2
         },
         {
-            "angle": 0,
-            "backgroundColor": "",
-            "fill": "#000000",
-            "fillRule": "nonzero",
-            "flipX": false,
-            "flipY": false,
-            "globalCompositeOperation": "source-over",
-            "height": 37.5,
-            "left": 91.98,
-            "lge": {
-                "friction": 0,
-                "mass": 0,
-                "motion": {
-                    "angle": {
-                        "acceleration": 0,
-                        "center": {
-                            "x": 0,
-                            "y": 0
-                        },
-                        "type": "none",
-                        "velocity": 0
-                    },
-                    "vector": {
-                        "acceleration": {
-                            "x": 0,
-                            "y": 0
-                        },
-                        "type": "none",
-                        "velocity": {
-                            "x": 0,
-                            "y": 0
-                        }
-                    }
-                },
-                "score": 0,
-                "version": "1.0.0"
-            },
-            "opacity": 1,
-            "originX": "center",
-            "originY": "center",
-            "paintFirst": "fill",
-            "points": [
-                {
-                    "x": -21.650635094610962,
-                    "y": 12.500000000000009
-                },
-                {
-                    "x": -4.592425496802574e-15,
-                    "y": -25
-                },
-                {
-                    "x": 21.650635094610976,
-                    "y": 12.499999999999982
-                }
-            ],
-            "scaleX": 1,
-            "scaleY": 1,
-            "shadow": null,
-            "skewX": 0,
-            "skewY": 0,
-            "stroke": null,
-            "strokeDashArray": null,
-            "strokeDashOffset": 0,
-            "strokeLineCap": "butt",
-            "strokeLineJoin": "miter",
-            "strokeMiterLimit": 4,
-            "strokeUniform": false,
-            "strokeWidth": 1,
-            "top": 229.01,
-            "type": "LGEKartPlaceHolder",
-            "version": "4.4.0",
-            "visible": true,
-            "width": 43.3
-        },
-        {
             "angle": -0.13,
             "backgroundColor": "",
             "fill": "rgb(0,0,0)",
@@ -565,7 +490,94 @@
             "version": "4.4.0",
             "visible": true,
             "width": 26
-        }
+        },
+        {
+            "angle": 0, 
+            "backgroundColor": "", 
+            "fill": {
+              "crossOrigin": "", 
+              "offsetX": 0, 
+              "offsetY": 0, 
+              "patternTransform": null, 
+              "repeat": "repeat", 
+              "source": "http://localhost:5000/static/img/finishline.png", 
+              "type": "pattern"
+            }, 
+            "fillRule": "nonzero", 
+            "flipX": false, 
+            "flipY": false, 
+            "globalCompositeOperation": "source-over", 
+            "height": 35.36, 
+            "left": 197.77, 
+            "lge": {
+              "friction": 0, 
+              "mass": 0, 
+              "motion": {
+                "angle": {
+                  "acceleration": 0, 
+                  "center": {
+                    "x": 0, 
+                    "y": 0
+                  }, 
+                  "type": "none", 
+                  "velocity": 0
+                }, 
+                "vector": {
+                  "acceleration": {
+                    "x": 0, 
+                    "y": 0
+                  }, 
+                  "type": "none", 
+                  "velocity": {
+                    "x": 0, 
+                    "y": 0
+                  }
+                }
+              }, 
+              "score": 0, 
+              "version": "1.0.0"
+            }, 
+            "opacity": 1, 
+            "originX": "center", 
+            "originY": "center", 
+            "paintFirst": "fill", 
+            "points": [
+              {
+                "x": -17.677669529663685, 
+                "y": 17.67766952966369
+              }, 
+              {
+                "x": -17.677669529663692, 
+                "y": -17.677669529663685
+              }, 
+              {
+                "x": 17.677669529663685, 
+                "y": -17.677669529663692
+              }, 
+              {
+                "x": 17.677669529663692, 
+                "y": 17.677669529663685
+              }
+            ], 
+            "scaleX": 1, 
+            "scaleY": 1, 
+            "shadow": null, 
+            "skewX": 0, 
+            "skewY": 0, 
+            "stroke": null, 
+            "strokeDashArray": null, 
+            "strokeDashOffset": 0, 
+            "strokeLineCap": "butt", 
+            "strokeLineJoin": "miter", 
+            "strokeMiterLimit": 4, 
+            "strokeUniform": false, 
+            "strokeWidth": 1, 
+            "top": 172.73, 
+            "type": "LGEFinishLine", 
+            "version": "4.4.0", 
+            "visible": true, 
+            "width": 35.36
+          }
     ],
     "version": "4.4.0"
 }

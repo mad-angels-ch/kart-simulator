@@ -10,6 +10,8 @@ from kivy.core.window import Window
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.floatlayout import FloatLayout
+from game.objects.FinishLine import FinishLine
+from io_objects.io_finishLine import IO_FinishLine
 
 
 from lib import Point
@@ -69,7 +71,9 @@ class MainWidget(Widget):
         self.parentScreen = parentScreen
         if isinstance(self.world,StringProperty):
             self.world = "2triangles"
-            
+        # io_obstacle = IO_FinishLine()
+        # self.canvas.add(io_obstacle)
+
         ##################### Création de la partie #####################
         dataUrl = path.join("client/worlds", self.world) + ".json"
         print(f"GameData: {dataUrl}")
@@ -173,12 +177,12 @@ class MainWidget(Widget):
                 and obstacle.formID() not in self.dict_polygons
             ):
                 if type(obstacle).__name__ == "FinishLine":
-                    with self.canvas:
-                        finish_line = Rectangle(pos=obstacle.pos(), size=obstacle.size(), source="client/images/finish_line.jpg")
-                    self.dict_finishLine[obstacle.formID()] = finish_line
+                    io_obstacle = IO_FinishLine()
+                    self.canvas.add(io_obstacle)
+                    self.dict_finishLine[obstacle.formID()] = io_obstacle
                 else:
                     if type(obstacle).__name__ == "Kart":
-                        self.kart_ID = obstacle.formID()
+                        self.kart_ID = obstacle.formID()                        
                     
                     self.color = get_color_from_hex(obstacle._fill)
                     with self.canvas:
