@@ -177,6 +177,8 @@ class MainWidget(Widget):
                 and obstacle.formID() not in self.dict_polygons
             ):
                 if type(obstacle).__name__ == "FinishLine":
+                    with self.canvas:
+                        Color(rgba=(1,1,1,1))
                     io_obstacle = IO_FinishLine()
                     self.canvas.add(io_obstacle)
                     self.dict_finishLine[obstacle.formID()] = io_obstacle
