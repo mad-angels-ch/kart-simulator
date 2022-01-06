@@ -196,4 +196,3 @@ class MainWidget(Widget):
             elif isinstance(obstacle,Polygon):
                 io_obstacle = self.dict_polygons.get(obstacle.formID())
             return io_obstacle
-
