@@ -22,12 +22,10 @@ def on_keyboard_down(self, keyboard, keycode, text, modifiers):
     if keycode[1] == 'up':
         if self.kart_ID:
             self.eventsList.append(game.events.KartAccelerationEvent(acceleration=2,targetFormID=self.kart_ID))
-        print("UP")
 
     if keycode[1] == 'down':
         if self.kart_ID:
             self.eventsList.append(game.events.KartAccelerationEvent(acceleration=-2,targetFormID=self.kart_ID))
-        print("DOWN")
         
     if keycode[1] == 'escape':
         if self.play:
@@ -36,7 +34,6 @@ def on_keyboard_down(self, keyboard, keycode, text, modifiers):
         else:
             self.parentScreen.resumeGame(self.parentScreen.pauseMenu.chosen_music)
             self.play = True
-        print("PAUSE/RESUME")
         
     return True
 
