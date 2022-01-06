@@ -15,7 +15,7 @@ from game.objects.fill.Hex import Hex
 from game.objects.fill.Pattern import Pattern
 from io_objects.io_FinishLine import IO_FinishLine
 from io_objects.io_FilledQuadrilateral import IO_FilledQuadrilateral
-
+from logging import error, warning
 
 from lib import Point
 import client
@@ -203,12 +203,11 @@ class MainWidget(Widget):
         elif isinstance(obstacle.fill(), Pattern):
             if len(obstacle.vertices()) == 4:
                 if type(obstacle).__name__ == "FinishLine":
-                    Warning("TO BE IMPLEMENTED")
                     with self.canvas:
                         io_obstacle = IO_FinishLine(summitsBeforeRotation=obstacle.verticesBeforeRotation(), angle=obstacle.angle())
                     self.dict_finishLines[obstacle.formID()] = io_obstacle
                 else:
-                    Warning("TO BE IMPLEMENTED")
+                    warning("TO BE IMPLEMENTED")
                     source = obstacle.sourceImage
                     with self.canvas:
                         io_obstacle = IO_FilledQuadrilateral(summitsBeforeRotation=obstacle.verticesBeforeRotation(), source = source, angle=obstacle.angle())
