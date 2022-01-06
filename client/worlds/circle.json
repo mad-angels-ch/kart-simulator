@@ -1,0 +1,276 @@
+{
+  "objects": [
+    {
+      "angle": 0, 
+      "backgroundColor": "", 
+      "endAngle": 6.283185307179586, 
+      "fill": "#000000", 
+      "fillRule": "nonzero", 
+      "flipX": false, 
+      "flipY": false, 
+      "globalCompositeOperation": "source-over", 
+      "height": 50, 
+      "left": 100, 
+      "lge": {
+        "friction": 0, 
+        "mass": 1, 
+        "motion": {
+          "angle": {
+            "acceleration": 0,
+            "center": {
+              "x": 200, 
+              "y": 200
+            }, 
+            "type": "none", 
+            "velocity": 0.5
+          }, 
+          "vector": {
+            "acceleration": {
+              "x": 0, 
+              "y": 0
+            }, 
+            "type": "uam", 
+            "velocity": {
+              "x": 100,
+              "y": 0
+            }
+          }
+        }, 
+        "score": 0, 
+        "version": "1.0.0"
+      }, 
+      "opacity": 1, 
+      "originX": "center", 
+      "originY": "center", 
+      "paintFirst": "fill", 
+      "radius": 10, 
+      "scaleX": 1, 
+      "scaleY": 1, 
+      "shadow": null, 
+      "skewX": 0, 
+      "skewY": 0, 
+      "startAngle": 0, 
+      "stroke": null, 
+      "strokeDashArray": null, 
+      "strokeDashOffset": 0, 
+      "strokeLineCap": "butt", 
+      "strokeLineJoin": "miter", 
+      "strokeMiterLimit": 4, 
+      "strokeUniform": false, 
+      "strokeWidth": 1, 
+      "top": 100, 
+      "type": "circle", 
+      "version": "4.4.0", 
+      "visible": true, 
+      "width": 50
+    },
+    {
+      "angle": 0, 
+      "backgroundColor": "", 
+      "endAngle": 6.283185307179586, 
+      "fill": "#000000", 
+      "fillRule": "nonzero", 
+      "flipX": false, 
+      "flipY": false, 
+      "globalCompositeOperation": "source-over", 
+      "height": 50, 
+      "left": 200, 
+      "lge": {
+        "friction": 0, 
+        "mass": 1, 
+        "motion": {
+          "angle": {
+            "acceleration": 0, 
+            "center": {
+              "x": 200, 
+              "y": 200
+            }, 
+            "type": "none", 
+            "velocity": 1
+          }, 
+          "vector": {
+            "acceleration": {
+              "x": 0, 
+              "y": -20
+            }, 
+            "type": "none", 
+            "velocity": {
+              "x": 0,
+              "y": 100
+            }
+          }
+        }, 
+        "score": 0, 
+        "version": "1.0.0"
+      }, 
+      "opacity": 1, 
+      "originX": "center", 
+      "originY": "center", 
+      "paintFirst": "fill", 
+      "radius": 10, 
+      "scaleX": 1, 
+      "scaleY": 1, 
+      "shadow": null, 
+      "skewX": 0, 
+      "skewY": 0, 
+      "startAngle": 0, 
+      "stroke": null, 
+      "strokeDashArray": null, 
+      "strokeDashOffset": 0, 
+      "strokeLineCap": "butt", 
+      "strokeLineJoin": "miter", 
+      "strokeMiterLimit": 4, 
+      "strokeUniform": false, 
+      "strokeWidth": 1, 
+      "top": 200, 
+      "type": "circle", 
+      "version": "4.4.0", 
+      "visible": true, 
+      "width": 50
+    },
+    {
+      "angle": 0, 
+      "backgroundColor": "", 
+      "endAngle": 6.283185307179586, 
+      "fill": "#0000ff", 
+      "fillRule": "nonzero", 
+      "flipX": false, 
+      "flipY": false, 
+      "globalCompositeOperation": "source-over", 
+      "height": 50, 
+      "left": 450, 
+      "lge": {
+        "friction": 0, 
+        "mass": 1, 
+        "motion": {
+          "angle": {
+            "acceleration": 0, 
+            "center": {
+              "x": 200, 
+              "y": 200
+            }, 
+            "type": "none", 
+            "velocity": 1
+          }, 
+          "vector": {
+            "acceleration": {
+              "x": 0, 
+              "y": 0
+            }, 
+            "type": "uam", 
+            "velocity": {
+              "x": -100,
+              "y": 0
+            }
+          }
+        }, 
+        "score": 0, 
+        "version": "1.0.0"
+      }, 
+      "opacity": 1, 
+      "originX": "center", 
+      "originY": "center", 
+      "paintFirst": "fill", 
+      "radius": 10, 
+      "scaleX": 1, 
+      "scaleY": 1, 
+      "shadow": null, 
+      "skewX": 0, 
+      "skewY": 0, 
+      "startAngle": 0, 
+      "stroke": null, 
+      "strokeDashArray": null, 
+      "strokeDashOffset": 0, 
+      "strokeLineCap": "butt", 
+      "strokeLineJoin": "miter", 
+      "strokeMiterLimit": 4, 
+      "strokeUniform": false, 
+      "strokeWidth": 1, 
+      "top": 110, 
+      "type": "circle", 
+      "version": "4.4.0", 
+      "visible": true, 
+      "width": 50
+    },
+    {
+      "angle": 0,
+      "backgroundColor": "",
+      "fill": "#000000",
+      "fillRule": "nonzero",
+      "flipX": false,
+      "flipY": false,
+      "globalCompositeOperation": "source-over",
+      "height": 63.1,
+      "left": 411.39,
+      "lge": {
+          "friction": 0,
+          "mass": 0,
+          "motion": {
+              "angle": {
+                  "acceleration": 0,
+                  "center": {
+                      "x": 0,
+                      "y": 0
+                  },
+                  "type": "none",
+                  "velocity": 0
+              },
+              "vector": {
+                  "acceleration": {
+                      "x": 0,
+                      "y": -1
+                  },
+                  "type": "none",
+                  "velocity": {
+                      "x": 0,
+                      "y": 0
+                  }
+              }
+          },
+          "score": 0,
+          "version": "1.0.0"
+      },
+      "opacity": 1,
+      "originX": "center",
+      "originY": "center",
+      "paintFirst": "fill",
+      "points": [
+          {
+              "x": 250,
+              "y": 0
+          },
+          {
+              "x": 250,
+              "y": 500
+          },
+          {
+              "x": 270,
+              "y": 500
+          },
+          {
+              "x": 270,
+              "y": 0
+          }
+      ],
+      "scaleX": 2.36,
+      "scaleY": 2.08,
+      "shadow": null,
+      "skewX": 0,
+      "skewY": 0,
+      "stroke": null,
+      "strokeDashArray": null,
+      "strokeDashOffset": 0,
+      "strokeLineCap": "butt",
+      "strokeLineJoin": "miter",
+      "strokeMiterLimit": 4,
+      "strokeUniform": false,
+      "strokeWidth": 1,
+      "top": 63.41,
+      "type": "polygon",
+      "version": "4.4.0",
+      "visible": true,
+      "width": 35.49
+  }
+  ], 
+  "version": "4.4.0"
+}

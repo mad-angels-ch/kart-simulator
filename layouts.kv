@@ -1,0 +1,22 @@
+<MenuTabbedPanel@TabbedPanel>:
+    do_default_tab: False
+    TabbedPanelItem:
+        text: "Sign in"
+        SignIn:
+    TabbedPanelItem:
+        text: "Log in"
+        LogIn:
+
+
+
+
+
+<SignIn@BoxLayout>:
+    Button:
+        text: "provisoire - Sign in"
+        on_press: app.ButtonSound()
+
+<LogIn@BoxLayout>:
+    Button:
+        text: "provisoire - Log in"
+        on_press: app.ButtonSound()
