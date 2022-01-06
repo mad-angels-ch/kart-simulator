@@ -10,6 +10,11 @@ from kivy.core.window import Window
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.floatlayout import FloatLayout
+from game.objects.FinishLine import FinishLine
+from game.objects.fill.Hex import Hex
+from game.objects.fill.Pattern import Pattern
+from io_objects.io_FinishLine import IO_FinishLine
+from io_objects.io_FilledQuadrilateral import IO_FilledQuadrilateral
 
 
 from lib import Point
@@ -59,6 +64,8 @@ class MainWidget(Widget):
     )
     dict_polygons = dict()
     dict_circles = dict()
+    dict_finishLines = dict()
+    dict_FilledQuadrilaterals = dict()
     kart_ID = 0
     
     
@@ -132,61 +139,84 @@ class MainWidget(Widget):
             new_pos = obs.vertices()
 
         io_obs.updatePosition(newPos=new_pos)
+        
 
-        if (
-            obs.fill().value() != io_obs.color
-        ):  # En cas de changement de couleur de l'obstacle, kivy nous oblige à le redessiner
-            self.canvas.remove(io_obs)
-            if isinstance(obs,Circle):
-                self.dict_circles.pop(obs.formID())
-            elif isinstance(obs,Polygon):
-                self.dict_polygons.pop(obs.formID())
+# Les changements de couleurs des obstacles ne sont pour l'isntant pas supportés
+        # if (
+        #     obs.fill().value() != io_obs.color
+        # ):  # En cas de changement de couleur de l'obstacle, kivy nous oblige à le redessiner
+        #     self.canvas.remove(io_obs)
+        #     if isinstance(obs,Circle):
+        #         self.dict_circles.pop(obs.formID())
+        #     elif isinstance(obs,Polygon):
+        #         self.dict_polygons.pop(obs.formID())
                 
-            self.instanciateObstacle(obstacle=obs)
+        #     self.instanciateObstacle(obstacle=obs)
 
 
 
     def instanciateObstacle(self, obstacle=None):
-        if obstacle:
-            if (
-                isinstance(obstacle,Circle)
-                and obstacle.formID() not in self.dict_circles
-            ):
-                # with self.canvas.before:
+        if isinstance(obstacle.fill(), Hex):
+        
+            if obstacle:
                 self.color = get_color_from_hex(obstacle.fill().value())
-                with self.canvas:
-                    Color(rgba=self.color)
-                pos_x = obstacle.center()[0] - obstacle.radius()
-                pos_y = obstacle.center()[1] - obstacle.radius()
-                io_obstacle = IO_Circle(
-                    diametre=2 * obstacle.radius(),
-                    position=[pos_x, pos_y],
-                    couleur=obstacle.fill().value(),
-                )
-                self.canvas.add(io_obstacle)
-                self.dict_circles[obstacle.formID()] = io_obstacle
-
-            elif isinstance(obstacle,Circle):
-                io_obstacle = self.dict_circles.get(obstacle.formID())
-
-            elif (
-                isinstance(obstacle,Polygon)
-                and obstacle.formID() not in self.dict_polygons
-            ):
                 
-                if type(obstacle).__name__ == "Kart":
-                    self.kart_ID = obstacle.formID()
-                
-                self.color = get_color_from_hex(obstacle.fill().value())
-                with self.canvas:
-                    Color(rgba=self.color)
-                io_obstacle = IO_Polygon(
-                    summits=obstacle.vertices(), couleur=obstacle.fill().value()
-                )
-                self.canvas.add(io_obstacle)
-                self.dict_polygons[obstacle.formID()] = io_obstacle
+                if (
+                    isinstance(obstacle,Circle)
+                    and obstacle.formID() not in self.dict_circles
+                ):
+                    with self.canvas:
+                        Color(rgba=self.color)
+                    pos_x = obstacle.center()[0] - obstacle.radius()
+                    pos_y = obstacle.center()[1] - obstacle.radius()
+                    io_obstacle = IO_Circle(
+                        diametre=2 * obstacle.radius(),
+                        position=[pos_x, pos_y],
+                        couleur=obstacle.fill().value(),
+                    )
+                    self.canvas.add(io_obstacle)
+                    self.dict_circles[obstacle.formID()] = io_obstacle
 
-            elif isinstance(obstacle,Polygon):
-                io_obstacle = self.dict_polygons.get(obstacle.formID())
+                elif isinstance(obstacle,Circle):
+                    io_obstacle = self.dict_circles.get(obstacle.formID())
+
+                elif (
+                    isinstance(obstacle,Polygon)
+                    and obstacle.formID() not in self.dict_polygons
+                ):
+                    
+                    if type(obstacle).__name__ == "Kart":
+                        self.kart_ID = obstacle.formID()
+                        
+                    with self.canvas:
+                        Color(rgba=self.color)
+                    io_obstacle = IO_Polygon(
+                        summits=obstacle.vertices(), couleur=obstacle.fill().value()
+                    )
+                    self.canvas.add(io_obstacle)
+                    self.dict_polygons[obstacle.formID()] = io_obstacle
+
+                elif isinstance(obstacle,Polygon):
+                    io_obstacle = self.dict_polygons.get(obstacle.formID())
+                return io_obstacle
+            
+        elif isinstance(obstacle.fill(), Pattern):
+            if len(obstacle.vertices()) == 4:
+                if type(obstacle).__name__ == "FinishLine":
+                    Warning("TO BE IMPLEMENTED")
+                    with self.canvas:
+                        io_obstacle = IO_FinishLine(summitsBeforeRotation=obstacle.verticesBeforeRotation(), angle=obstacle.angle())
+                    self.dict_finishLines[obstacle.formID()] = io_obstacle
+                else:
+                    Warning("TO BE IMPLEMENTED")
+                    source = obstacle.sourceImage
+                    with self.canvas:
+                        io_obstacle = IO_FilledQuadrilateral(summitsBeforeRotation=obstacle.verticesBeforeRotation(), source = source, angle=obstacle.angle())
+                        self.dict_FilledQuadrilaterals[obstacle.formID()] = io_obstacle
+            else:
+                raise "Only quadrilaterals can be filled with a pattern"
+            
             return io_obstacle
-
+        
+        else:
+            raise "Unsupported color type"
