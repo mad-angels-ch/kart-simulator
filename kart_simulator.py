@@ -201,7 +201,7 @@ class MainWidget(Widget):
                 return io_obstacle
             
         elif isinstance(obstacle.fill(), Pattern):
-            if len(obstacle.vertices()) == 4:
+            if len(obstacle) == 4:
                 if type(obstacle).__name__ == "FinishLine":
                     with self.canvas:
                         io_obstacle = IO_FinishLine(summitsBeforeRotation=obstacle.verticesBeforeRotation(), angle=obstacle.angle())
