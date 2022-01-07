@@ -19,8 +19,8 @@
                     "angle": {
                         "acceleration": 0,
                         "center": {
-                            "x": 0,
-                            "y": 0
+                            "x": 400,
+                            "y": 10
                         },
                         "type": "none",
                         "velocity": 0
@@ -180,8 +180,8 @@
                     "angle": {
                         "acceleration": 0,
                         "center": {
-                            "x": 0,
-                            "y": 0
+                            "x": 200,
+                            "y": 100
                         },
                         "type": "none",
                         "velocity": 0
