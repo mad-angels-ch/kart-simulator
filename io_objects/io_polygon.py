@@ -23,7 +23,10 @@ class IO_Polygon(Mesh):
             self._indices.append(j)
             i += 1
             j += 1
-        Mesh.__init__(self,mode = 'triangle_fan',vertices=self._vertices, indices=self._indices)
+        if len(self._vertices) > 16:
+            Mesh.__init__(self,mode = 'line_loop',vertices=self._vertices, indices=self._indices)
+        else:
+            Mesh.__init__(self,mode = 'triangle_fan',vertices=self._vertices, indices=self._indices)
 
 
     def get_vertices(self):
