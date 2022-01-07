@@ -31,7 +31,7 @@ class VectorialMotion:
         self.set_speed(newSpeed=self.speed()+newAcceleration)
 
     def updateIsStatic(self) -> None:
-        self._static = not self._speed
+        self._static = self._speed == lib.Vector()
 
     def isStatic(self) -> bool:
         return self._static
