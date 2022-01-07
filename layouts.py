@@ -140,21 +140,23 @@ class PreView(Widget):
     
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-
+        self.previewMode = False
     def changePreView(self, world):
         if not isinstance(world,StringProperty):
             self.canvas.before.clear()
             self.canvas.clear()
             self.canvas.after.clear()
-            print("PREVIEW CLEARED")
-            with self.canvas.before:
-                Color(rgba=(1,1,1,1))
-                Rectangle(pos=(0,0), size=(200,200))
-            self.dataUrl = self.dataUrl = path.join("client/worlds", world) + ".json"
-            self.theGame = game.Game(self.dataUrl, [], self.instanciateObstacle)
-            self.theGame.callOutput()
+            print("PREVIEW CLEARED")      
+            if self.previewMode:
+                with self.canvas.before:
+                    Color(rgba=(1,1,1,1))
+                    Rectangle(pos=(0,0), size=(200,200))
+                self.dataUrl = self.dataUrl = path.join("client/worlds", world) + ".json"
+                self.theGame = game.Game(self.dataUrl, [], self.instanciateObstacle)
+                self.theGame.callOutput()
 
-
+    def updatePreviewMode(self):
+        self.previewMode = not self.previewMode
     def instanciateObstacle(self, objects: List[game.objects.Object]):
         for obstacle in objects:
             if (
