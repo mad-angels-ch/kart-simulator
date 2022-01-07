@@ -10,6 +10,8 @@ from kivy.core.window import Window
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.floatlayout import FloatLayout
+from game.objects.FinishLine import FinishLine
+from io_objects.io_finishLine import IO_FinishLine
 
 
 from lib import Point
@@ -59,6 +61,7 @@ class MainWidget(Widget):
     )
     dict_polygons = dict()
     dict_circles = dict()
+    dict_finishLine = dict()
     kart_ID = 0
     
     
@@ -68,7 +71,9 @@ class MainWidget(Widget):
         self.parentScreen = parentScreen
         if isinstance(self.world,StringProperty):
             self.world = "2triangles"
-            
+        # io_obstacle = IO_FinishLine()
+        # self.canvas.add(io_obstacle)
+
         ##################### Création de la partie #####################
         dataUrl = path.join("client/worlds", self.world) + ".json"
         print(f"GameData: {dataUrl}")
@@ -82,7 +87,6 @@ class MainWidget(Widget):
 
         print("Finisched!")
         #################################################################
-
         self.fps = 60
 
         self._keyboard = Window.request_keyboard(self.keyboard_closed, self)
@@ -120,7 +124,6 @@ class MainWidget(Widget):
         if obstacleID or obstacleID == 0:
             obs = self.dict_polygons.get(obstacleID)
             io_obs = self.instanciateObstacle(obs)
-
         elif obstacle:
             obs = obstacle
             io_obs = self.instanciateObstacle(obs)
@@ -173,19 +176,25 @@ class MainWidget(Widget):
                 isinstance(obstacle,Polygon)
                 and obstacle.formID() not in self.dict_polygons
             ):
-                
-                if type(obstacle).__name__ == "Kart":
-                    self.kart_ID = obstacle.formID()
-                
-                self.color = get_color_from_hex(obstacle._fill)
-                with self.canvas:
-                    Color(rgba=self.color)
-                io_obstacle = IO_Polygon(
-                    summits=obstacle.vertices(), couleur=obstacle._fill
-                )
-                self.canvas.add(io_obstacle)
-                self.dict_polygons[obstacle.formID()] = io_obstacle
-
+                if type(obstacle).__name__ == "FinishLine":
+                    with self.canvas:
+                        Color(rgba=(1,1,1,1))
+                    io_obstacle = IO_FinishLine()
+                    self.canvas.add(io_obstacle)
+                    self.dict_finishLine[obstacle.formID()] = io_obstacle
+                else:
+                    if type(obstacle).__name__ == "Kart":
+                        self.kart_ID = obstacle.formID()                        
+                    
+                    self.color = get_color_from_hex(obstacle._fill)
+                    with self.canvas:
+                        Color(rgba=self.color)
+                    io_obstacle = IO_Polygon(
+                        summits=obstacle.vertices(), couleur=obstacle._fill
+                    )
+                    self.canvas.add(io_obstacle)
+                    self.dict_polygons[obstacle.formID()] = io_obstacle
+            
             elif isinstance(obstacle,Polygon):
                 io_obstacle = self.dict_polygons.get(obstacle.formID())
             return io_obstacle

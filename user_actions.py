@@ -11,11 +11,13 @@ def on_keyboard_down(self, keyboard, keycode, text, modifiers):
         if self.kart_ID:
             self.eventsList.append(game.events.KartTurningEvent(turning=1,targetFormID=self.kart_ID))
         self.eventsList.append(game.events.FlipperEvent(upward=True, targetsName="leftFlipper"))
+        print("LEFT")
 
     if keycode[1] == 'right':
         if self.kart_ID:
             self.eventsList.append(game.events.KartTurningEvent(turning=-1,targetFormID=self.kart_ID))
         self.eventsList.append(game.events.FlipperEvent(upward=True, targetsName="rightFlipper"))
+        print("RIGHT")
 
     if keycode[1] == 'up':
         if self.kart_ID:

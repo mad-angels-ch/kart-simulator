@@ -40,7 +40,6 @@ class KS_screen(Screen):
     def __init__(self, world, music, **kw):
         self.musicName = self.get_musicName(music)
         self.startMusic()
-        
         super().__init__(**kw)
         self.world = world
         self.game = MainWidget(self.world,self)

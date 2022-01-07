@@ -28,11 +28,11 @@ class MenuApp(App):
         
     def build(self):
         Window.clearcolor = get_color_from_hex("#ffffff")
-        self.manager = MyScreenManager()
-        
+        self.manager = MyScreenManager()        
         return self.manager
     
     def start_ks(self, world, music):
+        self.windowSize = Window.size
         if self.isWorldChosen(world):
             self.world = world
             self.music = music
@@ -80,4 +80,4 @@ Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 
 MenuApp().run()
 
-##########################################################################
+# ##########################################################################

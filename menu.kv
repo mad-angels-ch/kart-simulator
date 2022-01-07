@@ -123,8 +123,16 @@
 <KS_screen>:
     name: "Kart_Simulator"
     layout_id: noActionBar
-    BoxLayout:
+
+    RelativeLayout:
         id: noActionBar
+        pos: app.windowSize[0]/2-250,app.windowSize[1]/2-250
+        # canvas.before:
+        #     Color:
+        #         rgba: 1, 0, 0, 0.5
+        #     Rectangle:
+        #         pos: self.pos  # incorrect
+        #         size: self.size
 
 
 
