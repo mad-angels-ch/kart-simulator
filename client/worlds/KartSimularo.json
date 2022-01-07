@@ -9,10 +9,10 @@
       "flipY": false, 
       "globalCompositeOperation": "source-over", 
       "height": 37.5, 
-      "left": 132.6, 
+      "left ": 132.6, 
       "lge": {
         "friction": 0, 
-        "mass": 0, 
+        "mass": 2, 
         "motion": {
           "angle": {
             "acceleration": 0, 
