@@ -335,7 +335,7 @@
             "left": 250,
             "lge": {
                 "friction": 0,
-                "mass": 0,
+                "mass": 1000000,
                 "motion": {
                     "angle": {
                         "acceleration": 0,
@@ -349,7 +349,7 @@
                     "vector": {
                         "acceleration": {
                             "x": 0,
-                            "y": -1
+                            "y": -10
                         },
                         "type": "uam",
                         "velocity": {
@@ -380,7 +380,7 @@
             "strokeMiterLimit": 4,
             "strokeUniform": false,
             "strokeWidth": 1,
-            "top": 250,
+            "top": 51,
             "type": "circle",
             "version": "4.4.0",
             "visible": true,
