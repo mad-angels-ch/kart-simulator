@@ -75,7 +75,9 @@ class MainWidget(Widget):
         self.parentScreen = parentScreen
         if isinstance(self.world,StringProperty):
             self.world = "2triangles"
-            
+        # io_obstacle = IO_FinishLine()
+        # self.canvas.add(io_obstacle)
+
         ##################### Création de la partie #####################
         dataUrl = path.join("client/worlds", self.world) + ".json"
         print(f"GameData: {dataUrl}")
@@ -89,7 +91,6 @@ class MainWidget(Widget):
 
         print("Finisched!")
         #################################################################
-
         self.fps = 60
 
         self._keyboard = Window.request_keyboard(self.keyboard_closed, self)
@@ -127,7 +128,6 @@ class MainWidget(Widget):
         if obstacleID or obstacleID == 0:
             obs = self.dict_polygons.get(obstacleID)
             io_obs = self.instanciateObstacle(obs)
-
         elif obstacle:
             obs = obstacle
             io_obs = self.instanciateObstacle(obs)
@@ -157,7 +157,7 @@ class MainWidget(Widget):
 
     def instanciateObstacle(self, obstacle=None):
         if isinstance(obstacle.fill(), Hex):
-        
+            
             if obstacle:
                 self.color = get_color_from_hex(obstacle.fill().value())
                 
@@ -181,7 +181,7 @@ class MainWidget(Widget):
                     io_obstacle = self.dict_circles.get(obstacle.formID())
 
                 elif (
-                    isinstance(obstacle,Polygon)
+                    isinstance(obstacle,Polygon)manage
                     and obstacle.formID() not in self.dict_polygons
                 ):
                     

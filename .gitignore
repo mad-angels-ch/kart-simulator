@@ -7,3 +7,4 @@ kart_simulator.egg-info
 *.out
 *.synctex.gz
 *.pyc
+venv/*
