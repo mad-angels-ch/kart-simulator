@@ -1,1 +1,256 @@
-{"objects":[{"angle":0,"backgroundColor":"","fill":"rgb(0,0,0)","fillRule":"nonzero","flipX":false,"flipY":false,"globalCompositeOperation":"source-over","height":16.67,"left":170,"lge":{"friction":0,"mass":1,"motion":{"angle":{"acceleration":0,"center":{"x":0,"y":0},"type":"none","velocity":0},"vector":{"acceleration":{"x":0,"y":0},"type":"none","velocity":{"x":0,"y":0}}},"placeHolderLabel":"Kart placeholder","placeHolderLabelColor":"#f00","score":0,"version":"1.0.0"},"opacity":1,"originX":"center","originY":"center","paintFirst":"fill","points":[{"x":25,"y":0},{"x":-25,"y":8.333333333333334},{"x":-25,"y":-8.333333333333334}],"scaleX":1,"scaleY":1,"shadow":null,"skewX":0,"skewY":0,"stroke":null,"strokeDashArray":null,"strokeDashOffset":0,"strokeLineCap":"butt","strokeLineJoin":"miter","strokeMiterLimit":4,"strokeUniform":false,"strokeWidth":1,"top":253,"type":"LGEKartPlaceHolder","version":"4.4.0","visible":true,"width":50},{"angle":0,"backgroundColor":"","fill":{"crossOrigin":"","offsetX":0,"offsetY":0,"patternTransform":null,"repeat":"repeat","source":"https://lj44.ch/static/img/finishline.png","type":"pattern"},"fillRule":"nonzero","flipX":false,"flipY":false,"globalCompositeOperation":"source-over","height":200,"left":250,"lge":{"friction":0,"mass":0,"motion":{"angle":{"acceleration":0,"center":{"x":0,"y":0},"type":"none","velocity":0},"vector":{"acceleration":{"x":0,"y":0},"type":"none","velocity":{"x":0,"y":0}}},"score":0,"version":"1.0.0"},"opacity":1,"originX":"center","originY":"center","paintFirst":"fill","points":[{"x":0,"y":0},{"x":20,"y":0},{"x":20,"y":200},{"x":0,"y":200}],"scaleX":1,"scaleY":1,"shadow":null,"skewX":0,"skewY":0,"stroke":null,"strokeDashArray":null,"strokeDashOffset":0,"strokeLineCap":"butt","strokeLineJoin":"miter","strokeMiterLimit":4,"strokeUniform":false,"strokeWidth":1,"top":250,"type":"LGEFinishLine","version":"4.4.0","visible":true,"width":20}],"version":"4.4.0"}
+{
+    "objects": [
+        {
+            "angle": 0,
+            "backgroundColor": "",
+            "fill": "rgb(0,0,0)",
+            "fillRule": "nonzero",
+            "flipX": false,
+            "flipY": false,
+            "globalCompositeOperation": "source-over",
+            "height": 16.67,
+            "left": 170,
+            "lge": {
+                "friction": 0,
+                "mass": 1,
+                "motion": {
+                    "angle": {
+                        "acceleration": 0,
+                        "center": {
+                            "x": 0,
+                            "y": 0
+                        },
+                        "type": "none",
+                        "velocity": 0
+                    },
+                    "vector": {
+                        "acceleration": {
+                            "x": 0,
+                            "y": 0
+                        },
+                        "type": "none",
+                        "velocity": {
+                            "x": 0,
+                            "y": 0
+                        }
+                    }
+                },
+                "placeHolderLabel": "Kart placeholder",
+                "placeHolderLabelColor": "#f00",
+                "score": 0,
+                "version": "1.0.0"
+            },
+            "opacity": 1,
+            "originX": "center",
+            "originY": "center",
+            "paintFirst": "fill",
+            "points": [
+                {
+                    "x": 25,
+                    "y": 0
+                },
+                {
+                    "x": -25,
+                    "y": 8.333333333333334
+                },
+                {
+                    "x": -25,
+                    "y": -8.333333333333334
+                }
+            ],
+            "scaleX": 1,
+            "scaleY": 1,
+            "shadow": null,
+            "skewX": 0,
+            "skewY": 0,
+            "stroke": null,
+            "strokeDashArray": null,
+            "strokeDashOffset": 0,
+            "strokeLineCap": "butt",
+            "strokeLineJoin": "miter",
+            "strokeMiterLimit": 4,
+            "strokeUniform": false,
+            "strokeWidth": 1,
+            "top": 253,
+            "type": "LGEKartPlaceHolder",
+            "version": "4.4.0",
+            "visible": true,
+            "width": 50
+        },
+        {
+            "angle": 0,
+            "backgroundColor": "",
+            "fill": {
+                "crossOrigin": "",
+                "offsetX": 0,
+                "offsetY": 0,
+                "patternTransform": null,
+                "repeat": "repeat",
+                "source": "https://lj44.ch/static/img/finishline.png",
+                "type": "pattern"
+            },
+            "fillRule": "nonzero",
+            "flipX": false,
+            "flipY": false,
+            "globalCompositeOperation": "source-over",
+            "height": 200,
+            "left": 250,
+            "lge": {
+                "friction": 0,
+                "mass": 0,
+                "motion": {
+                    "angle": {
+                        "acceleration": 0,
+                        "center": {
+                            "x": 0,
+                            "y": 0
+                        },
+                        "type": "none",
+                        "velocity": 0
+                    },
+                    "vector": {
+                        "acceleration": {
+                            "x": 0,
+                            "y": 0
+                        },
+                        "type": "none",
+                        "velocity": {
+                            "x": 0,
+                            "y": 0
+                        }
+                    }
+                },
+                "score": 0,
+                "version": "1.0.0"
+            },
+            "opacity": 1,
+            "originX": "center",
+            "originY": "center",
+            "paintFirst": "fill",
+            "points": [
+                {
+                    "x": 0,
+                    "y": 0
+                },
+                {
+                    "x": 20,
+                    "y": 0
+                },
+                {
+                    "x": 20,
+                    "y": 200
+                },
+                {
+                    "x": 0,
+                    "y": 200
+                }
+            ],
+            "scaleX": 1,
+            "scaleY": 1,
+            "shadow": null,
+            "skewX": 0,
+            "skewY": 0,
+            "stroke": null,
+            "strokeDashArray": null,
+            "strokeDashOffset": 0,
+            "strokeLineCap": "butt",
+            "strokeLineJoin": "miter",
+            "strokeMiterLimit": 4,
+            "strokeUniform": false,
+            "strokeWidth": 1,
+            "top": 250,
+            "type": "LGEFinishLine",
+            "version": "4.4.0",
+            "visible": true,
+            "width": 20
+        },
+        {
+            "angle": 310.47,
+            "backgroundColor": "",
+            "fill": {
+                "crossOrigin": "",
+                "offsetX": 0,
+                "offsetY": 0,
+                "patternTransform": null,
+                "repeat": "repeat",
+                "source": "https://lj44.ch/static/img/gates.png",
+                "type": "pattern"
+            },
+            "fillRule": "nonzero",
+            "flipX": false,
+            "flipY": false,
+            "globalCompositeOperation": "source-over",
+            "height": 200,
+            "left": 365,
+            "lge": {
+                "friction": 0,
+                "mass": 0,
+                "motion": {
+                    "angle": {
+                        "acceleration": 0,
+                        "center": {
+                            "x": 0,
+                            "y": 0
+                        },
+                        "type": "none",
+                        "velocity": 0
+                    },
+                    "vector": {
+                        "acceleration": {
+                            "x": 0,
+                            "y": 0
+                        },
+                        "type": "none",
+                        "velocity": {
+                            "x": 0,
+                            "y": 0
+                        }
+                    }
+                },
+                "score": 0,
+                "version": "1.0.0"
+            },
+            "opacity": 1,
+            "originX": "center",
+            "originY": "center",
+            "paintFirst": "fill",
+            "points": [
+                {
+                    "x": 0,
+                    "y": 0
+                },
+                {
+                    "x": 20,
+                    "y": 0
+                },
+                {
+                    "x": 20,
+                    "y": 200
+                },
+                {
+                    "x": 0,
+                    "y": 200
+                }
+            ],
+            "scaleX": 1,
+            "scaleY": 1,
+            "shadow": null,
+            "skewX": 0,
+            "skewY": 0,
+            "stroke": null,
+            "strokeDashArray": null,
+            "strokeDashOffset": 0,
+            "strokeLineCap": "butt",
+            "strokeLineJoin": "miter",
+            "strokeMiterLimit": 4,
+            "strokeUniform": false,
+            "strokeWidth": 1,
+            "top": 186,
+            "type": "LGEGate",
+            "version": "4.4.0",
+            "visible": true,
+            "width": 20
+        }
+    ],
+    "version": "4.4.0"
+}

@@ -13,6 +13,7 @@ from kivy.uix.floatlayout import FloatLayout
 from game.objects.FinishLine import FinishLine
 from game.objects.fill.Hex import Hex
 from game.objects.fill.Pattern import Pattern
+from io_objects.io_Gate import IO_Gates
 from io_objects.io_FinishLine import IO_FinishLine
 from io_objects.io_FilledQuadrilateral import IO_FilledQuadrilateral
 from logging import error, warning
@@ -34,16 +35,16 @@ from kivy.properties import StringProperty
 
 
 class PauseMode(FloatLayout):
-    def __init__(self,width,height, music, **kwargs):
-        
+    def __init__(self, width, height, music, **kwargs):
+
         self.chosen_music = str(music)
         self.width = width
         self.height = height
         super().__init__(**kwargs)
-    
-    def changeMusicSpinnerText(self,text):
+
+    def changeMusicSpinnerText(self, text):
         self.chosen_music = text
-        
+
     def generateMusicsList(self):
         music_list = list(music[:-4] for music in listdir("client/sounds/music"))
         music_list.append("No music")
@@ -53,27 +54,27 @@ class PauseMode(FloatLayout):
 Builder.load_file("layouts.kv")
 
 
-
 class MainWidget(Widget):
     from user_actions import (
-    keyboard_closed,
-    on_keyboard_down,
-    # on_touch_up,
-    on_keyboard_up,
-    # on_touch_down,
+        keyboard_closed,
+        on_keyboard_down,
+        # on_touch_up,
+        on_keyboard_up,
+        # on_touch_down,
     )
+
     dict_polygons = dict()
     dict_circles = dict()
+    dict_gates = dict()
     dict_finishLines = dict()
     dict_FilledQuadrilaterals = dict()
     kart_ID = 0
-    
-    
-    def __init__(self,world=None, parentScreen=None, **kwargs):
+
+    def __init__(self, world=None, parentScreen=None, **kwargs):
         super().__init__(**kwargs)
         self.world = world
         self.parentScreen = parentScreen
-        if isinstance(self.world,StringProperty):
+        if isinstance(self.world, StringProperty):
             self.world = "2triangles"
         # io_obstacle = IO_FinishLine()
         # self.canvas.add(io_obstacle)
@@ -100,15 +101,14 @@ class MainWidget(Widget):
         self.my_clock = Clock
         self.my_clock.schedule_interval(self.theGame.nextFrame, 1 / self.fps)
 
-        
         self.play = True
-        
+
     def clear(self):
         print("LEAVED")
         self.canvas.clear()
         if self.play:
             self.my_clock.unschedule(self.theGame.nextFrame)
-            
+
     def change_gameState(self):
         if self.play:
             # self.pause()
@@ -116,9 +116,6 @@ class MainWidget(Widget):
         else:
             # self.resume()
             self.parent.parent.resumeGame()
-
-        
-        
 
     def output(self, objects: List[game.objects.Object]):
         for object in objects:
@@ -132,37 +129,34 @@ class MainWidget(Widget):
             obs = obstacle
             io_obs = self.instanciateObstacle(obs)
 
-        if isinstance(obs,Circle):
+        if isinstance(obs, Circle):
             new_pos = obs.center()
 
-        elif isinstance(obs,Polygon):
+        elif isinstance(obs, Polygon):
             new_pos = obs.vertices()
 
         io_obs.updatePosition(newPos=new_pos)
-        
 
-# Les changements de couleurs des obstacles ne sont pour l'isntant pas supportés
-        # if (
-        #     obs.fill().value() != io_obs.color
-        # ):  # En cas de changement de couleur de l'obstacle, kivy nous oblige à le redessiner
-        #     self.canvas.remove(io_obs)
-        #     if isinstance(obs,Circle):
-        #         self.dict_circles.pop(obs.formID())
-        #     elif isinstance(obs,Polygon):
-        #         self.dict_polygons.pop(obs.formID())
-                
-        #     self.instanciateObstacle(obstacle=obs)
+    # Les changements de couleurs des obstacles ne sont pour l'isntant pas supportés
+    # if (
+    #     obs.fill().value() != io_obs.color
+    # ):  # En cas de changement de couleur de l'obstacle, kivy nous oblige à le redessiner
+    #     self.canvas.remove(io_obs)
+    #     if isinstance(obs,Circle):
+    #         self.dict_circles.pop(obs.formID())
+    #     elif isinstance(obs,Polygon):
+    #         self.dict_polygons.pop(obs.formID())
 
-
+    #     self.instanciateObstacle(obstacle=obs)
 
     def instanciateObstacle(self, obstacle=None):
         if isinstance(obstacle.fill(), Hex):
-            
+
             if obstacle:
                 self.color = get_color_from_hex(obstacle.fill().value())
-                
+
                 if (
-                    isinstance(obstacle,Circle)
+                    isinstance(obstacle, Circle)
                     and obstacle.formID() not in self.dict_circles
                 ):
                     with self.canvas:
@@ -177,11 +171,11 @@ class MainWidget(Widget):
                     self.canvas.add(io_obstacle)
                     self.dict_circles[obstacle.formID()] = io_obstacle
 
-                elif isinstance(obstacle,Circle):
+                elif isinstance(obstacle, Circle):
                     io_obstacle = self.dict_circles.get(obstacle.formID())
 
                 elif (
-                    isinstance(obstacle,Polygon)
+                    isinstance(obstacle, Polygon)
                     and obstacle.formID() not in self.dict_polygons
                 ):
                     if type(obstacle).__name__ == "Kart":
@@ -198,26 +192,40 @@ class MainWidget(Widget):
                     self.canvas.add(io_obstacle)
                     self.dict_polygons[obstacle.formID()] = io_obstacle
 
-                elif isinstance(obstacle,Polygon):
+                elif isinstance(obstacle, Polygon):
                     io_obstacle = self.dict_polygons.get(obstacle.formID())
                 return io_obstacle
-            
+
         elif isinstance(obstacle.fill(), Pattern):
             if len(obstacle) == 4:
-                if type(obstacle).__name__ == "FinishLine":
+                if type(obstacle).__name__ == "Gate":
                     with self.canvas:
-                        io_obstacle = IO_FinishLine(summitsBeforeRotation=obstacle.verticesBeforeRotation(), angle=obstacle.angle())
+                        io_obstacle = IO_Gates(
+                            summitsBeforeRotation=obstacle.verticesBeforeRotation(),
+                            angle=obstacle.angle(),
+                        )
+                    self.dict_gates[obstacle.formID()] = io_obstacle
+                elif type(obstacle).__name__ == "FinishLine":
+                    with self.canvas:
+                        io_obstacle = IO_FinishLine(
+                            summitsBeforeRotation=obstacle.verticesBeforeRotation(),
+                            angle=obstacle.angle(),
+                        )
                     self.dict_finishLines[obstacle.formID()] = io_obstacle
                 else:
                     warning("TO BE IMPLEMENTED")
                     source = obstacle.sourceImage
                     with self.canvas:
-                        io_obstacle = IO_FilledQuadrilateral(summitsBeforeRotation=obstacle.verticesBeforeRotation(), source = source, angle=obstacle.angle())
+                        io_obstacle = IO_FilledQuadrilateral(
+                            summitsBeforeRotation=obstacle.verticesBeforeRotation(),
+                            source=source,
+                            angle=obstacle.angle(),
+                        )
                     self.dict_FilledQuadrilaterals[obstacle.formID()] = io_obstacle
             else:
                 raise "Only quadrilaterals can be filled with a pattern"
-            
+
             return io_obstacle
-        
+
         else:
             raise "Unsupported color type"
