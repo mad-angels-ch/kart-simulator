@@ -5,19 +5,28 @@ import math
 import lib
 
 class IO_FilledQuadrilateral(Rectangle):
-    def __init__(self, summitsBeforeRotation, source: str, angle = 0):
+    def __init__(self, source: str, summitsBeforeRotation = None, width = 0, height = 0, center = None, angle = 0):
 
         self._source = source
-        self._vertices = summitsBeforeRotation
         self._angle = angle*180/math.pi
-        self.get_posFromVertices()
-        self.get_sizeFromVertices()
-        
-        
-        self.pos_x, self.pos_y = self.get_posFromVertices()
-        self.size_x, self.size_y = self.get_sizeFromVertices()
-        self.center = self.get_center()
-        
+
+        if summitsBeforeRotation:
+            self._vertices = summitsBeforeRotation
+            self.get_posFromVertices()
+            self.get_sizeFromVertices()
+            
+            self.pos_x, self.pos_y = self.get_posFromVertices()
+            self.size_x, self.size_y = self.get_sizeFromVertices()
+            self.center = self.get_center()
+
+        elif width and height and center:
+            self.pos_x, self.pos_y = center[0]-width/2, center[1]-height/2
+            self.size_x, self.size_y = width, height
+            self.center = (center[0], center[1])
+
+
+        else:
+            raise "Not enough enformations given to create the filled quadrilateral"
         
         PushMatrix()
         Rotate(origin=(self.center[0],self.center[1]), angle=self.angle())
@@ -25,7 +34,7 @@ class IO_FilledQuadrilateral(Rectangle):
         PopMatrix()
         
     def get_abscissasAndOrdinates(self):
-        return ([point[0] for point in self.vertices],[point[1] for point in self.vertices])
+        return ([point[0] for point in self._vertices],[point[1] for point in self._vertices])
 
     def get_posFromVertices(self):
         return (min(self.get_abscissasAndOrdinates()[0]),min(self.get_abscissasAndOrdinates()[1]))
@@ -42,9 +51,9 @@ class IO_FilledQuadrilateral(Rectangle):
     
     def updatePosition(self, newPos: list = None):
         pass
-
+    
     def source(self):
         return self._source
-
+    
     def angle(self):
         return self._angle
