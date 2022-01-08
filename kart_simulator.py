@@ -181,10 +181,9 @@ class MainWidget(Widget):
                     io_obstacle = self.dict_circles.get(obstacle.formID())
 
                 elif (
-                    isinstance(obstacle,Polygon)manage
+                    isinstance(obstacle,Polygon)
                     and obstacle.formID() not in self.dict_polygons
                 ):
-                    
                     if type(obstacle).__name__ == "Kart":
                         self.kart_ID = obstacle.formID()
                         with self.canvas:
