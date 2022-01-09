@@ -243,7 +243,7 @@
         size_hint: 1, .2
         text: "Update the worlds now (this may take several minutes)"
         on_press:
-            self.generateUpdatedWorldsList(updateWorlds_output_id, root.parent.parent.manager.get_screen("MainMenu").children[0].ids.worlds_spinner_id),
+            self.generateUpdatedWorldsList(updateWorlds_output_id, app.manager.get_screen("MainMenu").children[0].ids.worlds_spinner_id),
             app.ButtonSound()
 
     Label:
