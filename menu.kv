@@ -68,6 +68,12 @@
         on_press: app.manager.push("Controls"), app.ButtonSound()
 
     Button:
+        pos_hint: {'x':0,'y':.7}
+        size_hint: .2, .05
+        text: "Update the worlds"
+        on_press: app.manager.push("UpdateWorlds"), app.ButtonSound()
+
+    Button:
         pos_hint: {'x':.3,'y':.3}
         size_hint: .4, .3
         text: "Play"
@@ -155,6 +161,11 @@
         BoxLayoutWithActionBar:
             title: "Controls of the game"
             Controls:
+    Screen:
+        name: "UpdateWorlds"
+        BoxLayoutWithActionBar:
+            title: "Update the worlds"
+            UpdateWorlds:    
 
 
 
@@ -208,6 +219,42 @@
         canvas.before:
             Color:
                 rgba: .8,.4,.2,1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+  
+<UpdateWorlds@BoxLayout>:
+    orientation: "vertical"
+
+    Label:
+        bold: True
+        text: "Update the worlds"
+        font_size: 32
+        color: .8,.4,.2,1 # <-----------
+        size_hint: 1,.1
+        canvas.before:
+            Color:
+                rgba: 0, 0, 0, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+    UpdateWorldButton:
+        size_hint: 1, .2
+        text: "Update the worlds now (this may take several minutes)"
+        on_press:
+            self.generateUpdatedWorldsList(updateWorlds_output_id, root.parent.parent.manager.get_screen("MainMenu").children[0].ids.worlds_spinner_id),
+            app.ButtonSound()
+
+    Label:
+        id: updateWorlds_output_id
+        text: ""
+        font_size: 16
+        color: 1,1,1,1 # <-----------
+        size_hint: 1,.9
+        canvas.before:
+            Color:
+                rgba: 0,0,0,1
             Rectangle:
                 pos: self.pos
                 size: self.size
