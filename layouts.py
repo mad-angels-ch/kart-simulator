@@ -163,7 +163,9 @@ class PreView(Widget):
                         path.join("client/worlds", world) + ".json"
                     )
                     app = App.get_running_app()
-                    self.theGame = game.Game(self.dataUrl, [], OutputFactory(self))
+                    self.theGame = game.Game(
+                        self.dataUrl, [], OutputFactory(self, scale=3)
+                    )
                     with self.canvas.before:
                         Color(rgba=(1, 1, 1, 1))
                         Rectangle(pos=(0, 0), size=(200, 200))

@@ -34,6 +34,9 @@ from kivy.properties import Clock
 from kivy.properties import StringProperty
 
 
+from client.output import OutputFactory
+
+
 class PauseMode(FloatLayout):
     def __init__(self, width, height, music, **kwargs):
 
@@ -86,9 +89,13 @@ class MainWidget(Widget):
 
         from game.objects import Circle, Object
         from lib import Point
+
         app = App.get_running_app()
         try:
-            self.theGame = game.Game(dataUrl, self.eventsList, self.output)
+            # self.theGame = game.Game(dataUrl, self.eventsList, self.output)
+            self.theGame = game.Game(
+                dataUrl, self.eventsList, OutputFactory(self, scale=1)
+            )
             self._gates: Dict[int, Gate] = {}
 
             print("Starting ...")
@@ -106,12 +113,10 @@ class MainWidget(Widget):
             self.my_clock.schedule_interval(self.theGame.nextFrame, 1 / self.fps)
 
             self.play = True
-            
+
         except ObjectCountError as OCE:
             app.changeLabelText(OCE.message())
-            
-            
-            
+
     def clear(self):
         print("LEAVED")
         self.canvas.clear()
@@ -144,12 +149,12 @@ class MainWidget(Widget):
         if isinstance(obs, Circle):
             new_pos = obs.center()
 
-        elif isinstance(obs,Polygon):
+        elif isinstance(obs, Polygon):
             if type(obs).__name__ == "Kart":
                 self.canvas.remove(io_obs)
                 self.dict_polygons.pop(obs.formID())
                 io_obs = self.instanciateObstacle(obstacle=obs)
-                new_pos=None
+                new_pos = None
             else:
                 new_pos = obs.vertices()
 
@@ -182,7 +187,7 @@ class MainWidget(Widget):
             % numberOfGates
         )
         self.parent.parent.ids.gates_id.text = f"{gatesPassed}/{numberOfGates}"
-        
+
     def instanciateObstacle(self, obstacle=None):
         if isinstance(obstacle.fill(), Hex):
 
@@ -215,8 +220,14 @@ class MainWidget(Widget):
                     if type(obstacle).__name__ == "Kart":
                         self.kart_ID = obstacle.formID()
                         with self.canvas:
-                            Color(rgba=(1,1,1,1))
-                            io_obstacle = IO_FilledQuadrilateral(height=16,width=50,center=obstacle.center(), source="client/Images/kartInGame.jpg", angle=obstacle.angle())
+                            Color(rgba=(1, 1, 1, 1))
+                            io_obstacle = IO_FilledQuadrilateral(
+                                height=16,
+                                width=50,
+                                center=obstacle.center(),
+                                source="client/Images/kartInGame.jpg",
+                                angle=obstacle.angle(),
+                            )
                         self.dict_polygons[obstacle.formID()] = io_obstacle
                     else:
                         with self.canvas:
