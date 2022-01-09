@@ -31,7 +31,6 @@ def output(self, objects) -> None:
                 #     io_obstacle = self.dict_circles.get(obstacle.formID())
 
                 elif isinstance(obstacle, game_objects.Polygon):
-                    print(obstacle.formID())
                     if type(obstacle).__name__ == "Kart":
                         self.kart_ID = obstacle.formID()
                         with self.canvas:
