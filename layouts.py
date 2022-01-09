@@ -1,4 +1,4 @@
-import requests, json
+import requests, json, os
 
 from kivy.core.audio import SoundLoader
 from kivy.uix.button import Button
@@ -110,7 +110,7 @@ class KS_screen(Screen):
 
 
 from kart_simulator import game, path, Rectangle, Color
-from os import path, listdir
+from os import path, listdir, write
 from posixpath import abspath
 from re import S
 import time
@@ -200,13 +200,52 @@ class MainMenu2(FloatLayout):
         self.chosen_music = text
 
     def generateWorldsList(self):
-        for world in json.loads(
-            requests.get("https://lj44.ch/creator/kart/worldsjson").text
-        ):
-            with open(f"client/worlds/{world['name']}.json", "w", encoding="utf8") as f:
-                f.write(world["fabric"])
+        # for world in json.loads(
+        #     requests.get("https://lj44.ch/creator/kart/worldsjson").text
+        # ):
+        #     with open(f"client/worlds/{world['name']}.json", "w", encoding="utf8") as f:
+        #         f.write(world["fabric"])
+        worldsInfo = {}
+        for world in requests.get(
+            "https://lj44.ch/creator/kart/worldsjson",
+            {"id": True, "version": True, "name": True},
+        ).json():
+            worldsInfo[world["name"]] = {"id": world["id"], "version": world["version"]}
+        with open("client/worlds.json", "r") as f:
+            savedWorld = json.load(f)
+            # mise à jour des mondes déjà téléchargés
+            for name, data in savedWorld.items():
+                if name in worldsInfo:
+                    if data["version"] != worldsInfo[name]["version"]:
+                        print(f"Mise à jour du monde {name} ...", end="")
+                        with open(f"client/worlds/{name}.json", "w") as worldJSON:
+                            worldJSON.write(
+                                requests.get(
+                                    f"https://lj44.ch/creator/kart/worlds/{worldsInfo[name]['id']}/fabric"
+                                ).text
+                            )
+                        print("fait!")
+                        data["version"] = worldsInfo[name]["version"]
+                else:
+                    print(f"Suppression du monde {name} ... ", end="")
+                    os.remove(f"client/worlds/{name}.json")
+                    print("fait!")
+            # téléchargement des autres
+            for name, data in worldsInfo.items():
+                if name not in savedWorld:
+                    print(f"Téléchargement du monde {name} ... ", end="")
+                    with open(f"client/worlds/{name}.json", "w") as worldJSON:
+                        worldJSON.write(
+                            requests.get(
+                                f"https://lj44.ch/creator/kart/worlds/{worldsInfo[name]['id']}/fabric"
+                            ).text
+                        )
+                    print("fait!")
 
-        return list(world[:-5] for world in listdir("client/worlds"))
+        with open("client/worlds.json", "w") as f:
+            json.dump(worldsInfo, f)
+
+        return [world[:-5] for world in listdir("client/worlds")]
 
     def generateMusicsList(self):
         music_list = list(music[:-4] for music in listdir("client/sounds/music"))
