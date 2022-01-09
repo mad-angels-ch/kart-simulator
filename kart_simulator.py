@@ -136,10 +136,6 @@ class MainWidget(Widget):
         if isinstance(obs, Circle):
             new_pos = obs.center()
 
-<<<<<<< HEAD
-        elif isinstance(obs, Polygon):
-            new_pos = obs.vertices()
-=======
         elif isinstance(obs,Polygon):
             if type(obs).__name__ == "Kart":
                 self.canvas.remove(io_obs)
@@ -148,7 +144,6 @@ class MainWidget(Widget):
                 new_pos=None
             else:
                 new_pos = obs.vertices()
->>>>>>> master
 
             if isinstance(obs, FinishLine):
                 self.updateLapsCount(obs)
