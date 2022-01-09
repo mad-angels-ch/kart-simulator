@@ -194,7 +194,7 @@ class MainWidget(Widget):
                         self.kart_ID = obstacle.formID()
                         with self.canvas:
                             Color(rgba=(1,1,1,1))
-                            io_obstacle = IO_FilledQuadrilateral(height=16,width=50,center=obstacle.center(), source="client/Images/kartInGame1.png", angle=obstacle.angle())
+                            io_obstacle = IO_FilledQuadrilateral(height=16,width=50,center=obstacle.center(), source="client/Images/kartInGame.jpg", angle=obstacle.angle())
                         self.dict_polygons[obstacle.formID()] = io_obstacle
                     else:
                         with self.canvas:
