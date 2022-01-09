@@ -6,7 +6,7 @@ import lib
 
 
 class IO_Gates(Rectangle):
-    def __init__(self, summitsBeforeRotation, angle=0):
+    def __init__(self, summitsBeforeRotation, angle=0, scale = 1):
 
         self._source = "client/Images/gates.png"
         self._vertices = summitsBeforeRotation
@@ -14,8 +14,8 @@ class IO_Gates(Rectangle):
         self.get_posFromVertices()
         self.get_sizeFromVertices()
 
-        self.pos_x, self.pos_y = self.get_posFromVertices()
-        self.size_x, self.size_y = self.get_sizeFromVertices()
+        self.pos_x, self.pos_y = self.get_posFromVertices()[0]/scale, self.get_posFromVertices()[1]/scale 
+        self.size_x, self.size_y = self.get_sizeFromVertices()[0]/scale,self.get_sizeFromVertices()[1]/scale
         self.center = self.get_center()
 
         PushMatrix()
