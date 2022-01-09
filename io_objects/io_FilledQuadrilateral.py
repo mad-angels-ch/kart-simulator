@@ -31,6 +31,7 @@ class IO_FilledQuadrilateral(Rectangle):
         PushMatrix()
         Rotate(origin=(self.center[0],self.center[1]), angle=self.angle())
         Rectangle.__init__(self,source=self.source(),pos=(self.pos_x,self.pos_y),size=(self.size_x,self.size_y))
+        # Rectangle.__init__(self,pos=(self.pos_x,self.pos_y),size=(self.size_x,self.size_y))
         PopMatrix()
         
     def get_abscissasAndOrdinates(self):
