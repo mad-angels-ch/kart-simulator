@@ -34,6 +34,8 @@ from kivy.graphics import Rectangle, Color
 from kivy.properties import Clock
 from kivy.properties import StringProperty
 
+class EndGameMode(FloatLayout):
+    pass
 
 class PauseMode(FloatLayout):
     def __init__(self, width, height, music, **kwargs):
@@ -50,6 +52,7 @@ class PauseMode(FloatLayout):
         music_list = list(music[:-4] for music in listdir("client/sounds/music"))
         music_list.append("No music")
         return music_list
+
 
 
 Builder.load_file("layouts.kv")
@@ -87,14 +90,14 @@ class MainWidget(Widget):
 
         from game.objects import Circle, Object
         from lib import Point
-        app = App.get_running_app()
+        self.app = App.get_running_app()
         try:
             self.theGame = game.Game(dataUrl, self.eventsList, self.output)
             self._gates: Dict[int, Gate] = {}
 
             print("Starting ...")
-            app.manager.add_widget(self.parentScreen)
-            app.start_ks()
+            self.app.manager.add_widget(self.parentScreen)
+            self.app.start_ks()
             print("Finisched!")
             #################################################################
             self.fps = 60
@@ -105,7 +108,7 @@ class MainWidget(Widget):
 
             
         except ObjectCountError as OCE:
-            app.changeLabelText(OCE.message())
+            self.app.changeLabelText(OCE.message())
             
             
             
@@ -176,7 +179,10 @@ class MainWidget(Widget):
 
     def updateLapsCount(self, finishLine: FinishLine) -> None:
         """Met l'affichage du nombre de tours terminés à jour"""
-        self.parent.parent.ids.laps_id.text = f"{finishLine.passagesCount(self.kart_ID)}/{finishLine.numberOfLapsRequired()}"
+        if finishLine.completedAllLaps(self.kart_ID):
+            self.parentScreen.end_game()
+        else:
+            self.parent.parent.ids.laps_id.text = f"{finishLine.passagesCount(self.kart_ID)}/{finishLine.numberOfLapsRequired()}"
 
     def updateGatesCount(self, gatesList: List[Gate]) -> None:
         """Met l'affiche du nombre de portillons (du tour) franchis à jour"""
