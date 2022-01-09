@@ -153,7 +153,7 @@ class MainWidget(Widget):
     #     self.instanciateObstacle(obstacle=obs)
 
     def displayScore(self, finishLine: FinishLine) -> None:
-        pass
+        self.parent.parent.ids.laps_id.text = f"{finishLine.passagesCount(self.kart_ID)}/{finishLine.numberOfLapsRequired()}"
 
     def instanciateObstacle(self, obstacle=None):
         if isinstance(obstacle.fill(), Hex):
