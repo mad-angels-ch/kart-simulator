@@ -1,4 +1,4 @@
-import requests, json, os
+import requests, json, os, threading
 
 from kivy.core.audio import SoundLoader
 from kivy.uix.button import Button
@@ -10,6 +10,7 @@ from kart_simulator import MainWidget, PauseMode
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import StringProperty, ObjectProperty
+from kivy.core.audio import SoundLoader
 from kivy.uix.dropdown import DropDown
 from action_bar import BoxLayoutWithActionBar
 
@@ -200,8 +201,33 @@ class MainMenu2(FloatLayout):
         self.chosen_music = text
 
     def generateWorldsList(self):
-        print(
-            "Mise à jour des mondes, cette opération peut prendre plusieurs minutes ..."
+        return [world[:-5] for world in listdir("client/worlds")]
+
+    def generateMusicsList(self):
+        music_list = list(music[:-4] for music in listdir("client/sounds/music"))
+        music_list.append("No music")
+        return music_list
+
+
+class UpdateWorldButton(Button):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self._updating = False
+
+    def generateUpdatedWorldsList(self, updateWorlds_output, worlds_spinner):
+        """Met à jour les donnés des mondes et met l'affichage à jour"""
+        if self._updating:
+            self.text = "It's already updating!"
+        else:
+            self._updating = True
+            threading.Thread(
+                target=self.generateUpdatedWorldsListTask,
+                args=(updateWorlds_output, worlds_spinner),
+            ).start()
+
+    def generateUpdatedWorldsListTask(self, updateWorlds_output, worlds_spinner):
+        updateWorlds_output.text = (
+            "\nUpdating the worlds (this may take several minutes) ...\n"
         )
         worldsInfo = {}
         for world in requests.get(
@@ -215,41 +241,41 @@ class MainMenu2(FloatLayout):
             for name, data in savedWorld.items():
                 if name in worldsInfo:
                     if data["version"] != worldsInfo[name]["version"]:
-                        print(f"Mise à jour du monde {name} ...", end="")
+                        updateWorlds_output.text += f"Updating world {name} ..."
                         with open(f"client/worlds/{name}.json", "w") as worldJSON:
                             worldJSON.write(
                                 requests.get(
                                     f"https://lj44.ch/creator/kart/worlds/{worldsInfo[name]['id']}/fabric"
                                 ).text
                             )
-                        print("fait!")
+                        updateWorlds_output.text += "done!\n"
                         data["version"] = worldsInfo[name]["version"]
                 else:
-                    print(f"Suppression du monde {name} ... ", end="")
+                    updateWorlds_output.text += f"Deleting world {name} ... "
                     os.remove(f"client/worlds/{name}.json")
-                    print("fait!")
+                    updateWorlds_output.text += "done!\n"
             # téléchargement des autres
             for name, data in worldsInfo.items():
                 if name not in savedWorld:
-                    print(f"Téléchargement du monde {name} ... ", end="")
+                    updateWorlds_output.text += f"Downloading world {name} ... "
                     with open(f"client/worlds/{name}.json", "w") as worldJSON:
                         worldJSON.write(
                             requests.get(
                                 f"https://lj44.ch/creator/kart/worlds/{worldsInfo[name]['id']}/fabric"
                             ).text
                         )
-                    print("fait!")
+                    updateWorlds_output.text += "done!\n"
 
         with open("client/worlds.json", "w") as f:
             json.dump(worldsInfo, f)
 
-        print("Tous les mondes sont à jour!")
-        return [world[:-5] for world in listdir("client/worlds")]
-
-    def generateMusicsList(self):
-        music_list = list(music[:-4] for music in listdir("client/sounds/music"))
-        music_list.append("No music")
-        return music_list
+        worlds_spinner.values = [world[:-5] for world in listdir("client/worlds")]
+        updateWorlds_output.text += "All worlds are up to date!"
+        self._updating = False
+        self.text = "Update the worlds now (this may take several minutes)"
+        sound = SoundLoader.load('client/sounds/success-sound-effect.mp3')
+        sound.volume = 0.25
+        sound.play()
 
 
 ##########################################################################
