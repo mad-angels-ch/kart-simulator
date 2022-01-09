@@ -76,6 +76,7 @@ class KS_screen(Screen):
             width=Window.width, height=Window.height, music=self.musicName
         )
         self.add_widget(self.pauseMenu)
+        
     def endGameMode(self):
         if self.musicName:
             self.pauseMusic()
@@ -84,12 +85,13 @@ class KS_screen(Screen):
         self.game.my_clock.unschedule(self.game.theGame.nextFrame)
         self.endGameMenu = EndGameMode()
         self.add_widget(self.endGameMenu)
+        
     def begin_game(self,dt):
-        self.layout_id.remove_widget(self.start_button)
         self.layout_id.remove_widget(self.image3)
         self.game.start_theGame()
         
     def startingAnimation(self, instance):
+        self.layout_id.remove_widget(self.start_button)
         self.image3 = Image(source='client/Images/3210.gif', size_hint=(.5,.5 ),pos_hint={'center_x': .35, 'center_y': .35}, keep_ratio= False,allow_stretch= True)
         self.layout_id.add_widget(self.image3)
         Clock.schedule_once(self.begin_game, 5)
