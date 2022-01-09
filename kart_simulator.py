@@ -135,6 +135,9 @@ class MainWidget(Widget):
         elif isinstance(obs, Polygon):
             new_pos = obs.vertices()
 
+            if isinstance(obs, FinishLine):
+                self.displayScore(obs)
+
         io_obs.updatePosition(newPos=new_pos)
 
     # Les changements de couleurs des obstacles ne sont pour l'isntant pas supportés
@@ -148,6 +151,9 @@ class MainWidget(Widget):
     #         self.dict_polygons.pop(obs.formID())
 
     #     self.instanciateObstacle(obstacle=obs)
+
+    def displayScore(self, finishLine: FinishLine) -> None:
+        pass
 
     def instanciateObstacle(self, obstacle=None):
         if isinstance(obstacle.fill(), Hex):

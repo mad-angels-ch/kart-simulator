@@ -134,6 +134,36 @@
         #         pos: self.pos  # incorrect
         #         size: self.size
 
+    GridLayout:
+        cols: 2
+        rows: 3
+        pos_hint: {'x': .45, 'y': .9}
+        size_hint: .1, .1
+        canvas.before:
+            Color:
+                rgba: 0,0,0,1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Label:
+            text: "Laps"
+            color: 0.4, 1, 0.4, 1
+
+        Label:
+            id: laps_id
+            text: "0/1"
+            color: 0.4, 1, 0.4, 1
+
+        Label:
+            text: "Gates"
+            color: 0.4, 1, 0.4, 1
+
+        Label:
+            id: gates_id
+            text: "0/2"
+            color: 0.4, 1, 0.4, 1
+
 
 
 <MyScreenManager>:
