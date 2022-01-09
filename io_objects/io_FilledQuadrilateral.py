@@ -5,7 +5,7 @@ import math
 import lib
 
 class IO_FilledQuadrilateral(Rectangle):
-    def __init__(self, source: str, summitsBeforeRotation = None, width = 0, height = 0, center = None, angle = 0):
+    def __init__(self, source: str, summitsBeforeRotation = None, width = 0, height = 0, center = None, angle = 0, scale = 1):
 
         self._source = source
         self._angle = angle*180/math.pi
@@ -15,14 +15,14 @@ class IO_FilledQuadrilateral(Rectangle):
             self.get_posFromVertices()
             self.get_sizeFromVertices()
             
-            self.pos_x, self.pos_y = self.get_posFromVertices()
-            self.size_x, self.size_y = self.get_sizeFromVertices()
-            self.center = self.get_center()
+            self.pos_x, self.pos_y = self.get_posFromVertices()[0]/scale, self.get_posFromVertices()[1]/scale 
+            self.size_x, self.size_y = self.get_sizeFromVertices()[0]/scale,self.get_sizeFromVertices()[1]/scale
+            self.center = (self.get_center()[0]/scale,self.get_center()[1]/scale)
 
         elif width and height and center:
-            self.pos_x, self.pos_y = center[0]-width/2, center[1]-height/2
-            self.size_x, self.size_y = width, height
-            self.center = (center[0], center[1])
+            self.pos_x, self.pos_y = (center[0]-width/2)/scale, (center[1]-height/2)/scale
+            self.size_x, self.size_y = width/scale, height/scale
+            self.center = (center[0]/scale, center[1]/scale)
 
 
         else:
