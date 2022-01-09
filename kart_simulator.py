@@ -144,8 +144,14 @@ class MainWidget(Widget):
         if isinstance(obs, Circle):
             new_pos = obs.center()
 
-        elif isinstance(obs, Polygon):
-            new_pos = obs.vertices()
+        elif isinstance(obs,Polygon):
+            if type(obs).__name__ == "Kart":
+                self.canvas.remove(io_obs)
+                self.dict_polygons.pop(obs.formID())
+                io_obs = self.instanciateObstacle(obstacle=obs)
+                new_pos=None
+            else:
+                new_pos = obs.vertices()
 
             if isinstance(obs, FinishLine):
                 self.updateLapsCount(obs)
@@ -208,17 +214,18 @@ class MainWidget(Widget):
                 ):
                     if type(obstacle).__name__ == "Kart":
                         self.kart_ID = obstacle.formID()
-                    #     with self.canvas:
-                    #         Color(rgba=(1,1,1,1))
-                    #         io_obstacle = IO_FilledQuadrilateral(height=50,width=100,center=(200,100), source="client/Images/kartInGame.png", angle=obstacle.angle())
-                    # else:
-                    with self.canvas:
-                        Color(rgba=self.color)
-                    io_obstacle = IO_Polygon(
-                        summits=obstacle.vertices(), couleur=obstacle.fill().value()
-                    )
-                    self.canvas.add(io_obstacle)
-                    self.dict_polygons[obstacle.formID()] = io_obstacle
+                        with self.canvas:
+                            Color(rgba=(1,1,1,1))
+                            io_obstacle = IO_FilledQuadrilateral(height=16,width=50,center=obstacle.center(), source="client/Images/kartInGame.jpg", angle=obstacle.angle())
+                        self.dict_polygons[obstacle.formID()] = io_obstacle
+                    else:
+                        with self.canvas:
+                            Color(rgba=self.color)
+                        io_obstacle = IO_Polygon(
+                            summits=obstacle.vertices(), couleur=obstacle.fill().value()
+                        )
+                        self.canvas.add(io_obstacle)
+                        self.dict_polygons[obstacle.formID()] = io_obstacle
 
                 elif isinstance(obstacle, Polygon):
                     io_obstacle = self.dict_polygons.get(obstacle.formID())
