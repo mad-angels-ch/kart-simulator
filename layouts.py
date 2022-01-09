@@ -1,4 +1,5 @@
 from logging import warning
+from kivy.clock import Clock
 import requests, json, os, threading
 
 from kivy.core.audio import SoundLoader
@@ -20,7 +21,7 @@ from kivy.uix.dropdown import DropDown
 from action_bar import BoxLayoutWithActionBar
 from game.objects.fill.Hex import Hex
 from game.objects.fill.Pattern import Pattern
-
+from kivy.uix.image import Image
 #################### Gestion des différents screens ###################
 
 
@@ -55,7 +56,10 @@ class KS_screen(Screen):
         self.world = world
         self.game = MainWidget(self.world, self)
         self.layout_id.add_widget(self.game)
-
+        self.start_button = Button(text="start The game!", size_hint=(.25,.1 ))
+        self.start_button.bind(on_press=self.startingAnimation)
+        self.layout_id.add_widget(self.start_button)
+        
     def quit(self):
         self.game.clear()
 
@@ -69,7 +73,20 @@ class KS_screen(Screen):
             width=Window.width, height=Window.height, music=self.musicName
         )
         self.add_widget(self.pauseMenu)
+        
+    def begin_game(self,de):
+        self.layout_id.remove_widget(self.start_button)
+        self.layout_id.remove_widget(self.image3)
+        self.game.start_theGame()
+        
+    def startingAnimation(self, instance):
+        self.image3 = Image(source='client/Images/3210.gif', size_hint=(.5,.5 ),pos_hint={'center_x': .35, 'center_y': .35}, keep_ratio= False,allow_stretch= True)
+        self.layout_id.add_widget(self.image3)
+        Clock.schedule_once(self.begin_game, 5)
 
+
+        
+        
     def resumeGame(self, new_music):
         self.resumeMusic()
 

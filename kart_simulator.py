@@ -10,6 +10,7 @@ from kivy.core.window import Window
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.label import Label
 from game.objects.FinishLine import FinishLine
 from game.objects.ObjectFactory import ObjectCountError
 from game.objects.fill.Hex import Hex
@@ -102,10 +103,6 @@ class MainWidget(Widget):
             self._keyboard.bind(on_key_down=self.on_keyboard_down)
             self._keyboard.bind(on_key_up=self.on_keyboard_up)
 
-            self.my_clock = Clock
-            self.my_clock.schedule_interval(self.theGame.nextFrame, 1 / self.fps)
-
-            self.play = True
             
         except ObjectCountError as OCE:
             app.changeLabelText(OCE.message())
@@ -125,6 +122,13 @@ class MainWidget(Widget):
         else:
             # self.resume()
             self.parent.parent.resumeGame()
+            
+    def start_theGame(self):
+        self.my_clock = Clock
+        self.my_clock.schedule_interval(self.theGame.nextFrame, 1 / self.fps)
+
+        self.play = True
+
 
     def output(self, objects: List[game.objects.Object]):
         for object in objects:
