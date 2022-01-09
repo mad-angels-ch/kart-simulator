@@ -2,6 +2,7 @@ from logging import warning
 from kivy.clock import Clock
 import requests, json, os, threading
 
+from kivy.app import App
 from kivy.core.audio import SoundLoader
 from kivy.uix.button import Button
 from kivy.uix.label import Label
@@ -12,7 +13,7 @@ from game.objects.ObjectFactory import ObjectCountError
 from io_objects.io_FilledQuadrilateral import IO_FilledQuadrilateral
 from io_objects.io_FinishLine import IO_FinishLine
 from io_objects.io_Gate import IO_Gates
-from kart_simulator import MainWidget, PauseMode
+from kart_simulator import EndGameMode, MainWidget, PauseMode
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import StringProperty, ObjectProperty
@@ -48,6 +49,7 @@ class MyScreenManager(NavigationScreenManager):
 
 class KS_screen(Screen):
     layout_id = ObjectProperty()
+    
 
     def __init__(self, world, music, **kw):
         self.musicName = self.get_musicName(music)
@@ -59,6 +61,7 @@ class KS_screen(Screen):
         self.start_button = Button(text="start The game!", size_hint=(.25,.1 ))
         self.start_button.bind(on_press=self.startingAnimation)
         self.layout_id.add_widget(self.start_button)
+        self.app = App.get_running_app()
         
     def quit(self):
         self.game.clear()
@@ -73,8 +76,15 @@ class KS_screen(Screen):
             width=Window.width, height=Window.height, music=self.musicName
         )
         self.add_widget(self.pauseMenu)
-        
-    def begin_game(self,de):
+    def endGameMode(self):
+        if self.musicName:
+            self.pauseMusic()
+
+        self.game.play = False
+        self.game.my_clock.unschedule(self.game.theGame.nextFrame)
+        self.endGameMenu = EndGameMode()
+        self.add_widget(self.endGameMenu)
+    def begin_game(self,dt):
         self.layout_id.remove_widget(self.start_button)
         self.layout_id.remove_widget(self.image3)
         self.game.start_theGame()
@@ -84,8 +94,11 @@ class KS_screen(Screen):
         self.layout_id.add_widget(self.image3)
         Clock.schedule_once(self.begin_game, 5)
 
-
+    def end_game(self):
+        self.endGameMode()
         
+    def test(self):
+        self.app.manager.pop()
         
     def resumeGame(self, new_music):
         self.resumeMusic()

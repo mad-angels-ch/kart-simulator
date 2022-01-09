@@ -313,3 +313,11 @@
         values: root.generateMusicsList()
         on_text:
             root.changeMusicSpinnerText(music_spinner_id.text), app.ButtonSound(), app.game_instance.changeMusic(root.chosen_music)
+
+
+<EndGameMode>:
+    Button:
+        size_hint:.2,.1
+        pos_hint: {'x': .4 , 'y': .4 }
+        text:"Quit game"
+        on_release: app.manager.pop(),app.clear_game(), app.ButtonSound()
