@@ -13,7 +13,7 @@ from game.objects.ObjectFactory import ObjectCountError
 from io_objects.io_FilledQuadrilateral import IO_FilledQuadrilateral
 from io_objects.io_FinishLine import IO_FinishLine
 from io_objects.io_Gate import IO_Gates
-from kart_simulator import EndGameMode, MainWidget, PauseMode
+from kart_simulator import EndGameMode, MainWidget, PauseMode, BeginningImage
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import StringProperty, ObjectProperty
@@ -49,7 +49,8 @@ class MyScreenManager(NavigationScreenManager):
 
 class KS_screen(Screen):
     layout_id = ObjectProperty()
-    
+    # animation_id = ObjectProperty()
+    # imageB = ObjectProperty()
 
     def __init__(self, world, music, **kw):
         self.musicName = self.get_musicName(music)
@@ -87,14 +88,19 @@ class KS_screen(Screen):
         self.add_widget(self.endGameMenu)
         
     def begin_game(self,dt):
-        self.layout_id.remove_widget(self.image3)
+        # self.animation_id.remove_widget(self.imageB)
+        # self.remove_widget(self.animation_id)
+        self.remove_widget(self.pg)
+        
         self.game.start_theGame()
         
     def startingAnimation(self, instance):
         self.layout_id.remove_widget(self.start_button)
-        self.image3 = Image(source='client/Images/3210.gif', size_hint=(.5,.5 ),pos_hint={'center_x': .35, 'center_y': .35}, keep_ratio= False,allow_stretch= True)
-        self.layout_id.add_widget(self.image3)
-        Clock.schedule_once(self.begin_game, 5)
+        self.pg = BeginningImage()
+        self.add_widget(self.pg)
+        # self.image3 = Image(source='client/Images/321go.gif', size_hint=(1,1 ),pos_hint={'center_x': .35, 'center_y': .35}, keep_ratio= False,allow_stretch= True)
+        # self.layout_id.add_widget(self.image3)
+        Clock.schedule_once(self.begin_game, 3)
 
     def end_game(self):
         self.endGameMode()

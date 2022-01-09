@@ -11,6 +11,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.label import Label
+from kivy.uix.relativelayout import RelativeLayout
 from game.objects.FinishLine import FinishLine
 from game.objects.ObjectFactory import ObjectCountError
 from game.objects.fill.Hex import Hex
@@ -33,6 +34,9 @@ from kivy.uix.widget import Widget
 from kivy.graphics import Rectangle, Color
 from kivy.properties import Clock
 from kivy.properties import StringProperty
+
+class BeginningImage(RelativeLayout):
+    pass
 
 class EndGameMode(FloatLayout):
     pass

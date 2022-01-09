@@ -129,7 +129,8 @@
 <KS_screen>:
     name: "Kart_Simulator"
     layout_id: noActionBar
-
+    # animation_id : pre_game
+    # imageB: B_image
     RelativeLayout:
         id: noActionBar
         pos: app.windowSize[0]/2-250,app.windowSize[1]/2-250
@@ -171,6 +172,15 @@
             text: "0/2"
             color: 0.4, 1, 0.4, 1
 
+
+<BeginningImage>:
+    Image:
+        id: B_image
+        source:'client/Images/321go.gif'
+        size_hint: 1,1
+        pos_hint: {"center_x": .5, "center_y": .5}
+        keep_ratio: False
+        allow_stretch: True
 
 
 <MyScreenManager>:
