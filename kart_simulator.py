@@ -11,18 +11,18 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.floatlayout import FloatLayout
 from game.objects.FinishLine import FinishLine
+from game.objects.ObjectFactory import ObjectCountError
 from game.objects.fill.Hex import Hex
 from game.objects.fill.Pattern import Pattern
 from io_objects.io_Gate import IO_Gates
 from io_objects.io_FinishLine import IO_FinishLine
 from io_objects.io_FilledQuadrilateral import IO_FilledQuadrilateral
 from logging import error, warning
-
+from kivy.app import App
 from lib import Point
 import client
 from game.objects import *
 import game
-
 from io_objects.io_polygon import IO_Polygon
 from io_objects.io_circle import IO_Circle
 
@@ -86,24 +86,32 @@ class MainWidget(Widget):
 
         from game.objects import Circle, Object
         from lib import Point
+        app = App.get_running_app()
+        try:
+            self.theGame = game.Game(dataUrl, self.eventsList, self.output)
+            self._gates: Dict[int, Gate] = {}
 
-        self.theGame = game.Game(dataUrl, self.eventsList, self.output)
-        self._gates: Dict[int, Gate] = {}
-        print("Starting ...")
+            print("Starting ...")
+            app.manager.add_widget(self.parentScreen)
+            app.start_ks()
+            print("Finisched!")
+            #################################################################
+            self.fps = 60
 
-        print("Finisched!")
-        #################################################################
-        self.fps = 60
+            self._keyboard = Window.request_keyboard(self.keyboard_closed, self)
+            self._keyboard.bind(on_key_down=self.on_keyboard_down)
+            self._keyboard.bind(on_key_up=self.on_keyboard_up)
 
-        self._keyboard = Window.request_keyboard(self.keyboard_closed, self)
-        self._keyboard.bind(on_key_down=self.on_keyboard_down)
-        self._keyboard.bind(on_key_up=self.on_keyboard_up)
+            self.my_clock = Clock
+            self.my_clock.schedule_interval(self.theGame.nextFrame, 1 / self.fps)
 
-        self.my_clock = Clock
-        self.my_clock.schedule_interval(self.theGame.nextFrame, 1 / self.fps)
-
-        self.play = True
-
+            self.play = True
+            
+        except ObjectCountError as OCE:
+            app.changeLabelText(OCE.message())
+            
+            
+            
     def clear(self):
         print("LEAVED")
         self.canvas.clear()
@@ -168,7 +176,7 @@ class MainWidget(Widget):
             % numberOfGates
         )
         self.parent.parent.ids.gates_id.text = f"{gatesPassed}/{numberOfGates}"
-
+        
     def instanciateObstacle(self, obstacle=None):
         if isinstance(obstacle.fill(), Hex):
 

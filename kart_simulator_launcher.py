@@ -25,13 +25,15 @@ class MenuApp(App):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.game_instance = None
-        
+
     def build(self):
         Window.clearcolor = get_color_from_hex("#ffffff")
         self.manager = MyScreenManager()        
+        with self.manager.screens[0].canvas:
+            self.errorLabel=Label(bold=True,underline=True,font_size=32,text="",pos=(Window.width/2-50,Window.height/2-10),color=(1,1,1,.5))
         return self.manager
     
-    def start_ks(self, world, music):
+    def instanciate_ks(self, world, music):
         self.windowSize = Window.size
         if self.isWorldChosen(world):
             self.world = world
@@ -39,19 +41,21 @@ class MenuApp(App):
             if self.manager.has_screen("Kart_Simulator"):
                 screen = self.manager.get_screen("Kart_Simulator")
                 self.manager.remove_widget(screen)
-            
-            self.game_instance = KS_screen(world,music)
-            self.manager.add_widget(self.game_instance)
-            self.manager.push("Kart_Simulator")
-            
+            # self.manager.add_widget(self.game_instance)
+            self.game_instance = KS_screen(self.world, self.music)
         elif not self.isWorldChosen(world):
-            with self.manager.canvas:
-                self.errorLabel=Label(bold=True,underline=True,font_size=100,text="Choose a world before playing !",pos=(Window.width/2-50,Window.height/2-10),color=(1,1,1,.5))
-            # self.manager.canvas.clear(self.errorLabel)            
+            self.errorLabel.text+="Choose a world before playing !\n"
             Clock.schedule_once(self.popErrorScreen, 2)
             
+    def start_ks(self):
+        self.manager.push("Kart_Simulator")
+        
     def popErrorScreen(self,dt):
         self.errorLabel.text = ""
+        
+    def changeLabelText(self,labelText):
+        self.errorLabel.text+=labelText+"\n"
+        Clock.schedule_once(self.popErrorScreen, 2)
         
     def clear_game(self):
         if self.game_instance:

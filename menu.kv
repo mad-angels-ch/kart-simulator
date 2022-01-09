@@ -21,7 +21,7 @@
 #         on_press: app.manager.push("connection"), app.ButtonSound()
 #     Button:
 #         text: "Play"
-#         on_press: app.start_ks(), app.ButtonSound()
+#         on_press: app.(), app.ButtonSound()
 #     Button:
 #         text: "Rules of the game"
 #         on_press: app.manager.push("Rules"), app.ButtonSound()
@@ -78,7 +78,7 @@
         size_hint: .4, .3
         text: "Play"
         background_color: (1.0, 0.0, 0.0, .75)
-        on_press: app.start_ks(root.chosen_world, root.chosen_music), app.ButtonSound()
+        on_press: app.instanciate_ks(root.chosen_world, root.chosen_music), app.ButtonSound()
 
     Spinner:
         id: worlds_spinner_id
