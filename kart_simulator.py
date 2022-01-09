@@ -91,7 +91,6 @@ class MainWidget(Widget):
             self.theGame = game.Game(
                 dataUrl, self.eventsList, OutputFactory(self, scale=1)
             )
-            self._gates: Dict[int, Gate] = {}
 
             print("Starting ...")
             app.manager.add_widget(self.parentScreen)
@@ -125,13 +124,6 @@ class MainWidget(Widget):
         else:
             # self.resume()
             self.parent.parent.resumeGame()
-
-    def output(self, objects: List[game.objects.Object]):
-        for object in objects:
-            self.updateObstacle(obstacle=object)
-            if isinstance(object, Gate):
-                self._gates[object.formID()] = object
-        self.updateGatesCount(self._gates.values())
 
     def updateLapsCount(self, finishLine: FinishLine) -> None:
         """Met l'affichage du nombre de tours terminés à jour"""

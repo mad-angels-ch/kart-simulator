@@ -85,6 +85,7 @@ class OutputFactory:
                     if len(obstacle) == 4:
                         if isinstance(obstacle, game_objects.FinishLine):
                             with self._w.canvas:
+                                self._gates.append(obstacle)
                                 io_obstacle = io_objects.FinishLine(
                                     summitsBeforeRotation=obstacle.verticesBeforeRotation(),
                                     angle=obstacle.angle(),
