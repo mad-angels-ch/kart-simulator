@@ -26,20 +26,6 @@ class OutputFactory:
 
         self._gates = []
 
-    def createKart(self, obstacle: game_objects.Kart) -> io_objects.FilledQuadrilateral:
-        self._w.kart_ID = obstacle.formID()
-        with self._w.canvas:
-            Color(rgba=(1, 1, 1, 1))
-            io_obstacle = io_objects.FilledQuadrilateral(
-                height=16,
-                width=50,
-                center=obstacle.center(),
-                source="client/Images/kartInGame.jpg",
-                angle=obstacle.angle(),
-                scale=self._scale,
-            )
-        return io_obstacle
-
     def __call__(self, objects: List[game_objects.Object]) -> None:
         if self._initialized:
             self._w.updateGatesCount(self._gates)
@@ -50,55 +36,21 @@ class OutputFactory:
 
         for obstacle in objects:
             if not self._initialized or obstacle.formID() not in self._createdObject:
-                if isinstance(obstacle.fill(), game_fill.Hex):
-                    if obstacle:
-                        self._w.color = get_color_from_hex(obstacle.fill().value())
+                if isinstance(obstacle, game_objects.Kart):
+                    self.createKart(obstacle)
 
-                        if isinstance(obstacle, game_objects.Circle):
-                            with self._w.canvas:
-                                Color(rgba=self._w.color)
-                            pos_x = obstacle.center()[0] - obstacle.radius()
-                            pos_y = obstacle.center()[1] - obstacle.radius()
-                            io_obstacle = io_objects.Circle(
-                                diametre=2 * obstacle.radius(),
-                                position=[pos_x, pos_y],
-                                couleur=obstacle.fill().value(),
-                                scale=self._scale,
-                            )
-                            self._w.canvas.add(io_obstacle)
-
-                        elif isinstance(obstacle, game_objects.Polygon):
-                            if isinstance(obstacle, game_objects.Kart):
-                                io_obstacle = self.createKart(obstacle)
-
-                            else:
-                                with self._w.canvas:
-                                    Color(rgba=self._w.color)
-                                io_obstacle = io_objects.Polygon(
-                                    summits=obstacle.vertices(),
-                                    couleur=obstacle.fill().value(),
-                                    scale=self._scale,
-                                )
-                                self._w.canvas.add(io_obstacle)
+                elif isinstance(obstacle.fill(), game_fill.Hex):
+                    if isinstance(obstacle, game_objects.Circle):
+                        self.createCircle(obstacle)
+                    elif isinstance(obstacle, game_objects.Polygon):
+                        self.createPolygon(obstacle)
 
                 elif isinstance(obstacle.fill(), game_fill.Pattern):
                     if len(obstacle) == 4:
                         if isinstance(obstacle, game_objects.FinishLine):
-                            with self._w.canvas:
-                                self._gates.append(obstacle)
-                                io_obstacle = io_objects.FinishLine(
-                                    summitsBeforeRotation=obstacle.verticesBeforeRotation(),
-                                    angle=obstacle.angle(),
-                                    scale=self._scale,
-                                )
+                            self.createFinishLine(obstacle)
                         elif isinstance(obstacle, game_objects.Gate):
-                            with self._w.canvas:
-                                self._gates.append(obstacle)
-                                io_obstacle = io_objects.Gates(
-                                    summitsBeforeRotation=obstacle.verticesBeforeRotation(),
-                                    angle=obstacle.angle(),
-                                    scale=self._scale,
-                                )
+                            self.createGate(obstacle)
                         else:
                             warning("TO BE IMPLEMENTED")
                             source = obstacle.sourceImage
@@ -109,13 +61,12 @@ class OutputFactory:
                                     angle=obstacle.angle(),
                                     scale=self._scale,
                                 )
+                            self._createdObject[obstacle.formID()] = io_obstacle
                     else:
                         raise "Only quadrilaterals can be filled with a pattern"
 
                 else:
                     raise "Unsupported color type"
-
-                self._createdObject[obstacle.formID()] = io_obstacle
 
             else:
                 # mettres les positions à jour
@@ -124,10 +75,74 @@ class OutputFactory:
                     io_object.updatePosition(newPos=obstacle.center())
                 elif isinstance(obstacle, game_objects.Kart):
                     self._w.canvas.remove(io_object)
-                    self._createdObject[obstacle.formID()] = self.createKart(obstacle)
+                    self.createKart(obstacle)
                 elif isinstance(obstacle, game_objects.Polygon):
                     io_object.updatePosition(newPos=obstacle.vertices())
                     if isinstance(obstacle, game_objects.FinishLine):
                         self._w.updateLapsCount(obstacle)
 
         self._initialized = True
+
+    def createCircle(self, lgeCircle: game_objects.Circle) -> None:
+        """Dessine le cercle sur le canvas du widget et l'ajout au registre"""
+        with self._w.canvas:
+            Color(rgba=get_color_from_hex(lgeCircle.fill().value()))
+        pos_x = lgeCircle.center()[0] - lgeCircle.radius()
+        pos_y = lgeCircle.center()[1] - lgeCircle.radius()
+        ioCircle = io_objects.Circle(
+            diametre=2 * lgeCircle.radius(),
+            position=[pos_x, pos_y],
+            couleur=lgeCircle.fill().value(),
+            scale=self._scale,
+        )
+        self._w.canvas.add(ioCircle)
+        self._createdObject[lgeCircle.formID()] = ioCircle
+
+    def createPolygon(self, lgePolygon: game_objects.Polygon) -> None:
+        """Dessine le polygon sur le canvas du widget et l'ajout au registre"""
+        with self._w.canvas:
+            Color(rgba=get_color_from_hex(lgePolygon.fill().value()))
+        ioPolygon = io_objects.Polygon(
+            summits=lgePolygon.vertices(),
+            couleur=lgePolygon.fill().value(),
+            scale=self._scale,
+        )
+        self._w.canvas.add(ioPolygon)
+        self._createdObject[lgePolygon.formID()] = ioPolygon
+
+    def createKart(self, lgeKart: game_objects.Kart) -> None:
+        """Dessine le kart sur le canvas du widget et l'ajout au registre"""
+        self._w.kart_ID = lgeKart.formID()
+        with self._w.canvas:
+            Color(rgba=(1, 1, 1, 1))
+            ioKart = io_objects.FilledQuadrilateral(
+                height=16,
+                width=50,
+                center=lgeKart.center(),
+                source="client/Images/kartInGame.jpg",
+                angle=lgeKart.angle(),
+                scale=self._scale,
+            )
+        self._createdObject[lgeKart.formID()] = ioKart
+
+    def createFinishLine(self, lgeFinishLine: game_objects.FinishLine) -> None:
+        """Dessine la ligne d'arrivée sur le canvas du widget et l'ajout au registre"""
+        with self._w.canvas:
+            self._gates.append(lgeFinishLine)
+            ioFinishLine = io_objects.FinishLine(
+                summitsBeforeRotation=lgeFinishLine.verticesBeforeRotation(),
+                angle=lgeFinishLine.angle(),
+                scale=self._scale,
+            )
+        self._createdObject[lgeFinishLine.formID()] = ioFinishLine
+
+    def createGate(self, lgeGate: game_objects.Gate) -> None:
+        """Dessine la ligne d'arrivée sur le canvas du widget et l'ajout au registre"""
+        with self._w.canvas:
+            self._gates.append(lgeGate)
+            ioGate = io_objects.Gates(
+                summitsBeforeRotation=lgeGate.verticesBeforeRotation(),
+                angle=lgeGate.angle(),
+                scale=self._scale,
+            )
+        self._createdObject[lgeGate.formID()] = ioGate
