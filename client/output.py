@@ -7,9 +7,7 @@ from kivy.uix.widget import Widget
 
 from game import objects as game_objects
 from game.objects import fill as game_fill
-import io_objects
-
-from client.output_game import output
+from client import io_objects
 
 
 class OutputFactory:
@@ -18,19 +16,21 @@ class OutputFactory:
     _scale: float
     _initialized: bool
 
+    _gates: List[game_objects.Gate]
+
     def __init__(self, widget: Widget, scale: float) -> None:
         self._w = widget
         self._createdObject = {}
         self._scale = scale
         self._initialized = False
 
-    def createKart(
-        self, obstacle: game_objects.Kart
-    ) -> io_objects.IO_FilledQuadrilateral:
+        self._gates = []
+
+    def createKart(self, obstacle: game_objects.Kart) -> io_objects.FilledQuadrilateral:
         self._w.kart_ID = obstacle.formID()
         with self._w.canvas:
             Color(rgba=(1, 1, 1, 1))
-            io_obstacle = io_objects.IO_FilledQuadrilateral(
+            io_obstacle = io_objects.FilledQuadrilateral(
                 height=16,
                 width=50,
                 center=obstacle.center(),
@@ -41,7 +41,10 @@ class OutputFactory:
         return io_obstacle
 
     def __call__(self, objects: List[game_objects.Object]) -> None:
-        if not self._initialized:
+        if self._initialized:
+            self._w.updateGatesCount(self._gates)
+
+        else:
             # calculer la taille du canvas
             pass
 
@@ -56,7 +59,7 @@ class OutputFactory:
                                 Color(rgba=self._w.color)
                             pos_x = obstacle.center()[0] - obstacle.radius()
                             pos_y = obstacle.center()[1] - obstacle.radius()
-                            io_obstacle = io_objects.IO_Circle(
+                            io_obstacle = io_objects.Circle(
                                 diametre=2 * obstacle.radius(),
                                 position=[pos_x, pos_y],
                                 couleur=obstacle.fill().value(),
@@ -71,7 +74,7 @@ class OutputFactory:
                             else:
                                 with self._w.canvas:
                                     Color(rgba=self._w.color)
-                                io_obstacle = io_objects.IO_Polygon(
+                                io_obstacle = io_objects.Polygon(
                                     summits=obstacle.vertices(),
                                     couleur=obstacle.fill().value(),
                                     scale=self._scale,
@@ -80,16 +83,17 @@ class OutputFactory:
 
                 elif isinstance(obstacle.fill(), game_fill.Pattern):
                     if len(obstacle) == 4:
-                        if isinstance(obstacle, game_objects.Gate):
+                        if isinstance(obstacle, game_objects.FinishLine):
                             with self._w.canvas:
-                                io_obstacle = io_objects.IO_Gates(
+                                io_obstacle = io_objects.FinishLine(
                                     summitsBeforeRotation=obstacle.verticesBeforeRotation(),
                                     angle=obstacle.angle(),
                                     scale=self._scale,
                                 )
-                        elif isinstance(obstacle, game_objects.FinishLine):
+                        elif isinstance(obstacle, game_objects.Gate):
                             with self._w.canvas:
-                                io_obstacle = io_objects.IO_FinishLine(
+                                self._gates.append(obstacle)
+                                io_obstacle = io_objects.Gates(
                                     summitsBeforeRotation=obstacle.verticesBeforeRotation(),
                                     angle=obstacle.angle(),
                                     scale=self._scale,
@@ -98,7 +102,7 @@ class OutputFactory:
                             warning("TO BE IMPLEMENTED")
                             source = obstacle.sourceImage
                             with self._w.canvas:
-                                io_obstacle = io_objects.IO_FilledQuadrilateral(
+                                io_obstacle = io_objects.FilledQuadrilateral(
                                     summitsBeforeRotation=obstacle.verticesBeforeRotation(),
                                     source=source,
                                     angle=obstacle.angle(),
