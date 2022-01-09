@@ -149,6 +149,8 @@ class PreView(Widget):
         super().__init__(**kwargs)
         self.previewMode = False
 
+    from client.output_preview import output
+
     def changePreView(self, world):
         if not isinstance(world, StringProperty):
             self.canvas.before.clear()
@@ -163,7 +165,7 @@ class PreView(Widget):
                         path.join("client/worlds", world) + ".json"
                     )
                     app = App.get_running_app()
-                    self.theGame = game.Game(self.dataUrl, [], self.instanciateObstacle)
+                    self.theGame = game.Game(self.dataUrl, [], self.output)
                     with self.canvas.before:
                         Color(rgba=(1, 1, 1, 1))
                         Rectangle(pos=(0, 0), size=(200, 200))
