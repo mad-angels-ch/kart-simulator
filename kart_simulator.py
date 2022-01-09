@@ -4,7 +4,7 @@ from re import S
 from sys import hexversion
 import time
 import os.path
-from typing import List
+from typing import Dict, List
 from os import listdir
 from kivy.core.window import Window
 from kivy.uix.boxlayout import BoxLayout
@@ -88,6 +88,7 @@ class MainWidget(Widget):
         from lib import Point
 
         self.theGame = game.Game(dataUrl, self.eventsList, self.output)
+        self._gates: Dict[int, Gate] = {}
         print("Starting ...")
 
         print("Finisched!")
@@ -120,6 +121,9 @@ class MainWidget(Widget):
     def output(self, objects: List[game.objects.Object]):
         for object in objects:
             self.updateObstacle(obstacle=object)
+            if isinstance(object, Gate):
+                self._gates[object.formID()] = object
+        self.updateGatesCount(self._gates.values())
 
     def updateObstacle(self, obstacleID=None, obstacle=None):
         if obstacleID or obstacleID == 0:
@@ -136,7 +140,7 @@ class MainWidget(Widget):
             new_pos = obs.vertices()
 
             if isinstance(obs, FinishLine):
-                self.displayScore(obs)
+                self.updateLapsCount(obs)
 
         io_obs.updatePosition(newPos=new_pos)
 
@@ -152,8 +156,18 @@ class MainWidget(Widget):
 
     #     self.instanciateObstacle(obstacle=obs)
 
-    def displayScore(self, finishLine: FinishLine) -> None:
+    def updateLapsCount(self, finishLine: FinishLine) -> None:
+        """Met l'affichage du nombre de tours terminés à jour"""
         self.parent.parent.ids.laps_id.text = f"{finishLine.passagesCount(self.kart_ID)}/{finishLine.numberOfLapsRequired()}"
+
+    def updateGatesCount(self, gatesList: List[Gate]) -> None:
+        """Met l'affiche du nombre de portillons (du tour) franchis à jour"""
+        numberOfGates = len(gatesList)
+        gatesPassed = (
+            sum([gate.passagesCount(self.kart_ID) for gate in gatesList])
+            % numberOfGates
+        )
+        self.parent.parent.ids.gates_id.text = f"{gatesPassed}/{numberOfGates}"
 
     def instanciateObstacle(self, obstacle=None):
         if isinstance(obstacle.fill(), Hex):
