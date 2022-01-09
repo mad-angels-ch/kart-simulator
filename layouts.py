@@ -200,11 +200,9 @@ class MainMenu2(FloatLayout):
         self.chosen_music = text
 
     def generateWorldsList(self):
-        # for world in json.loads(
-        #     requests.get("https://lj44.ch/creator/kart/worldsjson").text
-        # ):
-        #     with open(f"client/worlds/{world['name']}.json", "w", encoding="utf8") as f:
-        #         f.write(world["fabric"])
+        print(
+            "Mise à jour des mondes, cette opération peut prendre plusieurs minutes ..."
+        )
         worldsInfo = {}
         for world in requests.get(
             "https://lj44.ch/creator/kart/worldsjson",
@@ -245,6 +243,7 @@ class MainMenu2(FloatLayout):
         with open("client/worlds.json", "w") as f:
             json.dump(worldsInfo, f)
 
+        print("Tous les mondes sont à jour!")
         return [world[:-5] for world in listdir("client/worlds")]
 
     def generateMusicsList(self):
