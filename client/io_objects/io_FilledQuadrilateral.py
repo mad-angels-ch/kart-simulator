@@ -20,10 +20,6 @@ class IO_FilledQuadrilateral(Rectangle):
         _angle = self._LGEFilledQuadrilateral.angle()*180/math.pi
         
         
-        # center1 = lib.Vector((self._LGEFilledQuadrilateral.center()[0],self._LGEFilledQuadrilateral.center()[1])) / self._scale
-        # _size1 = (self.get_sizeFromVertices()[0] / self._scale, self.get_sizeFromVertices()[1] / self._scale)
-        # position1 = center1 - (lib.Vector(_size1)/2)
-        
         center = self.get_center(self._LGEFilledQuadrilateral.center())
         self._size = (self.get_sizeFromVertices()[0] / self._scale, self.get_sizeFromVertices()[1] / self._scale)
         position = self.get_position(center)

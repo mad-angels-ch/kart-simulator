@@ -81,11 +81,11 @@ class OutputFactory:
                 (rightest - leftest) / self._maxWidth,
                 (toppest - bottomest) / self._maxHeight,
             )
-            # two translations and one slacing are required: 
+            # (two translations and one scaling are required: 
             # _translation1 puts the playground at the bottom left (coordinates (0;0)) on the canvas, 
             # then _scale fits it to the canvas size,
             # finally _translation2 places it in the center of the canvas.
-            # This is purely visual, it doesn't affect the object's physical properties.
+            # This is purely visual, it doesn't affect the object's physical properties.).translate("french")
             
             self._translation1 = lib.Vector((-leftest, -bottomest))
             self._translation2 = lib.Vector((self._maxWidth - (rightest - leftest)/self._scale, self._maxHeight - (toppest - bottomest)/self._scale)) / 2
