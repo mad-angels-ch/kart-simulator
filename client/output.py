@@ -8,20 +8,40 @@ from kivy.uix.widget import Widget
 from game import objects as game_objects
 from game.objects import fill as game_fill
 from client import io_objects
+import lib
 
 
 class OutputFactory:
     _w: Widget
     _createdObject: Dict[int, Any]
+    _maxWidth: float
+    _maxHeight: float
+    _center: List[float]
+    _translate: lib.Vector
     _scale: float
     _initialized: bool
 
     _gates: List[game_objects.Gate]
 
-    def __init__(self, widget: Widget, scale: float) -> None:
+    def __init__(
+        self,
+        widget: Widget,
+        max_width: float = None,
+        max_height: float = None,
+        translate: lib.Vector = lib.Vector(),
+        scale: float = 0,
+    ) -> None:
+        if max_width and max_height:
+            self._scale = None
+            self._maxWidth = max_width
+            self._maxHeight = max_height
+        elif scale:
+            self._translate = translate
+            self._scale = scale
+        else:
+            raise "Either the dimensions or the scale must be given"
         self._w = widget
         self._createdObject = {}
-        self._scale = scale
         self._initialized = False
 
         self._gates = []
@@ -30,9 +50,42 @@ class OutputFactory:
         if self._initialized:
             self._w.updateGatesCount(self._gates)
 
-        else:
+        elif not self._scale:
             # calculer la taille du canvas
-            pass
+            lefts = []
+            rights = []
+            bottoms = []
+            tops = []
+            for obj in objects:
+                if isinstance(obj, game_objects.Circle):
+                    lefts.append(obj.center().x() - obj.radius())
+                    rights.append(obj.center().x() + obj.radius())
+                    bottoms.append(obj.center().y() - obj.radius())
+                    tops.append(obj.center().y() + obj.radius())
+                elif isinstance(obj, game_objects.Polygon):
+                    vertices = obj.vertices()
+                    abscissas = [p.x() for p in vertices]
+                    lefts += abscissas
+                    rights += abscissas
+                    ordinates = [p.y() for p in vertices]
+                    bottoms += ordinates
+                    tops += ordinates
+
+            leftest = min(lefts)
+            rightest = max(rights)
+            bottomest = min(bottoms)
+            toppest = max(tops)
+
+            self._translate = lib.Vector(
+                (
+                    (rightest - leftest + self._maxHeight) / 2,
+                    (toppest - bottomest + self._maxHeight) / 2,
+                )
+            )
+            self._scale = max(
+                (rightest - leftest) / self._maxWidth,
+                (toppest - bottomest) / self._maxHeight,
+            )
 
         for obstacle in objects:
             if not self._initialized or obstacle.formID() not in self._createdObject:
