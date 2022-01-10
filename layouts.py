@@ -10,10 +10,7 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.widget import Widget
 from kivy.utils import rgba
 from game.objects.ObjectFactory import ObjectCountError
-from io_objects.io_FilledQuadrilateral import IO_FilledQuadrilateral
-from io_objects.io_FinishLine import IO_FinishLine
-from io_objects.io_Gate import IO_Gates
-from kart_simulator import EndGameMode, MainWidget, PauseMode, BeginningImage
+from kart_simulator import MainWidget, PauseMode, EndGameMode, BeginningImage
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import StringProperty, ObjectProperty
@@ -171,8 +168,6 @@ import client.worlds
 from game.objects import *
 import game
 from kivy.app import App
-from io_objects.io_polygon import IO_Polygon
-from io_objects.io_circle import IO_Circle
 
 from kivy.utils import get_color_from_hex, rgba
 from kivy.lang import Builder
@@ -180,6 +175,8 @@ from kivy.uix.widget import Widget
 from kivy.graphics import Rectangle, Color
 from kivy.properties import Clock
 from kivy.properties import StringProperty
+
+from client.output import OutputFactory
 
 
 class PreView(Widget):
@@ -195,129 +192,25 @@ class PreView(Widget):
             print("PREVIEW CLEARED")
             if self.previewMode:
                 try:
-                    
-                    
                     self.dataUrl = self.dataUrl = (
                         path.join("client/worlds", world) + ".json"
                     )
                     app = App.get_running_app()
-                    self.theGame = game.Game(self.dataUrl, [], self.instanciateObstacle)
+                    self.theGame = game.Game(
+                        self.dataUrl,
+                        [],
+                        OutputFactory(self, max_width=200, max_height=200),
+                    )
                     with self.canvas.before:
                         Color(rgba=(1, 1, 1, 1))
                         Rectangle(pos=(0, 0), size=(200, 200))
                     self.theGame.callOutput()
                 except ObjectCountError as OCE:
                     app.changeLabelText(OCE.message())
-                
 
     def updatePreviewMode(self):
         self.previewMode = not self.previewMode
 
-    # def instanciateObstacle(self, objects: List[game.objects.Object]):
-    #     for obstacle in objects:
-    #         if isinstance(obstacle, Circle):
-    #             # with self.canvas.before:
-    #             self.color = get_color_from_hex(obstacle.fill().value())
-    #             pos_x = (obstacle.center()[0] - obstacle.radius()) / 3
-    #             pos_y = (obstacle.center()[1] - obstacle.radius()) / 3
-    #             with self.canvas.after:
-    #                 Color(rgba=self.color)
-
-    #                 IO_Circle(
-    #                     diametre=2 * obstacle.radius() / 3,
-    #                     position=[pos_x, pos_y],
-    #                     couleur=obstacle.fill().value(),
-    #                 )
-
-    #         elif isinstance(obstacle, Polygon):
-    #             self.color = get_color_from_hex(obstacle.fill().value())
-    #             with self.canvas:
-    #                 Color(rgba=self.color)
-    #                 IO_Polygon(
-    #                     summits=obstacle.vertices(),
-    #                     couleur=obstacle.fill().value(),
-    #                     scale=3,
-    #                 )
-    def instanciateObstacle(self, objects=None):
-        for obstacle in objects:
-            print("oui")
-            if isinstance(obstacle.fill(), Hex):
-
-                if obstacle:
-                    self.color = get_color_from_hex(obstacle.fill().value())
-
-                    if (
-                        isinstance(obstacle, Circle)
-                    ):
-                        with self.canvas:
-                            Color(rgba=self.color)
-                        pos_x = obstacle.center()[0] - obstacle.radius()
-                        pos_y = obstacle.center()[1] - obstacle.radius()
-                        io_obstacle = IO_Circle(
-                            diametre=2 * obstacle.radius(),
-                            position=[pos_x, pos_y],
-                            couleur=obstacle.fill().value(),
-                            scale=3
-                        )
-                        self.canvas.add(io_obstacle)
-
-                    # elif isinstance(obstacle, Circle):
-                    #     io_obstacle = self.dict_circles.get(obstacle.formID())
-
-                    elif (
-                        isinstance(obstacle, Polygon)
-                    ):
-                        print(obstacle.formID())
-                        if type(obstacle).__name__ == "Kart":
-                            self.kart_ID = obstacle.formID()
-                            with self.canvas:
-                                Color(rgba=(1,1,1,1))
-                                io_obstacle = IO_FilledQuadrilateral(height=16,width=50,center=obstacle.center(), source="client/Images/kartInGame.jpg", angle=obstacle.angle(), scale=3)
-                                
-                        else:
-                            with self.canvas:
-                                Color(rgba=self.color)
-                            io_obstacle = IO_Polygon(
-                                summits=obstacle.vertices(), couleur=obstacle.fill().value(), scale=3
-                            )
-                            self.canvas.add(io_obstacle)
-
-                    # elif isinstance(obstacle, Polygon):
-                    #     io_obstacle = self.dict_polygons.get(obstacle.formID())
-                    # return io_obstacle
-
-            elif isinstance(obstacle.fill(), Pattern):
-                if len(obstacle) == 4:
-                    if type(obstacle).__name__ == "Gate":
-                        with self.canvas:
-                            io_obstacle = IO_Gates(
-                                summitsBeforeRotation=obstacle.verticesBeforeRotation(),
-                                angle=obstacle.angle(),
-                                scale=3
-                            )
-                    elif type(obstacle).__name__ == "FinishLine":
-                        with self.canvas:
-                            io_obstacle = IO_FinishLine(
-                                summitsBeforeRotation=obstacle.verticesBeforeRotation(),
-                                angle=obstacle.angle(),
-                                scale=3
-                            )
-                    else:
-                        warning("TO BE IMPLEMENTED")
-                        source = obstacle.sourceImage
-                        with self.canvas:
-                            io_obstacle = IO_FilledQuadrilateral(
-                                summitsBeforeRotation=obstacle.verticesBeforeRotation(),
-                                source=source,
-                                angle=obstacle.angle(),
-                                scale=3
-                            )
-                else:
-                    raise "Only quadrilaterals can be filled with a pattern"
-
-
-            else:
-                raise "Unsupported color type"
 
 class MainMenu2(FloatLayout):
     def __init__(self, **kwargs):
@@ -372,7 +265,7 @@ class UpdateWorldButton(Button):
             for name, data in savedWorld.items():
                 if name in worldsInfo:
                     if data["version"] != worldsInfo[name]["version"]:
-                        updateWorlds_output.text += f"Updating world {name} ..."
+                        updateWorlds_output.text += f"Updating world {name} ... "
                         with open(f"client/worlds/{name}.json", "w") as worldJSON:
                             worldJSON.write(
                                 requests.get(
@@ -404,7 +297,7 @@ class UpdateWorldButton(Button):
         updateWorlds_output.text += "All worlds are up to date!"
         self._updating = False
         self.text = "Update the worlds now (this may take several minutes)"
-        sound = SoundLoader.load('client/sounds/success-sound-effect.mp3')
+        sound = SoundLoader.load("client/sounds/success-sound-effect.mp3")
         sound.volume = 0.25
         sound.play()
 
