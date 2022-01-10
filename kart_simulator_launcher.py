@@ -41,7 +41,6 @@ class MenuApp(App):
             if self.manager.has_screen("Kart_Simulator"):
                 screen = self.manager.get_screen("Kart_Simulator")
                 self.manager.remove_widget(screen)
-            # self.manager.add_widget(self.game_instance)
             self.game_instance = KS_screen(self.world, self.music)
         elif not self.isWorldChosen(world):
             self.errorLabel.text+="Choose a world before playing !\n"

@@ -1,38 +1,36 @@
 from typing import List
-from kivy.graphics import Ellipse
+from kivy.graphics import Ellipse, Color
+from kivy.uix.widget import Widget
 from kivy.utils import get_color_from_hex
+from game.events.Event import Object
+from client import io_objects
+
 
 import lib
 
 from kivy.properties import ListProperty
 
 class IO_Circle(Ellipse):
-
-
-    def __init__(self, diametre=30, position=lib.Point((100, 100)), vitesse_x=4, vitesse_y=7, couleur = '#000000', scale = 1):
-
-
-        Ellipse.__init__(
-            self,
-            pos=(position[0]/scale, position[1]/scale),
-            size=(diametre/scale, diametre/scale),
-        )
-
-        self.color = couleur
-        
-
-    def get_pos_x(self) -> float:
-        return self.pos[0] + self.radius()
-
-    def get_pos_y(self) -> float:
-        return self.pos[1] + self.radius()
-
-    def radius(self) -> int:
-        return self.size[0] / 2
-
-    def diametre(self) -> int:
-        return self.size[0]
+    _w: Widget
+    _scale: float
+    _LGECircle: "io_objects.Circle"
     
+
+    def __init__(self, widget: Widget, LGEObject: "io_objects.Circle", scale = 1):
+        """Crée le cercle à ajouter au canvas et prépare son ajout"""
+        self._w = widget
+        self._scale = scale
+        self._LGECircle = LGEObject
+        self._radius = self._LGECircle.radius()/self._scale
+        
+        with self._w.canvas:
+            Color(rgba=get_color_from_hex(self._LGECircle.fill().value()))
+        center = lib.Vector((self._LGECircle.center()[0],self._LGECircle.center()[1]))/self._scale
+        position = center - lib.Vector((self._radius,self._radius))
+        Ellipse.__init__(self,pos=position,size=(2*self._radius,2*self._radius))
+
+    def radius(self):
+        return self._radius
     def updatePosition(self, newPos: List[float] = None):
         if newPos:
             self.pos = (newPos[0] - self.radius(), newPos[1] - self.radius())

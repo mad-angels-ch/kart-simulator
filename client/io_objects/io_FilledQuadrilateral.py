@@ -2,59 +2,39 @@ from typing import List
 from kivy.graphics import Mesh, Rectangle, PushMatrix,Rotate, PopMatrix, Color
 from typing import List
 import math
+from client import io_objects
+from kivy.uix.widget import Widget
 import lib
 
 class IO_FilledQuadrilateral(Rectangle):
-    def __init__(self, source: str, summitsBeforeRotation = None, width = 0, height = 0, center = None, angle = 0, scale = 1):
-
+    _scale: float
+    _LGEFilledQuadrilateral: "io_objects.IO_FilledQuadrilateral"
+    def __init__(self, LGEObject: "io_objects.IO_FilledQuadrilateral", source: str = None, scale=1):
+        self._scale = scale
+        self._LGEFilledQuadrilateral = LGEObject
         self._source = source
-        self._angle = angle*180/math.pi
+        
+        self._verticesBR = self._LGEFilledQuadrilateral.verticesBeforeRotation()
+        
+        _angle = self._LGEFilledQuadrilateral.angle()*180/math.pi
+        center = lib.Vector((self._LGEFilledQuadrilateral.center()[0],self._LGEFilledQuadrilateral.center()[1])) / self._scale
+        _size = self.get_sizeFromVertices()
+        position = center - lib.Vector(_size)/2
+        
 
-        if summitsBeforeRotation:
-            self._vertices = summitsBeforeRotation
-            self.get_posFromVertices()
-            self.get_sizeFromVertices()
-            
-            self.pos_x, self.pos_y = self.get_posFromVertices()[0]/scale, self.get_posFromVertices()[1]/scale 
-            self.size_x, self.size_y = self.get_sizeFromVertices()[0]/scale,self.get_sizeFromVertices()[1]/scale
-            self.center = (self.get_center()[0]/scale,self.get_center()[1]/scale)
-
-        elif width and height and center:
-            self.pos_x, self.pos_y = (center[0]-width/2)/scale, (center[1]-height/2)/scale
-            self.size_x, self.size_y = width/scale, height/scale
-            self.center = (center[0]/scale, center[1]/scale)
-
-
-        else:
-            raise "Not enough enformations given to create the filled quadrilateral"
         
         PushMatrix()
-        Rotate(origin=(self.center[0],self.center[1]), angle=self.angle())
-        Rectangle.__init__(self,source=self.source(),pos=(self.pos_x,self.pos_y),size=(self.size_x,self.size_y))
-        # Rectangle.__init__(self,pos=(self.pos_x,self.pos_y),size=(self.size_x,self.size_y))
+        Rotate(origin=center, angle=_angle)
+        Rectangle.__init__(self,source=self._source,pos=position,size=_size)
         PopMatrix()
-        
-    def get_abscissasAndOrdinates(self):
-        return ([point[0] for point in self._vertices],[point[1] for point in self._vertices])
-
-    def get_posFromVertices(self):
-        return (min(self.get_abscissasAndOrdinates()[0]),min(self.get_abscissasAndOrdinates()[1]))
+    
+    def updatePosition(self, newPos: list = None):
+        pass
     
     def get_sizeFromVertices(self):
         size_x = max(self.get_abscissasAndOrdinates()[0])-min(self.get_abscissasAndOrdinates()[0])
         size_y = max(self.get_abscissasAndOrdinates()[1])-min(self.get_abscissasAndOrdinates()[1])
         return (size_x,size_y)
     
-    def get_center(self):
-        center_x = self.pos_x + self.size_x/2
-        center_y = self.pos_y + self.size_y/2
-        return lib.Point((center_x, center_y))
-    
-    def updatePosition(self, newPos: list = None):
-        pass
-    
-    def source(self):
-        return self._source
-    
-    def angle(self):
-        return self._angle
+    def get_abscissasAndOrdinates(self):
+        return ([point[0] for point in self._verticesBR],[point[1] for point in self._verticesBR])

@@ -85,64 +85,34 @@ class OutputFactory:
 
     def createCircle(self, lgeCircle: game_objects.Circle) -> None:
         """Dessine le cercle sur le canvas du widget et l'ajout au registre"""
-        with self._w.canvas:
-            Color(rgba=get_color_from_hex(lgeCircle.fill().value()))
-        pos_x = lgeCircle.center()[0] - lgeCircle.radius()
-        pos_y = lgeCircle.center()[1] - lgeCircle.radius()
-        ioCircle = io_objects.Circle(
-            diametre=2 * lgeCircle.radius(),
-            position=[pos_x, pos_y],
-            couleur=lgeCircle.fill().value(),
-            scale=self._scale,
-        )
+        ioCircle = io_objects.Circle(widget=self._w,LGEObject=lgeCircle,scale=self._scale)
         self._w.canvas.add(ioCircle)
         self._createdObject[lgeCircle.formID()] = ioCircle
 
     def createPolygon(self, lgePolygon: game_objects.Polygon) -> None:
         """Dessine le polygon sur le canvas du widget et l'ajout au registre"""
-        with self._w.canvas:
-            Color(rgba=get_color_from_hex(lgePolygon.fill().value()))
-        ioPolygon = io_objects.Polygon(
-            summits=lgePolygon.vertices(),
-            couleur=lgePolygon.fill().value(),
-            scale=self._scale,
-        )
+        ioPolygon = io_objects.Polygon(widget=self._w,LGEObject=lgePolygon,scale = self._scale)
         self._w.canvas.add(ioPolygon)
         self._createdObject[lgePolygon.formID()] = ioPolygon
 
     def createKart(self, lgeKart: game_objects.Kart) -> None:
         """Dessine le kart sur le canvas du widget et l'ajout au registre"""
         self._w.kart_ID = lgeKart.formID()
-        with self._w.canvas:
+        with self._w.canvas:    # This type of objects has to be put into the 'with self.canvas:' instruction
             Color(rgba=(1, 1, 1, 1))
-            ioKart = io_objects.FilledQuadrilateral(
-                height=16,
-                width=50,
-                center=lgeKart.center(),
-                source="client/Images/kartInGame.jpg",
-                angle=lgeKart.angle(),
-                scale=self._scale,
-            )
+            ioKart = io_objects.FilledQuadrilateral(LGEObject=lgeKart,source='client/Images/KartInGame.jpg',scale=self._scale)
         self._createdObject[lgeKart.formID()] = ioKart
 
     def createFinishLine(self, lgeFinishLine: game_objects.FinishLine) -> None:
         """Dessine la ligne d'arrivée sur le canvas du widget et l'ajout au registre"""
         with self._w.canvas:
             self._gates.append(lgeFinishLine)
-            ioFinishLine = io_objects.FinishLine(
-                summitsBeforeRotation=lgeFinishLine.verticesBeforeRotation(),
-                angle=lgeFinishLine.angle(),
-                scale=self._scale,
-            )
+            ioFinishLine = io_objects.FilledQuadrilateral(LGEObject=lgeFinishLine,source='client/Images/finish_line.jpg',scale=self._scale)
         self._createdObject[lgeFinishLine.formID()] = ioFinishLine
 
     def createGate(self, lgeGate: game_objects.Gate) -> None:
-        """Dessine la ligne d'arrivée sur le canvas du widget et l'ajout au registre"""
+        """Dessine la porte sur le canvas du widget et l'ajout au registre"""
         with self._w.canvas:
             self._gates.append(lgeGate)
-            ioGate = io_objects.Gates(
-                summitsBeforeRotation=lgeGate.verticesBeforeRotation(),
-                angle=lgeGate.angle(),
-                scale=self._scale,
-            )
+            ioGate = io_objects.FilledQuadrilateral(LGEObject=lgeGate,source='client/Images/gates.png',scale=self._scale)
         self._createdObject[lgeGate.formID()] = ioGate
