@@ -89,7 +89,11 @@ class MainWidget(Widget):
         try:
             # self.theGame = game.Game(dataUrl, self.eventsList, self.output)
             self.theGame = game.Game(
-                dataUrl, self.eventsList, OutputFactory(self, scale=1)
+                dataUrl,
+                self.eventsList,
+                OutputFactory(
+                    self, max_width=app.windowSize[0], max_height=app.windowSize[1]
+                ),
             )
 
             print("Starting ...")

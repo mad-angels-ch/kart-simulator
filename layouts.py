@@ -159,7 +159,9 @@ class PreView(Widget):
                     )
                     app = App.get_running_app()
                     self.theGame = game.Game(
-                        self.dataUrl, [], OutputFactory(self, scale=3)
+                        self.dataUrl,
+                        [],
+                        OutputFactory(self, max_width=200, max_height=200),
                     )
                     with self.canvas.before:
                         Color(rgba=(1, 1, 1, 1))
