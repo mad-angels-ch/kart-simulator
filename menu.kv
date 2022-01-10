@@ -326,8 +326,23 @@
 
 
 <EndGameMode>:
+    canvas.before:
+        Color:
+            rgba: 0,0,0,.5
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    Label:
+        id: gameOverLabel_id
+        text: ""
+        font_size: 74
+        halign: 'center'
+        color: 0.4, 1, 0.4, 1
+
+
     Button:
         size_hint:.2,.1
-        pos_hint: {'x': .4 , 'y': .4 }
+        pos_hint: {'x':.4, 'y': .45}
         text:"Quit game"
         on_release: app.manager.pop(),app.clear_game(), app.ButtonSound()

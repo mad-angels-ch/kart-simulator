@@ -21,6 +21,8 @@ from action_bar import BoxLayoutWithActionBar
 from game.objects.fill.Hex import Hex
 from game.objects.fill.Pattern import Pattern
 from kivy.uix.image import Image
+from kivy.animation import Animation
+
 #################### Gestion des différents screens ###################
 
 
@@ -44,13 +46,13 @@ class NavigationScreenManager(ScreenManager):
 class MyScreenManager(NavigationScreenManager):
     pass
 
+
 class BeginningImage(RelativeLayout):
     pass
 
+
 class EndGameMode(FloatLayout):
     pass
-
-
 
 
 class PauseMode(FloatLayout):
@@ -69,6 +71,7 @@ class PauseMode(FloatLayout):
         music_list.append("No music")
         return music_list
 
+
 class KS_screen(Screen):
     layout_id = ObjectProperty()
     # animation_id = ObjectProperty()
@@ -82,12 +85,12 @@ class KS_screen(Screen):
         self.game = MainWidget(self.world, self)
         if self.game.theGame:
             self.layout_id.add_widget(self.game)
-            self.start_button = Button(text="start The game!", size_hint=(.25,.1 ))
+            self.start_button = Button(text="start The game!", size_hint=(0.25, 0.1))
             self.start_button.bind(on_press=self.startingAnimation)
             self.layout_id.add_widget(self.start_button)
             self.game.theGame.callOutput()
             self.app = App.get_running_app()
-        
+
     def quit(self):
         self.game.clear()
 
@@ -101,23 +104,32 @@ class KS_screen(Screen):
             width=Window.width, height=Window.height, music=self.musicName
         )
         self.add_widget(self.pauseMenu)
-        
-    def endGameMode(self):
+
+    def endGameMode(self, message):
         if self.musicName:
             self.pauseMusic()
 
         self.game.play = False
         self.game.my_clock.unschedule(self.game.theGame.nextFrame)
         self.endGameMenu = EndGameMode()
+        self.endGameMenu.ids.gameOverLabel_id.text = message
+        anim = (
+            Animation(font_size=74, duration=0.1)
+            + Animation(font_size=120, duration=1)
+            + Animation(font_size=120, duration=0.1)
+            + Animation(font_size=74, duration=1)
+        )
+        anim.repeat = True
+        anim.start(self.endGameMenu.ids.gameOverLabel_id)
         self.add_widget(self.endGameMenu)
-        
-    def begin_game(self,dt):
+
+    def begin_game(self, dt):
         # self.animation_id.remove_widget(self.imageB)
         # self.remove_widget(self.animation_id)
         self.remove_widget(self.pg)
-        
+
         self.game.start_theGame()
-        
+
     def startingAnimation(self, instance):
         self.layout_id.remove_widget(self.start_button)
         self.pg = BeginningImage()
@@ -126,12 +138,12 @@ class KS_screen(Screen):
         # self.layout_id.add_widget(self.image3)
         Clock.schedule_once(self.begin_game, 3)
 
-    def end_game(self):
-        self.endGameMode()
-        
+    def end_game(self, endGameMessage=""):
+        self.endGameMode(endGameMessage)
+
     def test(self):
         self.app.manager.pop()
-        
+
     def resumeGame(self, new_music):
         self.resumeMusic()
 
