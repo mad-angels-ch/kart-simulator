@@ -80,12 +80,13 @@ class KS_screen(Screen):
         super().__init__(**kw)
         self.world = world
         self.game = MainWidget(self.world, self)
-        self.layout_id.add_widget(self.game)
-        self.start_button = Button(text="start The game!", size_hint=(.25,.1 ))
-        self.start_button.bind(on_press=self.startingAnimation)
-        self.layout_id.add_widget(self.start_button)
-        # self.game.theGame.callOutput()
-        self.app = App.get_running_app()
+        if self.game.theGame:
+            self.layout_id.add_widget(self.game)
+            self.start_button = Button(text="start The game!", size_hint=(.25,.1 ))
+            self.start_button.bind(on_press=self.startingAnimation)
+            self.layout_id.add_widget(self.start_button)
+            self.game.theGame.callOutput()
+            self.app = App.get_running_app()
         
     def quit(self):
         self.game.clear()

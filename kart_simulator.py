@@ -98,6 +98,7 @@ class MainWidget(Widget):
 
             
         except ObjectCountError as OCE:
+            self.theGame = None
             self.app.changeLabelText(OCE.message())
             
             
