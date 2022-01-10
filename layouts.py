@@ -1,5 +1,6 @@
 from logging import warning
 from kivy.clock import Clock
+from kivy.uix.relativelayout import RelativeLayout
 import requests, json, os, threading
 
 from kivy.app import App
@@ -10,7 +11,7 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.widget import Widget
 from kivy.utils import rgba
 from game.objects.ObjectFactory import ObjectCountError
-from kart_simulator import MainWidget, PauseMode, EndGameMode, BeginningImage
+from kart_simulator import MainWidget
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import StringProperty, ObjectProperty
@@ -43,6 +44,30 @@ class NavigationScreenManager(ScreenManager):
 class MyScreenManager(NavigationScreenManager):
     pass
 
+class BeginningImage(RelativeLayout):
+    pass
+
+class EndGameMode(FloatLayout):
+    pass
+
+
+
+
+class PauseMode(FloatLayout):
+    def __init__(self, width, height, music, **kwargs):
+
+        self.chosen_music = str(music)
+        self.width = width
+        self.height = height
+        super().__init__(**kwargs)
+
+    def changeMusicSpinnerText(self, text):
+        self.chosen_music = text
+
+    def generateMusicsList(self):
+        music_list = list(music[:-4] for music in listdir("client/sounds/music"))
+        music_list.append("No music")
+        return music_list
 
 class KS_screen(Screen):
     layout_id = ObjectProperty()
@@ -59,6 +84,7 @@ class KS_screen(Screen):
         self.start_button = Button(text="start The game!", size_hint=(.25,.1 ))
         self.start_button.bind(on_press=self.startingAnimation)
         self.layout_id.add_widget(self.start_button)
+        # self.game.theGame.callOutput()
         self.app = App.get_running_app()
         
     def quit(self):
