@@ -132,9 +132,7 @@ class MainWidget(Widget):
         if output.isInitialized():
             self.updateGatesCount(output.getAllGates())
             self.updateLapsCount(output.getFinishLine())
-
-            if self.gameIsOver(output.getAllKarts(), output.getFinishLine()):
-                self.parentScreen.end_game()
+            self.checkIfGameIsOver(output.getAllKarts(), output.getFinishLine())
 
     def updateLapsCount(self, finishLine: FinishLine) -> None:
         """Met l'affichage du nombre de tours terminés à jour"""
@@ -149,6 +147,7 @@ class MainWidget(Widget):
         )
         self.parent.parent.ids.gates_id.text = f"{gatesPassed}/{numberOfGates}"
 
-    def gameIsOver(self, karts: List[Kart], finishLine: FinishLine) -> bool:
-        """Retourne vrai si la partie est terminée"""
-        return finishLine.completedAllLaps(self.kart_ID) or karts[0].hasBurned()
+    def checkIfGameIsOver(self, karts: List[Kart], finishLine: FinishLine) -> None:
+        """Control si la partie est terminé et si oui gère celle-ci."""
+        if finishLine.completedAllLaps(self.kart_ID) or karts[0].hasBurned():
+            self.parentScreen.end_game()
