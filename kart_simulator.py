@@ -16,6 +16,7 @@ from game.objects.FinishLine import FinishLine
 from game.objects.ObjectFactory import ObjectCountError
 from game.objects.fill.Hex import Hex
 from game.objects.fill.Pattern import Pattern
+from game import objects
 from logging import error, warning
 from kivy.app import App
 from lib import Point
@@ -29,7 +30,6 @@ from kivy.uix.widget import Widget
 from kivy.graphics import Rectangle, Color
 from kivy.properties import Clock
 from kivy.properties import StringProperty
-
 
 
 from client.output import OutputFactory
@@ -69,6 +69,7 @@ class MainWidget(Widget):
 
         from game.objects import Circle, Object
         from lib import Point
+
         self.app = App.get_running_app()
         try:
             # self.theGame = game.Game(dataUrl, self.eventsList, self.output)
@@ -76,7 +77,10 @@ class MainWidget(Widget):
                 dataUrl,
                 self.eventsList,
                 OutputFactory(
-                    self, max_width=self.app.windowSize[0], max_height=self.app.windowSize[1]
+                    self,
+                    frame_callback=self.frame_callback,
+                    max_width=self.app.windowSize[0],
+                    max_height=self.app.windowSize[1],
                 ),
             )
 
@@ -96,13 +100,10 @@ class MainWidget(Widget):
 
             # self.play = True
 
-            
         except ObjectCountError as OCE:
             self.theGame = None
             self.app.changeLabelText(OCE.message())
-            
-            
-            
+
     def clear(self):
         print("LEAVED")
         self.canvas.clear()
@@ -116,7 +117,7 @@ class MainWidget(Widget):
         else:
             # self.resume()
             self.parent.parent.resumeGame()
-            
+
     def start_theGame(self):
         self._keyboard = Window.request_keyboard(self.keyboard_closed, self)
         self._keyboard.bind(on_key_down=self.on_keyboard_down)
@@ -126,6 +127,11 @@ class MainWidget(Widget):
 
         self.play = True
 
+    def frame_callback(self, output: OutputFactory, objects: List[Object]) -> None:
+        """Fonction appellée à chaque frame par output"""
+        if output.isInitialized():
+            self.updateGatesCount(output.getAllGates())
+            self.updateLapsCount(output.getFinishLine())
 
     def updateLapsCount(self, finishLine: FinishLine) -> None:
         """Met l'affichage du nombre de tours terminés à jour"""
