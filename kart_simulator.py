@@ -30,32 +30,9 @@ from kivy.graphics import Rectangle, Color
 from kivy.properties import Clock
 from kivy.properties import StringProperty
 
-class BeginningImage(RelativeLayout):
-    pass
 
-class EndGameMode(FloatLayout):
-    pass
 
 from client.output import OutputFactory
-
-
-class PauseMode(FloatLayout):
-    def __init__(self, width, height, music, **kwargs):
-
-        self.chosen_music = str(music)
-        self.width = width
-        self.height = height
-        super().__init__(**kwargs)
-
-    def changeMusicSpinnerText(self, text):
-        self.chosen_music = text
-
-    def generateMusicsList(self):
-        music_list = list(music[:-4] for music in listdir("client/sounds/music"))
-        music_list.append("No music")
-        return music_list
-
-
 
 Builder.load_file("layouts.kv")
 
@@ -110,14 +87,14 @@ class MainWidget(Widget):
             #################################################################
             self.fps = 60
 
-            self._keyboard = Window.request_keyboard(self.keyboard_closed, self)
-            self._keyboard.bind(on_key_down=self.on_keyboard_down)
-            self._keyboard.bind(on_key_up=self.on_keyboard_up)
+            # self._keyboard = Window.request_keyboard(self.keyboard_closed, self)
+            # self._keyboard.bind(on_key_down=self.on_keyboard_down)
+            # self._keyboard.bind(on_key_up=self.on_keyboard_up)
 
-            self.my_clock = Clock
-            self.my_clock.schedule_interval(self.theGame.nextFrame, 1 / self.fps)
+            # self.my_clock = Clock
+            # self.my_clock.schedule_interval(self.theGame.nextFrame, 1 / self.fps)
 
-            self.play = True
+            # self.play = True
 
             
         except ObjectCountError as OCE:
@@ -140,6 +117,9 @@ class MainWidget(Widget):
             self.parent.parent.resumeGame()
             
     def start_theGame(self):
+        self._keyboard = Window.request_keyboard(self.keyboard_closed, self)
+        self._keyboard.bind(on_key_down=self.on_keyboard_down)
+        self._keyboard.bind(on_key_up=self.on_keyboard_up)
         self.my_clock = Clock
         self.my_clock.schedule_interval(self.theGame.nextFrame, 1 / self.fps)
 
