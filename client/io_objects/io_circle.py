@@ -18,13 +18,14 @@ class IO_Circle(Ellipse):
     _LGECircle: "io_objects.Circle"
     
 
-    def __init__(self, widget: Widget, LGEObject: "io_objects.Circle", scale = 1, translate: lib.Vector = lib.Vector((0,0))):
+    def __init__(self, widget: Widget, LGEObject: "io_objects.Circle", scale = 1, translate1: lib.Vector = lib.Vector((0,0)), translate2: lib.Vector = lib.Vector((0,0))):
         """Crée le cercle à ajouter au canvas et prépare son ajout"""
         self._w = widget
         self._scale = scale
         self._LGECircle = LGEObject
         self._radius = self._LGECircle.radius()/self._scale
-        self._translate = translate
+        self._translation1 = translate1
+        self._translation2 = translate2
         self.lastPos = lib.Point((0,0))
         with self._w.canvas:
             Color(rgba=get_color_from_hex(self._LGECircle.fill().value()))
@@ -39,10 +40,11 @@ class IO_Circle(Ellipse):
             self.pos=self.get_position(self.get_center(self._LGECircle.center()))
     
     def get_center(self, centerBefore: lib.Point) -> lib.Point:
-        centerScaled = lib.Vector((centerBefore[0],centerBefore[1])) / self._scale
-        centerScaledAndTranslated = lib.Point((centerScaled[0],centerScaled[1]))
-        centerScaledAndTranslated.translate(self._translate)
-        return centerScaledAndTranslated
+        centerBefore.translate(self._translation1)
+        centerScaledAndTranslated = lib.Vector((centerBefore[0],centerBefore[1])) / self._scale
+        centerAfter = lib.Point((centerScaledAndTranslated[0],centerScaledAndTranslated[1]))
+        centerAfter.translate(self._translation2)
+        return centerAfter
 
     def get_position(self,center: lib.Point) -> lib.Point:
         centerVector = lib.Vector((center[0],center[1]))

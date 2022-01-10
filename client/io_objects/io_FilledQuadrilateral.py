@@ -10,23 +10,24 @@ from logging import warning
 class IO_FilledQuadrilateral(Rectangle):
     _scale: float
     _LGEFilledQuadrilateral: "io_objects.IO_FilledQuadrilateral"
-    def __init__(self, LGEObject: "io_objects.IO_FilledQuadrilateral", source: str = None, scale=1, translate: lib.Vector = lib.Vector((0,0))):
+    def __init__(self, LGEObject: "io_objects.IO_FilledQuadrilateral", source: str = None, scale=1, translate1: lib.Vector = lib.Vector((0,0)), translate2: lib.Vector = lib.Vector((0,0))):
         self._scale = scale
         self._LGEFilledQuadrilateral = LGEObject
         self._source = source
-        self._translate = translate
+        self._translation1 = translate1
+        self._translation2 = translate2
         self._verticesBR = self._LGEFilledQuadrilateral.verticesBeforeRotation()
         _angle = self._LGEFilledQuadrilateral.angle()*180/math.pi
         
         
-        center1 = lib.Vector((self._LGEFilledQuadrilateral.center()[0],self._LGEFilledQuadrilateral.center()[1])) / self._scale
-        _size1 = (self.get_sizeFromVertices()[0] / self._scale, self.get_sizeFromVertices()[1] / self._scale)
-        position1 = center1 - (lib.Vector(_size1)/2)
+        # center1 = lib.Vector((self._LGEFilledQuadrilateral.center()[0],self._LGEFilledQuadrilateral.center()[1])) / self._scale
+        # _size1 = (self.get_sizeFromVertices()[0] / self._scale, self.get_sizeFromVertices()[1] / self._scale)
+        # position1 = center1 - (lib.Vector(_size1)/2)
         
         center = self.get_center(self._LGEFilledQuadrilateral.center())
         self._size = (self.get_sizeFromVertices()[0] / self._scale, self.get_sizeFromVertices()[1] / self._scale)
         position = self.get_position(center)
-        
+    
         PushMatrix()
         Rotate(origin=center, angle=_angle)
         Rectangle.__init__(self,source=self._source,pos=position,size=self._size)
@@ -44,10 +45,12 @@ class IO_FilledQuadrilateral(Rectangle):
         return ([point[0] for point in self._verticesBR],[point[1] for point in self._verticesBR])
     
     def get_center(self, centerBefore: lib.Point) -> lib.Point:
-        centerScaled = lib.Vector((centerBefore[0],centerBefore[1])) / self._scale
-        centerScaledAndTranslated = lib.Point((centerScaled[0],centerScaled[1]))
-        centerScaledAndTranslated.translate(self._translate)
-        return centerScaledAndTranslated
+        centerTranslated = lib.Point((centerBefore[0],centerBefore[1]))
+        centerTranslated.translate(self._translation1)
+        centerScaledAndTranslated = lib.Vector((centerTranslated[0],centerTranslated[1])) / self._scale
+        center = lib.Point((centerScaledAndTranslated[0], centerScaledAndTranslated[1]))
+        center.translate(self._translation2)
+        return center
     
     def get_position(self,center: lib.Point) -> lib.Point:
         centerVector = lib.Vector((center[0],center[1]))

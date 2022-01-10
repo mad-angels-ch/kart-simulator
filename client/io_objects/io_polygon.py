@@ -11,13 +11,14 @@ class IO_Polygon(Mesh):
     _w: Widget
     _scale: float
     _LGEPolygon: "io_objects.Polygon"
-    def __init__(self, widget: Widget, LGEObject: "io_objects.Polygon", scale=1, translate: lib.Vector = lib.Vector((0,0))):
+    def __init__(self, widget: Widget, LGEObject: "io_objects.Polygon", scale=1, translate1: lib.Vector = lib.Vector((0,0)), translate2: lib.Vector = lib.Vector((0,0))):
         """Crée le polygone à ajouter au canvas et prépare son ajout"""
         self._w = widget
         self._scale = scale
         self._LGEPolygon = LGEObject
         self._vertices = []
-        self._translate = translate
+        self._translation1 = translate1
+        self._translation2 = translate2
 
         self.lastPos = []
         
@@ -47,11 +48,11 @@ class IO_Polygon(Mesh):
     def updatePosition(self):
         if self._LGEPolygon.vertices() != self.lastPos:
             self.lastPos = self._LGEPolygon.vertices()
-            i = 0
+            i = 0 
             self._vertices = []
             while i < len(self._LGEPolygon):
-                self._vertices.append(self._LGEPolygon.vertices()[i][0] / self._scale + self._translate[0])
-                self._vertices.append(self._LGEPolygon.vertices()[i][1] / self._scale + self._translate[1])
+                self._vertices.append((self._LGEPolygon.vertices()[i][0]  + self._translation1[0]) / self._scale + self._translation2[0])
+                self._vertices.append((self._LGEPolygon.vertices()[i][1] + self._translation1[1]) / self._scale + self._translation2[1])
                 self._vertices.append(0)
                 self._vertices.append(0)
                 i += 1
