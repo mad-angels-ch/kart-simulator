@@ -265,7 +265,7 @@ class UpdateWorldButton(Button):
             for name, data in savedWorld.items():
                 if name in worldsInfo:
                     if data["version"] != worldsInfo[name]["version"]:
-                        updateWorlds_output.text += f"Updating world {name} ..."
+                        updateWorlds_output.text += f"Updating world {name} ... "
                         with open(f"client/worlds/{name}.json", "w") as worldJSON:
                             worldJSON.write(
                                 requests.get(
