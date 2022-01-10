@@ -23,6 +23,7 @@ class OutputFactory:
     _scale: float
     _initialized: bool
 
+    _karts: List[game_objects.Kart]
     _gates: List[game_objects.Gate]
     _finishLine: game_objects.FinishLine
 
@@ -50,11 +51,17 @@ class OutputFactory:
         self._createdObject = {}
         self._initialized = False
 
+        self._karts = []
         self._gates = []
 
     def isInitialized(self) -> bool:
         """Retourne vrai si initialisé."""
         return self._initialized
+
+    def getAllKarts(self) -> List[game_objects.Kart]:
+        """NE PAS MODIFIER\n
+        Retourne la liste de tous les karts du jeu"""
+        return self._karts
 
     def getAllGates(self) -> List[game_objects.Gate]:
         """NE PAS MODIFIER\n
@@ -67,7 +74,7 @@ class OutputFactory:
 
     def __call__(self, objects: List[game_objects.Object]) -> None:
         self._frameCallback(self, objects)
-        
+
         if not self._scale:
             # calculer la taille du canvas
             lefts = []
@@ -189,6 +196,7 @@ class OutputFactory:
     def createKart(self, lgeKart: game_objects.Kart) -> None:
         """Dessine le kart sur le canvas du widget et l'ajout au registre"""
         self._w.kart_ID = lgeKart.formID()
+        self._karts.append(lgeKart)
         with self._w.canvas:  # This type of objects has to be put into the 'with self.canvas:' instruction
             Color(rgba=(1, 1, 1, 1))
             ioKart = io_objects.FilledQuadrilateral(
