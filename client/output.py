@@ -44,7 +44,7 @@ class OutputFactory:
         self._w = widget
         self._createdObject = {}
         self._initialized = False
-
+        
         self._gates = []
     def __call__(self, objects: List[game_objects.Object]) -> None:
         if self._initialized:
@@ -82,6 +82,7 @@ class OutputFactory:
                     (toppest - bottomest + self._maxHeight) / 2,
                 )
             )
+            self._translate = lib.Vector((200,100))
             self._scale = max(
                 (rightest - leftest) / self._maxWidth,
                 (toppest - bottomest) / self._maxHeight,
@@ -125,12 +126,12 @@ class OutputFactory:
                 # mettres les positions à jour
                 io_object = self._createdObject[obstacle.formID()]
                 if isinstance(obstacle, game_objects.Circle):
-                    io_object.updatePosition(newPos=obstacle.center())
+                    io_object.updatePosition()
                 elif isinstance(obstacle, game_objects.Kart):
                     self._w.canvas.remove(io_object)
                     self.createKart(obstacle)
                 elif isinstance(obstacle, game_objects.Polygon):
-                    io_object.updatePosition(newPos=obstacle.vertices())
+                    io_object.updatePosition()
                     if isinstance(obstacle, game_objects.FinishLine):
                         self._w.updateLapsCount(obstacle)
 

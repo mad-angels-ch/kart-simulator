@@ -10,6 +10,8 @@ import lib
 
 from kivy.properties import ListProperty
 
+from lib.Point import Point
+
 class IO_Circle(Ellipse):
     _w: Widget
     _scale: float
@@ -22,15 +24,27 @@ class IO_Circle(Ellipse):
         self._scale = scale
         self._LGECircle = LGEObject
         self._radius = self._LGECircle.radius()/self._scale
-        
+        self._translate = translate
+        self.lastPos = lib.Point((0,0))
         with self._w.canvas:
             Color(rgba=get_color_from_hex(self._LGECircle.fill().value()))
-        center = lib.Vector((self._LGECircle.center()[0],self._LGECircle.center()[1]))/self._scale
-        position = center - lib.Vector((self._radius,self._radius))
-        Ellipse.__init__(self,pos=position,size=(2*self._radius,2*self._radius))
+        
+        Ellipse.__init__(self,size=(2*self._radius,2*self._radius))
 
-    def radius(self):
-        return self._radius
-    def updatePosition(self, newPos: List[float] = None):
-        if newPos:
-            self.pos = (newPos[0] / self._scale - self.radius(), newPos[1] / self._scale - self.radius())
+        self.updatePosition()
+    
+    def updatePosition(self):
+        if self._LGECircle.center() != self.lastPos:
+            self.lastPos = self._LGECircle.center()
+            self.pos=self.get_position(self.get_center(self._LGECircle.center()))
+    
+    def get_center(self, centerBefore: lib.Point) -> lib.Point:
+        centerScaled = lib.Vector((centerBefore[0],centerBefore[1])) / self._scale
+        centerScaledAndTranslated = lib.Point((centerScaled[0],centerScaled[1]))
+        centerScaledAndTranslated.translate(self._translate)
+        return centerScaledAndTranslated
+
+    def get_position(self,center: lib.Point) -> lib.Point:
+        centerVector = lib.Vector((center[0],center[1]))
+        position = (centerVector - lib.Vector((self._radius,self._radius)))
+        return lib.Point((position[0],position[1]))

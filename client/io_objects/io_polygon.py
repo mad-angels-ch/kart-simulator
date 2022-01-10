@@ -17,20 +17,18 @@ class IO_Polygon(Mesh):
         self._scale = scale
         self._LGEPolygon = LGEObject
         self._vertices = []
+        self._translate = translate
 
+        self.lastPos = []
+        
         self._indices = [i for i in range(len(self._LGEPolygon))]
-        i = 0
+        
         with self._w.canvas:
             Color(rgba=get_color_from_hex(self._LGEPolygon.fill().value()))
-        while i < len(self._LGEPolygon):
-            self._vertices.append(self._LGEPolygon.vertices()[i][0] / self._scale)
-            self._vertices.append(self._LGEPolygon.vertices()[i][1] / self._scale)
-            self._vertices.append(0)
-            self._vertices.append(0)
-        #     self._step += 1
-        #     self._indices.append(j)
-            i += 1
-        #     j += 1
+            
+        self.updatePosition()
+        
+            
         # En raison d'une mauvaise gestion des polygones non-convexes par kivy, 
         # nous sommes pour l'instant contraints de recourir à cette méthode pour afficher ceux-ci 
         # (les polygones non-convexes utilisés ont tous plus de 4 côtés):
@@ -46,19 +44,15 @@ class IO_Polygon(Mesh):
                 indices=self._indices,
             )
 
-    def get_vertices(self):
-        return self._vertices
-
-    def updatePosition(self, newPos: List[float] = None):
-        if newPos:
+    def updatePosition(self):
+        if self._LGEPolygon.vertices() != self.lastPos:
+            self.lastPos = self._LGEPolygon.vertices()
             i = 0
-            newVertices = []
+            self._vertices = []
             while i < len(self._LGEPolygon):
-                newVertices.append(self._LGEPolygon.vertices()[i][0] / self._scale)
-                newVertices.append(self._LGEPolygon.vertices()[i][1] / self._scale)
-                newVertices.append(0)
-                newVertices.append(0)
+                self._vertices.append(self._LGEPolygon.vertices()[i][0] / self._scale + self._translate[0])
+                self._vertices.append(self._LGEPolygon.vertices()[i][1] / self._scale + self._translate[1])
+                self._vertices.append(0)
+                self._vertices.append(0)
                 i += 1
-
-            self._vertices = newVertices
             self.vertices = self._vertices
