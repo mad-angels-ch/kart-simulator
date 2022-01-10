@@ -9,7 +9,7 @@ import lib
 class IO_FilledQuadrilateral(Rectangle):
     _scale: float
     _LGEFilledQuadrilateral: "io_objects.IO_FilledQuadrilateral"
-    def __init__(self, LGEObject: "io_objects.IO_FilledQuadrilateral", source: str = None, scale=1):
+    def __init__(self, LGEObject: "io_objects.IO_FilledQuadrilateral", source: str = None, scale=1, translate: lib.Vector = lib.Vector((0,0))):
         self._scale = scale
         self._LGEFilledQuadrilateral = LGEObject
         self._source = source
@@ -18,8 +18,8 @@ class IO_FilledQuadrilateral(Rectangle):
         
         _angle = self._LGEFilledQuadrilateral.angle()*180/math.pi
         center = lib.Vector((self._LGEFilledQuadrilateral.center()[0],self._LGEFilledQuadrilateral.center()[1])) / self._scale
-        _size = self.get_sizeFromVertices()
-        position = center - lib.Vector(_size)/2
+        _size = (self.get_sizeFromVertices()[0] / self._scale, self.get_sizeFromVertices()[1] / self._scale)
+        position = center - (lib.Vector(_size)/2)
         
 
         

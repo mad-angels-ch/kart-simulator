@@ -16,7 +16,7 @@ class IO_Circle(Ellipse):
     _LGECircle: "io_objects.Circle"
     
 
-    def __init__(self, widget: Widget, LGEObject: "io_objects.Circle", scale = 1):
+    def __init__(self, widget: Widget, LGEObject: "io_objects.Circle", scale = 1, translate: lib.Vector = lib.Vector((0,0))):
         """Crée le cercle à ajouter au canvas et prépare son ajout"""
         self._w = widget
         self._scale = scale
@@ -33,4 +33,4 @@ class IO_Circle(Ellipse):
         return self._radius
     def updatePosition(self, newPos: List[float] = None):
         if newPos:
-            self.pos = (newPos[0] - self.radius(), newPos[1] - self.radius())
+            self.pos = (newPos[0] / self._scale - self.radius(), newPos[1] / self._scale - self.radius())

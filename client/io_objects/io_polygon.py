@@ -1,7 +1,7 @@
 from typing import List
 from kivy.graphics import Mesh, Color
 from typing import List
-
+import lib
 from kivy.uix.widget import Widget
 from kivy.utils import get_color_from_hex
 import client
@@ -11,7 +11,7 @@ class IO_Polygon(Mesh):
     _w: Widget
     _scale: float
     _LGEPolygon: "io_objects.Polygon"
-    def __init__(self, widget: Widget, LGEObject: "io_objects.Polygon", scale=1):
+    def __init__(self, widget: Widget, LGEObject: "io_objects.Polygon", scale=1, translate: lib.Vector = lib.Vector((0,0))):
         """Crée le polygone à ajouter au canvas et prépare son ajout"""
         self._w = widget
         self._scale = scale
@@ -51,13 +51,14 @@ class IO_Polygon(Mesh):
 
     def updatePosition(self, newPos: List[float] = None):
         if newPos:
-            newVertices = list()
-
-            for vertex in newPos:
-                newVertices.append(vertex[0])
-                newVertices.append(vertex[1])
+            i = 0
+            newVertices = []
+            while i < len(self._LGEPolygon):
+                newVertices.append(self._LGEPolygon.vertices()[i][0] / self._scale)
+                newVertices.append(self._LGEPolygon.vertices()[i][1] / self._scale)
                 newVertices.append(0)
                 newVertices.append(0)
+                i += 1
 
             self._vertices = newVertices
             self.vertices = self._vertices
