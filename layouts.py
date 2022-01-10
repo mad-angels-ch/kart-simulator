@@ -1,6 +1,8 @@
 from logging import warning
+from kivy.clock import Clock
 import requests, json, os, threading
 
+from kivy.app import App
 from kivy.core.audio import SoundLoader
 from kivy.uix.button import Button
 from kivy.uix.label import Label
@@ -8,7 +10,7 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.widget import Widget
 from kivy.utils import rgba
 from game.objects.ObjectFactory import ObjectCountError
-from kart_simulator import MainWidget, PauseMode
+from kart_simulator import MainWidget, PauseMode, EndGameMode, BeginningImage
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import StringProperty, ObjectProperty
@@ -17,7 +19,7 @@ from kivy.uix.dropdown import DropDown
 from action_bar import BoxLayoutWithActionBar
 from game.objects.fill.Hex import Hex
 from game.objects.fill.Pattern import Pattern
-
+from kivy.uix.image import Image
 #################### Gestion des différents screens ###################
 
 
@@ -44,6 +46,8 @@ class MyScreenManager(NavigationScreenManager):
 
 class KS_screen(Screen):
     layout_id = ObjectProperty()
+    # animation_id = ObjectProperty()
+    # imageB = ObjectProperty()
 
     def __init__(self, world, music, **kw):
         self.musicName = self.get_musicName(music)
@@ -52,7 +56,11 @@ class KS_screen(Screen):
         self.world = world
         self.game = MainWidget(self.world, self)
         self.layout_id.add_widget(self.game)
-
+        self.start_button = Button(text="start The game!", size_hint=(.25,.1 ))
+        self.start_button.bind(on_press=self.startingAnimation)
+        self.layout_id.add_widget(self.start_button)
+        self.app = App.get_running_app()
+        
     def quit(self):
         self.game.clear()
 
@@ -66,7 +74,37 @@ class KS_screen(Screen):
             width=Window.width, height=Window.height, music=self.musicName
         )
         self.add_widget(self.pauseMenu)
+        
+    def endGameMode(self):
+        if self.musicName:
+            self.pauseMusic()
 
+        self.game.play = False
+        self.game.my_clock.unschedule(self.game.theGame.nextFrame)
+        self.endGameMenu = EndGameMode()
+        self.add_widget(self.endGameMenu)
+        
+    def begin_game(self,dt):
+        # self.animation_id.remove_widget(self.imageB)
+        # self.remove_widget(self.animation_id)
+        self.remove_widget(self.pg)
+        
+        self.game.start_theGame()
+        
+    def startingAnimation(self, instance):
+        self.layout_id.remove_widget(self.start_button)
+        self.pg = BeginningImage()
+        self.add_widget(self.pg)
+        # self.image3 = Image(source='client/Images/321go.gif', size_hint=(1,1 ),pos_hint={'center_x': .35, 'center_y': .35}, keep_ratio= False,allow_stretch= True)
+        # self.layout_id.add_widget(self.image3)
+        Clock.schedule_once(self.begin_game, 3)
+
+    def end_game(self):
+        self.endGameMode()
+        
+    def test(self):
+        self.app.manager.pop()
+        
     def resumeGame(self, new_music):
         self.resumeMusic()
 

@@ -10,6 +10,8 @@ from kivy.core.window import Window
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.label import Label
+from kivy.uix.relativelayout import RelativeLayout
 from game.objects.FinishLine import FinishLine
 from game.objects.ObjectFactory import ObjectCountError
 from game.objects.fill.Hex import Hex
@@ -28,6 +30,11 @@ from kivy.graphics import Rectangle, Color
 from kivy.properties import Clock
 from kivy.properties import StringProperty
 
+class BeginningImage(RelativeLayout):
+    pass
+
+class EndGameMode(FloatLayout):
+    pass
 
 from client.output import OutputFactory
 
@@ -47,6 +54,7 @@ class PauseMode(FloatLayout):
         music_list = list(music[:-4] for music in listdir("client/sounds/music"))
         music_list.append("No music")
         return music_list
+
 
 
 Builder.load_file("layouts.kv")
@@ -84,21 +92,20 @@ class MainWidget(Widget):
 
         from game.objects import Circle, Object
         from lib import Point
-
-        app = App.get_running_app()
+        self.app = App.get_running_app()
         try:
             # self.theGame = game.Game(dataUrl, self.eventsList, self.output)
             self.theGame = game.Game(
                 dataUrl,
                 self.eventsList,
                 OutputFactory(
-                    self, max_width=app.windowSize[0], max_height=app.windowSize[1]
+                    self, max_width=self.app.windowSize[0], max_height=self.app.windowSize[1]
                 ),
             )
 
             print("Starting ...")
-            app.manager.add_widget(self.parentScreen)
-            app.start_ks()
+            self.app.manager.add_widget(self.parentScreen)
+            self.app.start_ks()
             print("Finisched!")
             #################################################################
             self.fps = 60
@@ -112,9 +119,12 @@ class MainWidget(Widget):
 
             self.play = True
 
+            
         except ObjectCountError as OCE:
-            app.changeLabelText(OCE.message())
-
+            self.app.changeLabelText(OCE.message())
+            
+            
+            
     def clear(self):
         print("LEAVED")
         self.canvas.clear()
@@ -128,10 +138,20 @@ class MainWidget(Widget):
         else:
             # self.resume()
             self.parent.parent.resumeGame()
+            
+    def start_theGame(self):
+        self.my_clock = Clock
+        self.my_clock.schedule_interval(self.theGame.nextFrame, 1 / self.fps)
+
+        self.play = True
+
 
     def updateLapsCount(self, finishLine: FinishLine) -> None:
         """Met l'affichage du nombre de tours terminés à jour"""
-        self.parent.parent.ids.laps_id.text = f"{finishLine.passagesCount(self.kart_ID)}/{finishLine.numberOfLapsRequired()}"
+        if finishLine.completedAllLaps(self.kart_ID):
+            self.parentScreen.end_game()
+        else:
+            self.parent.parent.ids.laps_id.text = f"{finishLine.passagesCount(self.kart_ID)}/{finishLine.numberOfLapsRequired()}"
 
     def updateGatesCount(self, gatesList: List[Gate]) -> None:
         """Met l'affiche du nombre de portillons (du tour) franchis à jour"""
