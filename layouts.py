@@ -76,11 +76,11 @@ class KS_screen(Screen):
 
     def __init__(self, world, music, **kw):
         self.musicName = self.get_musicName(music)
-        self.startMusic()
         super().__init__(**kw)
         self.world = world
         self.game = MainWidget(self.world, self)
         if self.game.theGame:
+            self.startMusic()
             self.layout_id.add_widget(self.game)
             self.start_button = Button(text="start The game!", size_hint=(.25,.1 ))
             self.start_button.bind(on_press=self.startingAnimation)
