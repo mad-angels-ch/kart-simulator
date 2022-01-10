@@ -28,6 +28,7 @@ class MenuApp(App):
 
     def build(self):
         Window.clearcolor = get_color_from_hex("#ffffff")
+        self.icon = 'client/Images/kart.png'
         self.manager = MyScreenManager()        
         with self.manager.screens[0].canvas:
             self.errorLabel=Label(bold=True,underline=True,font_size=32,text="",pos=(Window.width/2-50,Window.height/2-10),color=(1,1,1,.5))
