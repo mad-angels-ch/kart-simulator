@@ -162,6 +162,6 @@ class MainWidget(Widget):
     def checkIfGameIsOver(self, karts: List[Kart], finishLine: FinishLine) -> None:
         """Control si la partie est terminé et si oui gère celle-ci."""
         if finishLine.completedAllLaps(self.kart_ID):
-            self.parentScreen.end_game(f"Completed!\n\nWell done!\n Your time:{self.parent.parent.ids.timer_id.text}")
+            self.parentScreen.end_game(f"Completed!\n\nWell done!\n Your time: {self.parent.parent.ids.timer_id.text}")
         elif karts[0].hasBurned():
             self.parentScreen.end_game("You have burned!\n\nTry again!")
