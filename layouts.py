@@ -334,7 +334,7 @@ class UpdateWorldButton(Button):
         worlds_spinner.values = [world[:-5] for world in listdir("client/worlds")]
         updateWorlds_output.text += "All worlds are up to date!"
         self._updating = False
-        self.text = "Update the worlds now (this may take several minutes)"
+        self.text = "Update the worlds now"
         sound = SoundLoader.load("client/sounds/success-sound-effect.mp3")
         sound.volume = 0.25
         sound.play()
