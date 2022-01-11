@@ -290,7 +290,7 @@ class UpdateWorldButton(Button):
 
     def generateUpdatedWorldsListTask(self, updateWorlds_output, worlds_spinner):
         updateWorlds_output.text = (
-            "\nUpdating the worlds (this may take several minutes) ...\n"
+            "\nUpdating the worlds ...\n"
         )
         worldsInfo = {}
         session = requests.Session()
