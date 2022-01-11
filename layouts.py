@@ -291,9 +291,10 @@ class UpdateWorldButton(Button):
             "\nUpdating the worlds (this may take several minutes) ...\n"
         )
         worldsInfo = {}
-        for world in requests.get(
+        session = requests.Session()
+        for world in session.get(
             "https://lj44.ch/creator/kart/worldsjson",
-            {"id": True, "version": True, "name": True},
+            params={"id": True, "version": True, "name": True}
         ).json():
             worldsInfo[world["name"]] = {"id": world["id"], "version": world["version"]}
         with open("client/worlds.json", "r") as f:
@@ -305,7 +306,7 @@ class UpdateWorldButton(Button):
                         updateWorlds_output.text += f"Updating world {name} ... "
                         with open(f"client/worlds/{name}.json", "w") as worldJSON:
                             worldJSON.write(
-                                requests.get(
+                                session.get(
                                     f"https://lj44.ch/creator/kart/worlds/{worldsInfo[name]['id']}/fabric"
                                 ).text
                             )
@@ -321,7 +322,7 @@ class UpdateWorldButton(Button):
                     updateWorlds_output.text += f"Downloading world {name} ... "
                     with open(f"client/worlds/{name}.json", "w") as worldJSON:
                         worldJSON.write(
-                            requests.get(
+                            session.get(
                                 f"https://lj44.ch/creator/kart/worlds/{worldsInfo[name]['id']}/fabric"
                             ).text
                         )
