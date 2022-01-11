@@ -23,7 +23,7 @@ from lib import Point
 import client
 from game.objects import *
 import game
-
+import datetime
 from kivy.utils import get_color_from_hex, rgba
 from kivy.lang import Builder
 from kivy.uix.widget import Widget
@@ -119,6 +119,7 @@ class MainWidget(Widget):
             self.parent.parent.resumeGame()
 
     def start_theGame(self):
+        self.timer = 0
         self._keyboard = Window.request_keyboard(self.keyboard_closed, self)
         self._keyboard.bind(on_key_down=self.on_keyboard_down)
         self._keyboard.bind(on_key_up=self.on_keyboard_up)
@@ -132,8 +133,19 @@ class MainWidget(Widget):
         if output.isInitialized():
             self.updateGatesCount(output.getAllGates())
             self.updateLapsCount(output.getFinishLine())
+            self.updateTimer()
             self.checkIfGameIsOver(output.getAllKarts(), output.getFinishLine())
-
+            
+    def updateTimer(self) -> None:
+        self.timer += 1/self.fps
+        s, mili = divmod(int(1000*self.timer), 1000)
+        min, s= divmod(s, 60)
+        if mili > 100:
+            self.parent.parent.ids.timer_id.text = (f'{min:d}:{s:02d}:{mili:02d}')
+        # (f'{min:d}:{s:02d}:{mili:02d}')
+        else:
+            self.parent.parent.ids.timer_id.text = (f'{min:d}:{s:02d}:0{mili:02d}')
+    
     def updateLapsCount(self, finishLine: FinishLine) -> None:
         """Met l'affichage du nombre de tours terminés à jour"""
         self.parent.parent.ids.laps_id.text = f"{finishLine.passagesCount(self.kart_ID)}/{finishLine.numberOfLapsRequired()}"
@@ -150,6 +162,6 @@ class MainWidget(Widget):
     def checkIfGameIsOver(self, karts: List[Kart], finishLine: FinishLine) -> None:
         """Control si la partie est terminé et si oui gère celle-ci."""
         if finishLine.completedAllLaps(self.kart_ID):
-            self.parentScreen.end_game("Completed!\n\nWell done!")
+            self.parentScreen.end_game(f"Completed!\n\nWell done!\n Your time: {self.parent.parent.ids.timer_id.text}")
         elif karts[0].hasBurned():
             self.parentScreen.end_game("You have burned!\n\nTry again!")
