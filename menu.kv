@@ -144,9 +144,9 @@
 
     GridLayout:
         cols: 2
-        rows: 2
+        rows: 3
         pos_hint: {'x': .45, 'y': .9}
-        size_hint: .1, .1
+        size_hint: .15, .1
         canvas.before:
             Color:
                 rgba: 0,0,0,1
@@ -170,6 +170,13 @@
         Label:
             id: gates_id
             text: "0/2"
+            color: 0.4, 1, 0.4, 1
+        Label:
+            text: "Timer"
+            color: 0.4, 1, 0.4, 1
+        Label:
+            id: timer_id
+            text: "00:00:00"
             color: 0.4, 1, 0.4, 1
 
 

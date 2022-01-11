@@ -73,9 +73,7 @@ class PauseMode(FloatLayout):
 
 
 class KS_screen(Screen):
-    layout_id = ObjectProperty()
-    # animation_id = ObjectProperty()
-    # imageB = ObjectProperty()
+    # ids.noActionBar = ObjectProperty()
 
     def __init__(self, world, music, **kw):
         self.musicName = self.get_musicName(music)
@@ -84,10 +82,10 @@ class KS_screen(Screen):
         self.game = MainWidget(self.world, self)
         if self.game.theGame:
             self.startMusic()
-            self.layout_id.add_widget(self.game)
+            self.ids.noActionBar.add_widget(self.game)
             self.start_button = Button(text="start The game!", size_hint=(0.25, 0.1))
             self.start_button.bind(on_press=self.startingAnimation)
-            self.layout_id.add_widget(self.start_button)
+            self.ids.noActionBar.add_widget(self.start_button)
             self.game.theGame.callOutput()
             self.app = App.get_running_app()
 
@@ -131,11 +129,11 @@ class KS_screen(Screen):
         self.game.start_theGame()
 
     def startingAnimation(self, instance):
-        self.layout_id.remove_widget(self.start_button)
+        self.ids.noActionBar.remove_widget(self.start_button)
         self.pg = BeginningImage()
         self.add_widget(self.pg)
         # self.image3 = Image(source='client/Images/321go.gif', size_hint=(1,1 ),pos_hint={'center_x': .35, 'center_y': .35}, keep_ratio= False,allow_stretch= True)
-        # self.layout_id.add_widget(self.image3)
+        # self.ids.noActionBar.add_widget(self.image3)
         Clock.schedule_once(self.begin_game, 3)
 
     def end_game(self, endGameMessage=""):
@@ -181,7 +179,7 @@ class KS_screen(Screen):
             pass
 
     def resumeMusic(self):
-        print("ok")
+        print("Music resumed")
         self.startMusic()
 
     def get_musicName(self, music):
