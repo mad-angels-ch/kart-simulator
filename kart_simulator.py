@@ -69,7 +69,6 @@ class MainWidget(Widget):
         else:
             dataUrl = self.world
             self.isEasterEgg = True
-        print(f"GameData: {dataUrl}")
         self.eventsList = list()
         # Récupération de l'app principale
         self.app = App.get_running_app()
@@ -87,10 +86,8 @@ class MainWidget(Widget):
                 ),
             )
 
-            print("Starting ...")
             self.app.manager.add_widget(self.parentScreen)
             self.app.start_ks()
-            print("Finisched!")
             #################################################################
             self.fps = 60
 
@@ -100,7 +97,6 @@ class MainWidget(Widget):
 
     def clear(self) -> None:
         """Nettoyage du canvas de jeu et arrêt de la pendule"""
-        print("LEAVED")
         self.canvas.clear()
         if self.play:
             self.my_clock.unschedule(self.theGame.nextFrame)
