@@ -124,17 +124,49 @@ class KS_screen(Screen):
     def begin_game(self, dt):
         # self.animation_id.remove_widget(self.imageB)
         # self.remove_widget(self.animation_id)
-        self.remove_widget(self.pg)
+        # self.remove_widget(self.pg)
 
         self.game.start_theGame()
 
     def startingAnimation(self, instance):
         self.ids.noActionBar.remove_widget(self.start_button)
-        self.pg = BeginningImage()
-        self.add_widget(self.pg)
-        # self.image3 = Image(source='client/Images/321go.gif', size_hint=(1,1 ),pos_hint={'center_x': .35, 'center_y': .35}, keep_ratio= False,allow_stretch= True)
-        # self.ids.noActionBar.add_widget(self.image3)
-        Clock.schedule_once(self.begin_game, 3)
+        start_animation3 = Label(text="3", font_size=0,halign = "center", color= (0.4, 1, 0.4, 1))
+        start_animation2 = Label(text="2", font_size=0,halign = "center", color= (0.4, 1, 0.4, 1))
+        start_animation1 = Label(text="1", font_size=0,halign = "center", color= (0.4, 1, 0.4, 1))
+        start_animationGO = Label(text="GOOOO!!!!", font_size=0,halign = "center", color= (0.4, 1, 0.4, 1))
+
+        self.ids.noActionBar.add_widget(start_animation3)
+        self.ids.noActionBar.add_widget(start_animation2)
+        self.ids.noActionBar.add_widget(start_animation1)
+        self.ids.noActionBar.add_widget(start_animationGO)
+        anim = (
+            Animation(font_size=74, duration=.5)
+            + Animation(font_size=200, duration=.5)
+            + Animation(font_size=0, duration=.5)
+        )
+        anim.start(start_animation3)
+        anim = (
+            Animation(duration=1.5)
+            + Animation(font_size=74, duration=.5)
+            + Animation(font_size=200, duration=.5)
+            + Animation(font_size=0, duration=.5)
+        )
+        anim.start(start_animation2)
+        anim = (
+            Animation(duration=3)
+            + Animation(font_size=74, duration=.5)
+            + Animation(font_size=200, duration=.5)
+            + Animation(font_size=0, duration=.5)
+        )
+        anim.start(start_animation1)
+        anim = (
+            Animation(duration=4.5)
+            + Animation(font_size=74, duration=.5)
+            + Animation(font_size=400, duration=.5)
+            + Animation(font_size=0, duration=.5)
+        )
+        anim.start(start_animationGO)
+        Clock.schedule_once(self.begin_game, 6)
 
     def end_game(self, endGameMessage=""):
         self.endGameMode(endGameMessage)
