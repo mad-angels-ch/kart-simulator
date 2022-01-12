@@ -11,18 +11,18 @@
             "height": 35.36,
             "left": 322.94,
             "lge": {
-                "flipperMaxAngle": 1,
-                "flipperUpwardSpeed": 1,
+                "flipperMaxAngle": -1,
+                "flipperUpwardSpeed": -5,
                 "friction": 0,
                 "mass": 0,
                 "motion": {
                     "angle": {
                         "acceleration": 0,
                         "center": {
-                            "x": 400,
-                            "y": 10
+                            "x": 50,
+                            "y": 0
                         },
-                        "type": "none",
+                        "type": "uacm",
                         "velocity": 0
                     },
                     "vector": {
@@ -173,17 +173,17 @@
             "left": 176.99,
             "lge": {
                 "flipperMaxAngle": 1,
-                "flipperUpwardSpeed": 1,
+                "flipperUpwardSpeed": 5,
                 "friction": 0,
                 "mass": 0,
                 "motion": {
                     "angle": {
                         "acceleration": 0,
                         "center": {
-                            "x": 200,
-                            "y": 100
+                            "x": -50,
+                            "y": 0
                         },
-                        "type": "none",
+                        "type": "uacm",
                         "velocity": 0
                     },
                     "vector": {
