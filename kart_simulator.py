@@ -30,9 +30,10 @@ from kivy.uix.widget import Widget
 from kivy.graphics import Rectangle, Color
 from kivy.properties import Clock
 from kivy.properties import StringProperty
-
-
 from client.output import OutputFactory
+from game.objects import Circle, Object
+from lib import Point
+
 
 Builder.load_file("layouts.kv")
 
@@ -54,25 +55,22 @@ class MainWidget(Widget):
     kart_ID = 0
 
     def __init__(self, world=None, parentScreen=None, **kwargs):
+        """Canvas dans lequel les objets d'une partie sont dessinés"""
         super().__init__(**kwargs)
         self.world = world
         self.parentScreen = parentScreen
         if isinstance(self.world, StringProperty):
             self.world = "2triangles"
-        # io_obstacle = IO_FinishLine()
-        # self.canvas.add(io_obstacle)
 
         ##################### Création de la partie #####################
         dataUrl = path.join("client/worlds", self.world) + ".json"
         print(f"GameData: {dataUrl}")
         self.eventsList = list()
-
-        from game.objects import Circle, Object
-        from lib import Point
-
+        # Récupération de l'app principale
         self.app = App.get_running_app()
+        # A condition que ObjectFactory n'ai pas renvoyé d'erreur lorsde la création des objets physiques
         try:
-            # self.theGame = game.Game(dataUrl, self.eventsList, self.output)
+            # Création de la partie
             self.theGame = game.Game(
                 dataUrl,
                 self.eventsList,
@@ -91,34 +89,26 @@ class MainWidget(Widget):
             #################################################################
             self.fps = 60
 
-            # self._keyboard = Window.request_keyboard(self.keyboard_closed, self)
-            # self._keyboard.bind(on_key_down=self.on_keyboard_down)
-            # self._keyboard.bind(on_key_up=self.on_keyboard_up)
-
-            # self.my_clock = Clock
-            # self.my_clock.schedule_interval(self.theGame.nextFrame, 1 / self.fps)
-
-            # self.play = True
-
         except ObjectCountError as OCE:
             self.theGame = None
             self.app.changeLabelText(OCE.message())
 
-    def clear(self):
+    def clear(self) -> None:
+        """Nettoyage du canvas de jeu et arrêt de la pendule"""
         print("LEAVED")
         self.canvas.clear()
         if self.play:
             self.my_clock.unschedule(self.theGame.nextFrame)
 
-    def change_gameState(self):
+    def change_gameState(self) -> None:
+        """Change l'état du jeu: pause ou jeu"""
         if self.play:
-            # self.pause()
             self.parent.parent.pauseMode()
         else:
-            # self.resume()
             self.parent.parent.resumeGame()
 
-    def start_theGame(self):
+    def start_theGame(self) -> None:
+        """Instantation du clavier, des commandes liées et de la pendule"""
         self.timer = 0
         self._keyboard = Window.request_keyboard(self.keyboard_closed, self)
         self._keyboard.bind(on_key_down=self.on_keyboard_down)
@@ -137,12 +127,12 @@ class MainWidget(Widget):
             self.checkIfGameIsOver(output.getAllKarts(), output.getFinishLine())
             
     def updateTimer(self) -> None:
+        """Mise à jour du timer"""
         self.timer += 1/self.fps
         s, mili = divmod(int(1000*self.timer), 1000)
         min, s= divmod(s, 60)
         if mili > 100:
             self.parent.parent.ids.timer_id.text = (f'{min:d}:{s:02d}:{mili:02d}')
-        # (f'{min:d}:{s:02d}:{mili:02d}')
         else:
             self.parent.parent.ids.timer_id.text = (f'{min:d}:{s:02d}:0{mili:02d}')
     
@@ -160,7 +150,7 @@ class MainWidget(Widget):
         self.parent.parent.ids.gates_id.text = f"{gatesPassed}/{numberOfGates}"
 
     def checkIfGameIsOver(self, karts: List[Kart], finishLine: FinishLine) -> None:
-        """Control si la partie est terminé et si oui gère celle-ci."""
+        """Contrôle si la partie est terminée et si oui gère celle-ci"""
         if finishLine.completedAllLaps(self.kart_ID):
             self.parentScreen.end_game(f"Completed!\n\nWell done!\n Your time: {self.parent.parent.ids.timer_id.text}")
         elif karts[0].hasBurned():

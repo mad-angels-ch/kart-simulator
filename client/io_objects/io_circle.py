@@ -4,12 +4,8 @@ from kivy.uix.widget import Widget
 from kivy.utils import get_color_from_hex
 from game.events.Event import Object
 from client import io_objects
-
-
 import lib
-
 from kivy.properties import ListProperty
-
 from lib.Point import Point
 
 
@@ -42,6 +38,7 @@ class IO_Circle(Ellipse):
         self.updatePosition()
 
     def updatePosition(self):
+        """Met à jour la position des cercles"""
         if self._LGECircle.center() != self.lastPos:
             self.lastPos = lib.Point(self._LGECircle.center())
             self.pos = self.get_position(
@@ -49,6 +46,8 @@ class IO_Circle(Ellipse):
             )
 
     def get_center(self, centerBefore: lib.Point) -> lib.Point:
+        """Calcule et retourne la position visuelle du centre du cercle 
+        à partir des coordonnées de son centre avant les translations et l'homotétie de centre (0;0)"""
         centerBefore.translate(self._translation1)
         centerScaledAndTranslated = (
             lib.Vector((centerBefore[0], centerBefore[1])) / self._scale
@@ -60,6 +59,8 @@ class IO_Circle(Ellipse):
         return centerAfter
 
     def get_position(self, center: lib.Point) -> lib.Point:
+        """Retourne la position du sommet en bas à gauche du rectangle circonscrit au cercle 
+        à partir de son centre"""
         centerVector = lib.Vector((center[0], center[1]))
         position = centerVector - lib.Vector((self._radius, self._radius))
         return lib.Point((position[0], position[1]))

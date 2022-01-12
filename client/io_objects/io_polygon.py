@@ -46,6 +46,7 @@ class IO_Polygon(Mesh):
             )
 
     def updatePosition(self):
+        """Calcule et met à jour la position des polygones en fonction de la liste de ses sommets"""
         if self._LGEPolygon.vertices() != self.lastPos:
             self.lastPos = self._LGEPolygon.vertices()
             i = 0 

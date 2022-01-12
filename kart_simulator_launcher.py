@@ -25,10 +25,12 @@ class MenuApp(App):
     musicName = ""
     soundEnabled = True
     def __init__(self, **kwargs):
+        """L'application kivy qui gère toute l'interface graphique"""
         super().__init__(**kwargs)
         self.game_instance = None
 
     def build(self):
+        """Création du manager qui gèrera les screens et de l'espace qui affichera les éventuelles erreurs"""
         Window.clearcolor = get_color_from_hex("#ffffff")
         self.icon = 'client/Images/kart.png'
         self.manager = MyScreenManager()        
@@ -37,6 +39,8 @@ class MenuApp(App):
         return self.manager
     
     def instanciate_ks(self, world, music):
+        """Création du support de la partie et de ses attributs: 
+        monde et musique choisis ainsi que la taille de la fenêtre"""
         self.windowSize = Window.size
         if self.isWorldChosen(world):
             self.world = world
@@ -50,30 +54,37 @@ class MenuApp(App):
             Clock.schedule_once(self.popErrorScreen, 2)
             
     def start_ks(self):
+        """Affichage de la partie"""
         self.manager.push("Kart_Simulator")
         
     def popErrorScreen(self,dt):
+        """Vidage du message d'erreur après un temps donné"""
         self.errorLabel.text = ""
         
     def changeLabelText(self,labelText):
+        """Mise à jour puis suppession du message d'erreur à afficher"""
         self.errorLabel.text+=labelText+"\n"
         Clock.schedule_once(self.popErrorScreen, 2)
         
     def clear_game(self):
+        """Nettoyage de la partie finie"""
         if self.game_instance:
             self.game_instance.quit()
             self.game_instance = None
             
     def ButtonSound(self):
+        """Crée le son produit par un bouton si l'utilisateur n'a pas disactivé les effets sonores"""
         if self.soundEnabled:
             sound = SoundLoader.load('client/sounds/ButtonClick2.wav')
             sound.volume = 0.25
             sound.play()
 
     def isWorldChosen(self,world):
+        """Retourne vrai si un monde a été choisi"""
         return not isinstance(world,StringProperty)
     
     def changeSoundMode(self, widget: Button):
+        """Active ou désactive les effets sonores"""
         self.soundEnabled = not self.soundEnabled
         if self.soundEnabled:
             widget.text = "Mute sounds"

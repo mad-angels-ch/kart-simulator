@@ -11,6 +11,8 @@ class IO_FilledQuadrilateral(Rectangle):
     _scale: float
     _LGEFilledQuadrilateral: "io_objects.IO_FilledQuadrilateral"
     def __init__(self, LGEObject: "io_objects.IO_FilledQuadrilateral", source: str = None, scale=1, translate1: lib.Vector = lib.Vector((0,0)), translate2: lib.Vector = lib.Vector((0,0))):
+        """Crée le rectangle à ajouter au canvas et prépare son ajout"""
+
         self._scale = scale
         self._LGEFilledQuadrilateral = LGEObject
         self._source = source
@@ -33,14 +35,19 @@ class IO_FilledQuadrilateral(Rectangle):
         pass
     
     def get_sizeFromVertices(self) -> tuple:
+        """Calcule et retourne la taille horizontale et verticale du rectangle avant l'homotétie 
+        à partir de ses sommets avant la rotation"""
         size_x = max(self.get_abscissasAndOrdinates()[0])-min(self.get_abscissasAndOrdinates()[0])
         size_y = max(self.get_abscissasAndOrdinates()[1])-min(self.get_abscissasAndOrdinates()[1])
         return (size_x,size_y)
     
     def get_abscissasAndOrdinates(self):
+        """Retourne la liste des abscisses et ordonnées du rectangle avant la rotation"""
         return ([point[0] for point in self._verticesBR],[point[1] for point in self._verticesBR])
     
     def get_center(self, centerBefore: lib.Point) -> lib.Point:
+        """Calcule et retourne la position visuelle du centre du rectangle 
+        à partir des coordonnées de son centre avant les translations et l'homotétie de centre (0;0)"""
         centerTranslated = lib.Point((centerBefore[0],centerBefore[1]))
         centerTranslated.translate(self._translation1)
         centerScaledAndTranslated = lib.Vector((centerTranslated[0],centerTranslated[1])) / self._scale
@@ -49,6 +56,8 @@ class IO_FilledQuadrilateral(Rectangle):
         return center
     
     def get_position(self,center: lib.Point) -> lib.Point:
+        """Calcule et retourne la position du sommet en bas à gauche du rectangle 
+        à partir de son centre"""
         centerVector = lib.Vector((center[0],center[1]))
         position = (centerVector - lib.Vector((self._size[0],self._size[1]))/2)
         return lib.Point((position[0],position[1]))

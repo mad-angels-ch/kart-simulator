@@ -5,4 +5,6 @@ from kivy.uix.boxlayout import BoxLayout
 Builder.load_file("action_bar.kv")
 
 class BoxLayoutWithActionBar(BoxLayout):
+    """Outil qui permet de naviguer entre les différents screens, 
+    à l'aide de l'icone en haut à gauche de la page"""
     title = StringProperty()
