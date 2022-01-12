@@ -19,7 +19,7 @@
         bold: True
         text: "Rules of the Kart Simulator"
         font_size: 32
-        color: .8,.4,.2,1 # <-----------
+        color: .8,.4,.2,1
         size_hint: 1,.1
         canvas.before:
             Color:
@@ -29,9 +29,9 @@
                 size: self.size
     Label:
         italic: True
-        text: ' - Le but est de compléter le nombre de tours requis le plus rapidement possible\n\n - Les karts perdent de la vitesse lorsquils touchent le bord de la piste ou des obstacles quelconques\n\n - La partie est perdue si le joueur sort de la piste (par un bout sans barrières)'
+        text: " - Le but est de compléter le nombre de tours requis le plus rapidement possible\n\n - Les karts perdent de la vitesse lorsqu'ils touchent le bord de la piste ou des obstacles quelconques\n\n - La partie est perdue si le joueur sort de la piste (par un bout sans barrières)"
         font_size: 16
-        color: 0,0,0,1 # <-----------
+        color: 0,0,0,1
         size_hint: 1,.9
         canvas.before:
             Color:
@@ -42,13 +42,21 @@
 
 
   
-<Controls@BoxLayout>:
-    orientation: "vertical"
+<Controls>:
+    TextInput:
+        pos_hint: {'center_x':.55,'center_y':.38}
+        size_hint: .015, .015
+        width: "100dp"
+        text: ""
+        multiline: False
+        on_text_validate: root.on_text_validate(self)
+
     Label:
         bold: True
         text: "Controls of the Kart Simulator"
+        pos_hint: {'x':0,'y':.9}
         font_size: 32
-        color: .8,.4,.2,1 # <-----------
+        color: .8,.4,.2,1
         size_hint: 1,.1
         canvas.before:
             Color:
@@ -56,11 +64,12 @@
             Rectangle:
                 pos: self.pos
                 size: self.size
+
     Label:
         italic: True
         text: ' - Avancer/Accélérer: W / up\n\n - Reculer/Ralentir: S / down\n\n - Tourner à gauche: A / left\n\n - Tourner à droite: D / right\n\n - Pause/Reprendre: Esc'
         font_size: 16
-        color: 0,0,0,1 # <-----------
+        color: 0,0,0,1
         size_hint: 1,.9
         canvas.before:
             Color:
@@ -68,6 +77,8 @@
             Rectangle:
                 pos: self.pos
                 size: self.size
+
+
 
 
   
@@ -78,7 +89,7 @@
         bold: True
         text: "Update the worlds"
         font_size: 32
-        color: .8,.4,.2,1 # <-----------
+        color: .8,.4,.2,1
         size_hint: 1,.1
         canvas.before:
             Color:
@@ -98,7 +109,7 @@
         id: updateWorlds_output_id
         text: ""
         font_size: 16
-        color: 1,1,1,1 # <-----------
+        color: 1,1,1,1
         size_hint: 1,.9
         canvas.before:
             Color:

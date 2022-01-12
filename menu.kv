@@ -104,9 +104,19 @@
         size_hint: .15,.05
         text:"Mute Sound"
         on_press: app.changeSoundMode(self)
+    
+            
 
 
 
+<PasswordScreen>:
+    TextInput:
+        pos_hint: {'center_x':.5,'center_y':.5}
+        size_hint: .25, .1
+        width: "100dp"
+        text: "Type the secret password:"
+        multiline: False
+        on_text_validate: root.on_text_validate(self)
 
 
 
@@ -114,10 +124,12 @@
 <KS_screen>:
     name: "Kart_Simulator"
     layout_id: noActionBar
+
     RelativeLayout:
         id: noActionBar
         pos: 0,0
-
+    
+    
     GridLayout:
         cols: 2
         rows: 3
@@ -181,6 +193,16 @@
         BoxLayoutWithActionBar:
             title: "Update the worlds"
             UpdateWorlds:    
+    Screen:
+        name: "EG1"
+        PasswordScreen:
+            nbr:1
+
+    Screen:
+        name: "EG2"
+        PasswordScreen:
+            nbr:2
+
 
 
 

@@ -24,6 +24,7 @@ class MenuApp(App):
     manager = ObjectProperty(None)
     musicName = ""
     soundEnabled = True
+    passwords = [False,False]
     def __init__(self, **kwargs):
         """L'application kivy qui gère toute l'interface graphique"""
         super().__init__(**kwargs)

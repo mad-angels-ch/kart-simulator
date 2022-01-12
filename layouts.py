@@ -390,3 +390,33 @@ class UpdateWorldButton(Button):
 
 
 ##########################################################################
+
+class PasswordScreen(FloatLayout):
+    def __init__(self, nbr=0, **kw):
+        self.nbr = nbr
+        self.app = App.get_running_app()
+        super().__init__(**kw)
+    def on_text_validate(self, widget):
+        self.app.passwords[self.nbr-1] = False
+        if self.nbr == 1:
+            self.app.passwords[self.nbr] = False
+            if widget.text == "Noe est le plus beau...":
+                self.app.passwords[self.nbr-1] = True
+            self.app.manager.push("EG2")
+                
+        elif self.nbr == 2:
+            if widget.text == "...mais Lorin le suit de près":
+                self.app.passwords[self.nbr-1] = True
+            for i in range(3):
+                self.app.manager.pop()
+        widget.text = "Type the secret password:"
+        if self.app.passwords[0] and self.app.passwords[1]:
+            self.app.instanciate_ks(world="client/worlds_old/flipper.json", music="client/sounds/music/The_stupid_song.wav")
+
+
+class Controls(FloatLayout):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+    def on_text_validate(self, widget):
+        if widget.text == "Vive le flipper":
+            App.get_running_app().manager.push("EG1")

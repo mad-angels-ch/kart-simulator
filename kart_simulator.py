@@ -63,7 +63,12 @@ class MainWidget(Widget):
             self.world = "2triangles"
 
         ##################### Création de la partie #####################
-        dataUrl = path.join("client/worlds", self.world) + ".json"
+        if self.world[:13] != "client/worlds":
+            dataUrl = path.join("client/worlds", self.world) + ".json"
+            self.isEasterEgg = False
+        else:
+            dataUrl = self.world
+            self.isEasterEgg = True
         print(f"GameData: {dataUrl}")
         self.eventsList = list()
         # Récupération de l'app principale
@@ -120,7 +125,7 @@ class MainWidget(Widget):
 
     def frame_callback(self, output: OutputFactory, objects: List[Object]) -> None:
         """Fonction appellée à chaque frame par output"""
-        if output.isInitialized():
+        if output.isInitialized() and not self.isEasterEgg:
             self.updateGatesCount(output.getAllGates())
             self.updateLapsCount(output.getFinishLine())
             self.updateTimer()
