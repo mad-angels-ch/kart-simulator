@@ -417,7 +417,7 @@ class PasswordScreen(FloatLayout):
                 self.app.manager.pop()
         widget.text = "Type the secret password:"
         if self.app.passwords[0] and self.app.passwords[1]:
-            self.app.instanciate_ks(world="client/worlds_old/flipper.json", music="client/sounds/music/The_stupid_song.wav")
+            self.app.instanciate_ks(world="client/easteregg.json", music = "No music")
 
 
 class Controls(FloatLayout):
