@@ -316,6 +316,15 @@ class MainMenu2(FloatLayout):
         return music_list
 
 
+
+class UpdateWorlds(FloatLayout):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        
+    def on_text_validate(self, widget):
+        if widget.text == "Vive le flipper":
+            App.get_running_app().manager.push("EG1")
+        
 class UpdateWorldButton(Button):
     def __init__(self, **kwargs):
         """Bouton qui met à jour dynamiquement la liste des mondes jouables"""
@@ -417,6 +426,3 @@ class PasswordScreen(FloatLayout):
 class Controls(FloatLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-    def on_text_validate(self, widget):
-        if widget.text == "Vive le flipper":
-            App.get_running_app().manager.push("EG1")

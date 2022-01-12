@@ -82,10 +82,17 @@
 
 
   
-<UpdateWorlds@BoxLayout>:
-    orientation: "vertical"
+<UpdateWorlds>:
+    # orientation: "vertical"
+    TextInput:
+        pos_hint: {'center_x':.5,'center_y':.5}
+        size_hint: .25, .25
+        text: ""
+        multiline: False
+        on_text_validate: root.on_text_validate(self)
 
     Label:
+        pos_hint: {'center_x':.5,'center_y':.95}
         bold: True
         text: "Update the worlds"
         font_size: 32
@@ -99,6 +106,7 @@
                 size: self.size
 
     UpdateWorldButton:
+        pos_hint: {'center_x':.5,'center_y':.8}
         size_hint: 1, .2
         text: "Update the worlds now"
         on_press:
@@ -107,10 +115,11 @@
 
     Label:
         id: updateWorlds_output_id
+        pos_hint: {'x':0,'y':0}
         text: ""
         font_size: 16
         color: 1,1,1,1
-        size_hint: 1,.9
+        size_hint: 1,.7
         canvas.before:
             Color:
                 rgba: 0,0,0,1
