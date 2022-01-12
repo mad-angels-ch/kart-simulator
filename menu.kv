@@ -1,6 +1,7 @@
 #:import navigation_screen_manager navigation_screen_manager
 #:import layouts layouts
 #:import action_bar action_bar
+#:import webbrowser webbrowser
 
 # <MainMenu@BoxLayout>:
 #     orientation: "vertical"
@@ -54,6 +55,12 @@
         # background_color: (1.0, 0.0, 0.0, .75)
         text: "Sign in / Log in"
         on_press: app.manager.push("connection"), app.ButtonSound()
+    Button:
+        pos_hint: {'x':.8,'y':.75}
+        size_hint: .2, .05
+        # background_color: (1.0, 0.0, 0.0, .75)
+        text: "Create/edit a world"
+        on_press: webbrowser.open("https://lj44.ch/creator/kart"), app.ButtonSound()
     Button:
         pos_hint: {'x':0,'y':.8}
         size_hint: .2, .05
