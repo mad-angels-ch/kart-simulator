@@ -151,7 +151,6 @@ class KS_screen(Screen):
 
     def begin_game(self, dt):
         """Démarrage de la partie"""
-        print("Fasten your seat belts, game is starting !!")
         self.game.start_theGame()
 
     def startingAnimation(self):
@@ -241,7 +240,6 @@ class KS_screen(Screen):
 
     def resumeMusic(self):
         """Reprend la musique après une pause"""
-        print("Music resumed")
         self.startMusic()
 
     def get_musicName(self, music):
@@ -266,7 +264,6 @@ class PreView(Widget):
             self.canvas.before.clear()
             self.canvas.clear()
             self.canvas.after.clear()
-            print("PREVIEW CLEARED")
             if self.previewMode:
                 try:
                     self.dataUrl = self.dataUrl = (
