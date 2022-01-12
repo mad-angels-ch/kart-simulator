@@ -90,6 +90,12 @@
         multiline: False
         on_text_validate: root.on_text_validate(self)
 
+    Button:
+        pos_hint: {'center_x':.5,'center_y':.1}
+        size_hint: .15,.15
+        text:"EasterEgg"
+        on_press: app.instanciate_ks(world="client/worlds_old/flipper.json", music="client/sounds/music/The_stupid_song.wav")
+
     Label:
         pos_hint: {'center_x':.5,'center_y':.95}
         bold: True
