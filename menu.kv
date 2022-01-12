@@ -21,7 +21,7 @@
 #         on_press: app.manager.push("connection"), app.ButtonSound()
 #     Button:
 #         text: "Play"
-#         on_press: app.start_ks(), app.ButtonSound()
+#         on_press: app.(), app.ButtonSound()
 #     Button:
 #         text: "Rules of the game"
 #         on_press: app.manager.push("Rules"), app.ButtonSound()
@@ -78,7 +78,7 @@
         size_hint: .4, .3
         text: "Play"
         background_color: (1.0, 0.0, 0.0, .75)
-        on_press: app.start_ks(root.chosen_world, root.chosen_music), app.ButtonSound()
+        on_press: app.instanciate_ks(root.chosen_world, root.chosen_music), app.ButtonSound()
 
     Spinner:
         id: worlds_spinner_id
@@ -129,10 +129,12 @@
 <KS_screen>:
     name: "Kart_Simulator"
     layout_id: noActionBar
-
+    # animation_id : pre_game
+    # imageB: B_image
     RelativeLayout:
         id: noActionBar
-        pos: app.windowSize[0]/2-250,app.windowSize[1]/2-250
+        # pos: app.windowSize[0]/2,app.windowSize[1]/2
+        pos: 0,0
         # canvas.before:
         #     Color:
         #         rgba: 1, 0, 0, 0.5
@@ -140,6 +142,52 @@
         #         pos: self.pos  # incorrect
         #         size: self.size
 
+    GridLayout:
+        cols: 2
+        rows: 3
+        pos_hint: {'x': .45, 'y': .9}
+        size_hint: .15, .1
+        canvas.before:
+            Color:
+                rgba: 0,0,0,1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Label:
+            text: "Laps"
+            color: 0.4, 1, 0.4, 1
+
+        Label:
+            id: laps_id
+            text: "0/1"
+            color: 0.4, 1, 0.4, 1
+
+        Label:
+            text: "Gates"
+            color: 0.4, 1, 0.4, 1
+
+        Label:
+            id: gates_id
+            text: "0/2"
+            color: 0.4, 1, 0.4, 1
+        Label:
+            text: "Timer"
+            color: 0.4, 1, 0.4, 1
+        Label:
+            id: timer_id
+            text: "00:00:00"
+            color: 0.4, 1, 0.4, 1
+
+
+<BeginningImage>:
+    Image:
+        id: B_image
+        source:'client/Images/321go.gif'
+        size_hint: 1,1
+        pos_hint: {"center_x": .5, "center_y": .5}
+        keep_ratio: False
+        allow_stretch: True
 
 
 <MyScreenManager>:
@@ -241,7 +289,7 @@
 
     UpdateWorldButton:
         size_hint: 1, .2
-        text: "Update the worlds now (this may take several minutes)"
+        text: "Update the worlds now"
         on_press:
             self.generateUpdatedWorldsList(updateWorlds_output_id, app.manager.get_screen("MainMenu").children[0].ids.worlds_spinner_id),
             app.ButtonSound()
@@ -282,3 +330,26 @@
         values: root.generateMusicsList()
         on_text:
             root.changeMusicSpinnerText(music_spinner_id.text), app.ButtonSound(), app.game_instance.changeMusic(root.chosen_music)
+
+
+<EndGameMode>:
+    canvas.before:
+        Color:
+            rgba: 0,0,0,.5
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    Label:
+        id: gameOverLabel_id
+        text: ""
+        font_size: 74
+        halign: 'center'
+        color: 0.4, 1, 0.4, 1
+
+
+    Button:
+        size_hint:.2,.1
+        pos_hint: {'x':.4, 'y': .45}
+        text:"Quit game"
+        on_release: app.manager.pop(),app.clear_game(), app.ButtonSound()

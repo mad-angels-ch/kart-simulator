@@ -1,18 +1,27 @@
+from logging import warning
+from kivy.clock import Clock
+from kivy.uix.relativelayout import RelativeLayout
 import requests, json, os, threading
 
+from kivy.app import App
 from kivy.core.audio import SoundLoader
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.widget import Widget
 from kivy.utils import rgba
-from kart_simulator import MainWidget, PauseMode
+from game.objects.ObjectFactory import ObjectCountError
+from kart_simulator import MainWidget
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import StringProperty, ObjectProperty
 from kivy.core.audio import SoundLoader
 from kivy.uix.dropdown import DropDown
 from action_bar import BoxLayoutWithActionBar
+from game.objects.fill.Hex import Hex
+from game.objects.fill.Pattern import Pattern
+from kivy.uix.image import Image
+from kivy.animation import Animation
 
 #################### Gestion des différents screens ###################
 
@@ -38,16 +47,47 @@ class MyScreenManager(NavigationScreenManager):
     pass
 
 
+class BeginningImage(RelativeLayout):
+    pass
+
+
+class EndGameMode(FloatLayout):
+    pass
+
+
+class PauseMode(FloatLayout):
+    def __init__(self, width, height, music, **kwargs):
+
+        self.chosen_music = str(music)
+        self.width = width
+        self.height = height
+        super().__init__(**kwargs)
+
+    def changeMusicSpinnerText(self, text):
+        self.chosen_music = text
+
+    def generateMusicsList(self):
+        music_list = list(music[:-4] for music in listdir("client/sounds/music"))
+        music_list.append("No music")
+        return music_list
+
+
 class KS_screen(Screen):
-    layout_id = ObjectProperty()
+    # ids.noActionBar = ObjectProperty()
 
     def __init__(self, world, music, **kw):
         self.musicName = self.get_musicName(music)
-        self.startMusic()
         super().__init__(**kw)
         self.world = world
         self.game = MainWidget(self.world, self)
-        self.layout_id.add_widget(self.game)
+        if self.game.theGame:
+            self.startMusic()
+            self.ids.noActionBar.add_widget(self.game)
+            self.start_button = Button(text="start The game!", size_hint=(0.25, 0.1))
+            self.start_button.bind(on_press=self.startingAnimation)
+            self.ids.noActionBar.add_widget(self.start_button)
+            self.game.theGame.callOutput()
+            self.app = App.get_running_app()
 
     def quit(self):
         self.game.clear()
@@ -62,6 +102,45 @@ class KS_screen(Screen):
             width=Window.width, height=Window.height, music=self.musicName
         )
         self.add_widget(self.pauseMenu)
+
+    def endGameMode(self, message):
+        if self.musicName:
+            self.pauseMusic()
+
+        self.game.play = False
+        self.game.my_clock.unschedule(self.game.theGame.nextFrame)
+        self.endGameMenu = EndGameMode()
+        self.endGameMenu.ids.gameOverLabel_id.text = message
+        anim = (
+            Animation(font_size=74, duration=0.1)
+            + Animation(font_size=120, duration=1)
+            + Animation(font_size=120, duration=0.1)
+            + Animation(font_size=74, duration=1)
+        )
+        anim.repeat = True
+        anim.start(self.endGameMenu.ids.gameOverLabel_id)
+        self.add_widget(self.endGameMenu)
+
+    def begin_game(self, dt):
+        # self.animation_id.remove_widget(self.imageB)
+        # self.remove_widget(self.animation_id)
+        self.remove_widget(self.pg)
+
+        self.game.start_theGame()
+
+    def startingAnimation(self, instance):
+        self.ids.noActionBar.remove_widget(self.start_button)
+        self.pg = BeginningImage()
+        self.add_widget(self.pg)
+        # self.image3 = Image(source='client/Images/321go.gif', size_hint=(1,1 ),pos_hint={'center_x': .35, 'center_y': .35}, keep_ratio= False,allow_stretch= True)
+        # self.ids.noActionBar.add_widget(self.image3)
+        Clock.schedule_once(self.begin_game, 3)
+
+    def end_game(self, endGameMessage=""):
+        self.endGameMode(endGameMessage)
+
+    def test(self):
+        self.app.manager.pop()
 
     def resumeGame(self, new_music):
         self.resumeMusic()
@@ -100,7 +179,7 @@ class KS_screen(Screen):
             pass
 
     def resumeMusic(self):
-        print("ok")
+        print("Music resumed")
         self.startMusic()
 
     def get_musicName(self, music):
@@ -125,9 +204,7 @@ from lib import Point
 import client.worlds
 from game.objects import *
 import game
-
-from io_objects.io_polygon import IO_Polygon
-from io_objects.io_circle import IO_Circle
+from kivy.app import App
 
 from kivy.utils import get_color_from_hex, rgba
 from kivy.lang import Builder
@@ -135,6 +212,8 @@ from kivy.uix.widget import Widget
 from kivy.graphics import Rectangle, Color
 from kivy.properties import Clock
 from kivy.properties import StringProperty
+
+from client.output import OutputFactory
 
 
 class PreView(Widget):
@@ -149,43 +228,25 @@ class PreView(Widget):
             self.canvas.after.clear()
             print("PREVIEW CLEARED")
             if self.previewMode:
-                with self.canvas.before:
-                    Color(rgba=(1, 1, 1, 1))
-                    Rectangle(pos=(0, 0), size=(200, 200))
-                self.dataUrl = self.dataUrl = (
-                    path.join("client/worlds", world) + ".json"
-                )
-                self.theGame = game.Game(self.dataUrl, [], self.instanciateObstacle)
-                self.theGame.callOutput()
+                try:
+                    self.dataUrl = self.dataUrl = (
+                        path.join("client/worlds", world) + ".json"
+                    )
+                    app = App.get_running_app()
+                    self.theGame = game.Game(
+                        self.dataUrl,
+                        [],
+                        OutputFactory(self, max_width=200, max_height=200),
+                    )
+                    with self.canvas.before:
+                        Color(rgba=(1, 1, 1, 1))
+                        Rectangle(pos=(0, 0), size=(200, 200))
+                    self.theGame.callOutput()
+                except ObjectCountError as OCE:
+                    app.changeLabelText(OCE.message())
 
     def updatePreviewMode(self):
         self.previewMode = not self.previewMode
-
-    def instanciateObstacle(self, objects: List[game.objects.Object]):
-        for obstacle in objects:
-            if isinstance(obstacle, Circle):
-                # with self.canvas.before:
-                self.color = get_color_from_hex(obstacle.fill().value())
-                pos_x = (obstacle.center()[0] - obstacle.radius()) / 3
-                pos_y = (obstacle.center()[1] - obstacle.radius()) / 3
-                with self.canvas.after:
-                    Color(rgba=self.color)
-
-                    IO_Circle(
-                        diametre=2 * obstacle.radius() / 3,
-                        position=[pos_x, pos_y],
-                        couleur=obstacle.fill().value(),
-                    )
-
-            elif isinstance(obstacle, Polygon):
-                self.color = get_color_from_hex(obstacle.fill().value())
-                with self.canvas:
-                    Color(rgba=self.color)
-                    IO_Polygon(
-                        summits=obstacle.vertices(),
-                        couleur=obstacle.fill().value(),
-                        scale=3,
-                    )
 
 
 class MainMenu2(FloatLayout):
@@ -227,12 +288,13 @@ class UpdateWorldButton(Button):
 
     def generateUpdatedWorldsListTask(self, updateWorlds_output, worlds_spinner):
         updateWorlds_output.text = (
-            "\nUpdating the worlds (this may take several minutes) ...\n"
+            "\nUpdating the worlds ...\n"
         )
         worldsInfo = {}
-        for world in requests.get(
+        session = requests.Session()
+        for world in session.get(
             "https://lj44.ch/creator/kart/worldsjson",
-            {"id": True, "version": True, "name": True},
+            params={"id": True, "version": True, "name": True}
         ).json():
             worldsInfo[world["name"]] = {"id": world["id"], "version": world["version"]}
         with open("client/worlds.json", "r") as f:
@@ -241,10 +303,10 @@ class UpdateWorldButton(Button):
             for name, data in savedWorld.items():
                 if name in worldsInfo:
                     if data["version"] != worldsInfo[name]["version"]:
-                        updateWorlds_output.text += f"Updating world {name} ..."
+                        updateWorlds_output.text += f"Updating world {name} ... "
                         with open(f"client/worlds/{name}.json", "w") as worldJSON:
                             worldJSON.write(
-                                requests.get(
+                                session.get(
                                     f"https://lj44.ch/creator/kart/worlds/{worldsInfo[name]['id']}/fabric"
                                 ).text
                             )
@@ -260,7 +322,7 @@ class UpdateWorldButton(Button):
                     updateWorlds_output.text += f"Downloading world {name} ... "
                     with open(f"client/worlds/{name}.json", "w") as worldJSON:
                         worldJSON.write(
-                            requests.get(
+                            session.get(
                                 f"https://lj44.ch/creator/kart/worlds/{worldsInfo[name]['id']}/fabric"
                             ).text
                         )
@@ -272,8 +334,8 @@ class UpdateWorldButton(Button):
         worlds_spinner.values = [world[:-5] for world in listdir("client/worlds")]
         updateWorlds_output.text += "All worlds are up to date!"
         self._updating = False
-        self.text = "Update the worlds now (this may take several minutes)"
-        sound = SoundLoader.load('client/sounds/success-sound-effect.mp3')
+        self.text = "Update the worlds now"
+        sound = SoundLoader.load("client/sounds/success-sound-effect.mp3")
         sound.volume = 0.25
         sound.play()
 
