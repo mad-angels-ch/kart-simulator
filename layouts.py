@@ -2,7 +2,26 @@ from logging import warning
 from kivy.clock import Clock
 from kivy.uix.relativelayout import RelativeLayout
 import requests, json, os, threading
-
+from kart_simulator import game, path, Rectangle, Color
+from os import path, listdir, write
+from posixpath import abspath
+from re import S
+import time
+import os.path
+from typing import List
+from kivy.core.window import Window
+from lib import Point
+import client.worlds
+from game.objects import *
+import game
+from kivy.app import App
+from kivy.utils import get_color_from_hex, rgba
+from kivy.lang import Builder
+from kivy.uix.widget import Widget
+from kivy.graphics import Rectangle, Color
+from kivy.properties import Clock
+from kivy.properties import StringProperty
+from client.output import OutputFactory
 from kivy.app import App
 from kivy.core.audio import SoundLoader
 from kivy.uix.button import Button
@@ -27,15 +46,18 @@ from kivy.animation import Animation
 
 
 class NavigationScreenManager(ScreenManager):
+    """Classe parente du manager qui gère les entrées et sorties des screens"""
     screen_stack = []
 
     def push(self, screen_name):
+        """Entrée d'un nouveau screen"""
         if screen_name not in self.screen_stack:
             self.screen_stack.append(self.current)
             self.transition.direction = "left"
             self.current = screen_name
 
     def pop(self):
+        """Sortie du dernier screen"""
         if len(self.screen_stack) > 0:
             screen_name = self.screen_stack[-1]
             del self.screen_stack[-1]
@@ -44,19 +66,18 @@ class NavigationScreenManager(ScreenManager):
 
 
 class MyScreenManager(NavigationScreenManager):
-    pass
-
-
-class BeginningImage(RelativeLayout):
+    """Manager qui gère les entrées et sorties des screens"""
     pass
 
 
 class EndGameMode(FloatLayout):
+    """Menu de fin de partie"""
     pass
 
 
 class PauseMode(FloatLayout):
     def __init__(self, width, height, music, **kwargs):
+        """Menu de pause"""
 
         self.chosen_music = str(music)
         self.width = width
@@ -64,22 +85,24 @@ class PauseMode(FloatLayout):
         super().__init__(**kwargs)
 
     def changeMusicSpinnerText(self, text):
+        """Change le texte à afficher sur le dépliant de choix de la musique"""
         self.chosen_music = text
 
     def generateMusicsList(self):
+        """Génère la liste des musiques disponibles"""
         music_list = list(music[:-4] for music in listdir("client/sounds/music"))
         music_list.append("No music")
         return music_list
 
 
 class KS_screen(Screen):
-    # ids.noActionBar = ObjectProperty()
-
     def __init__(self, world, music, **kw):
+        """Screen responsable d'afficher la partie"""
         self.musicName = self.get_musicName(music)
         super().__init__(**kw)
         self.app = App.get_running_app()
         self.world = world
+        # Instantiation du canvas de jeu
         self.game = MainWidget(self.world, self)
         if self.game.theGame:
             self.startMusic()
@@ -92,9 +115,11 @@ class KS_screen(Screen):
             
 
     def quit(self):
+        """Nettoyage du canvas de jeu après la partie"""
         self.game.clear()
 
     def pauseMode(self):
+        """Appel du mode de pause"""
         if self.musicName:
             self.pauseMusic()
 
@@ -106,6 +131,7 @@ class KS_screen(Screen):
         self.add_widget(self.pauseMenu)
 
     def endGameMode(self, message):
+        """Appel du mode de fin de partie"""
         if self.musicName:
             self.pauseMusic()
 
@@ -124,10 +150,13 @@ class KS_screen(Screen):
         self.add_widget(self.endGameMenu)
 
     def begin_game(self, dt):
+        """Démarrage de la partie"""
         print("Fasten your seat belts, game is starting !!")
         self.game.start_theGame()
 
     def startingAnimation(self):
+        """Création et affichage de l'animation de début de partie"""
+        # self.ids.noActionBar.remove_widget(self.start_button)
         start_animation3 = Label(text="3", font_size=0,halign = "center", color= (0.4, 1, 0.4, 1))
         start_animation2 = Label(text="2", font_size=0,halign = "center", color= (0.4, 1, 0.4, 1))
         start_animation1 = Label(text="1", font_size=0,halign = "center", color= (0.4, 1, 0.4, 1))
@@ -164,15 +193,15 @@ class KS_screen(Screen):
             + Animation(font_size=0, duration=.5)
         )
         anim.start(start_animationGO)
+        # Appel d'une instance de l'output afin d'afficher le circuit derrière l'animation
         Clock.schedule_once(self.begin_game, 6)
 
     def end_game(self, endGameMessage=""):
+        """Appel du mode de fin de partie"""
         self.endGameMode(endGameMessage)
 
-    def test(self):
-        self.app.manager.pop()
-
     def resumeGame(self, new_music):
+        """Reprise de la partie à la fin de la pause"""
         self.resumeMusic()
 
         self.game.play = True
@@ -182,7 +211,7 @@ class KS_screen(Screen):
         self.remove_widget(self.pauseMenu)
 
     def startMusic(self):
-        # Initialization of the music (with repetitions)
+        """Initialisation de la musique (avec répétitions)"""
 
         if self.app.soundEnabled:
             try:
@@ -198,17 +227,20 @@ class KS_screen(Screen):
                 pass
 
     def changeMusic(self, new_music):
+        """Changement de la musique"""
         self.musicName = new_music
 
     def pauseMusic(self):
+        """Arrêt de la musique lors du mode pause"""
         try:
-            # self.music_pos = self.music.get_pos()     #Bug in the kivy sounds class, doesn't work yet...
+            # self.music_pos = self.music.get_pos()     #Bug connu dans la class "sounds" de kivy, indisponible pour l'instant...
             self.music.stop()
-            self.music.loop = False
+            # self.music.loop = False
         except:
             pass
 
     def resumeMusic(self):
+        """Reprend la musique après une pause"""
         print("Music resumed")
         self.startMusic()
 
@@ -219,39 +251,17 @@ class KS_screen(Screen):
             return music
 
 
-from kart_simulator import game, path, Rectangle, Color
-from os import path, listdir, write
-from posixpath import abspath
-from re import S
-import time
-import os.path
-from typing import List
-
-from kivy.core.window import Window
-
-
-from lib import Point
-import client.worlds
-from game.objects import *
-import game
-from kivy.app import App
-
-from kivy.utils import get_color_from_hex, rgba
-from kivy.lang import Builder
-from kivy.uix.widget import Widget
-from kivy.graphics import Rectangle, Color
-from kivy.properties import Clock
-from kivy.properties import StringProperty
-
-from client.output import OutputFactory
 
 
 class PreView(Widget):
     def __init__(self, **kwargs):
+        """Widget créant le preview"""
         super().__init__(**kwargs)
         self.previewMode = False
 
     def changePreView(self, world):
+        """Change le mode de preview pour afficher le nouveau circuit"""
+        # Se comporte comme MainWidget, mais n'instancie qu'une seule frame
         if not isinstance(world, StringProperty):
             self.canvas.before.clear()
             self.canvas.clear()
@@ -276,25 +286,31 @@ class PreView(Widget):
                     app.changeLabelText(OCE.message())
 
     def updatePreviewMode(self):
+        """Met à jour le mode de preview: vrai si il faut afficher un preview et faux sinon"""
         self.previewMode = not self.previewMode
 
 
 class MainMenu2(FloatLayout):
     def __init__(self, **kwargs):
+        """Menu principal du jeu"""
         super().__init__(**kwargs)
         self.chosen_world = StringProperty("Choose your world")
         self.chosen_music = StringProperty("Choose your music")
 
     def changeWorldSpinnerText(self, text):
+        """Change le texte affiché sur le dépliant de choix du circuit"""
         self.chosen_world = text
 
     def changeMusicSpinnerText(self, text):
+        """Change le texte affiché sur le dépliant de choix de la musique"""
         self.chosen_music = text
 
     def generateWorldsList(self):
+        """Génère la liste des curcuits jouables"""
         return [world[:-5] for world in listdir("client/worlds")]
 
     def generateMusicsList(self):
+        """Génère la liste des musiques jouables"""
         music_list = list(music[:-4] for music in listdir("client/sounds/music"))
         music_list.append("No music")
         return music_list
@@ -302,6 +318,7 @@ class MainMenu2(FloatLayout):
 
 class UpdateWorldButton(Button):
     def __init__(self, **kwargs):
+        """Bouton qui met à jour dynamiquement la liste des mondes jouables"""
         super().__init__(**kwargs)
         self._updating = False
 
@@ -317,6 +334,7 @@ class UpdateWorldButton(Button):
             ).start()
 
     def generateUpdatedWorldsListTask(self, updateWorlds_output, worlds_spinner):
+        """Récupère les données des mondes et met à jour l'affichage"""
         updateWorlds_output.text = (
             "\nUpdating the worlds ...\n"
         )

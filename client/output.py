@@ -36,6 +36,7 @@ class OutputFactory:
         translate: lib.Vector = lib.Vector(),
         scale: float = 0,
     ) -> None:
+        """Instancie et met à jour les objets à afficher"""
         if max_width and max_height:
             self._scale = None
             self._translate = None
@@ -140,8 +141,7 @@ class OutputFactory:
                         elif isinstance(obstacle, game_objects.Gate):
                             self.createGate(obstacle)
                         else:
-                            warning("TO BE IMPLEMENTED")
-                            source = obstacle.sourceImage
+                            source = obstacle.fill().source()
                             with self._w.canvas:
                                 io_obstacle = io_objects.FilledQuadrilateral(
                                     summitsBeforeRotation=obstacle.verticesBeforeRotation(),
@@ -197,7 +197,7 @@ class OutputFactory:
         """Dessine le kart sur le canvas du widget et l'ajout au registre"""
         self._w.kart_ID = lgeKart.formID()
         self._karts.append(lgeKart)
-        with self._w.canvas:  # This type of objects has to be put into the 'with self.canvas:' instruction
+        with self._w.canvas:  # Ce type d'objet doit être placé dans l'instruction 'with self.canvas:'
             Color(rgba=(1, 1, 1, 1))
             ioKart = io_objects.FilledQuadrilateral(
                 LGEObject=lgeKart,
@@ -223,7 +223,7 @@ class OutputFactory:
         self._createdObject[lgeFinishLine.formID()] = ioFinishLine
 
     def createGate(self, lgeGate: game_objects.Gate) -> None:
-        """Dessine la porte sur le canvas du widget et l'ajout au registre"""
+        """Dessine le portillon sur le canvas du widget et l'ajout au registre"""
         with self._w.canvas:
             self._gates.append(lgeGate)
             ioGate = io_objects.FilledQuadrilateral(

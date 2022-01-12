@@ -1,6 +1,7 @@
 import game.events
 from kivy.lang import Builder
 
+# Liens utilisateur-programme à travers le clavier, relié à la class MainWidget lors de l'instanciation d'un partie
 
 def keyboard_closed(self):
     self._keyboard.unbind(on_key_down=self.on_keyboard_down)
