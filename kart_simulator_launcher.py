@@ -3,6 +3,7 @@ from kivy.clock import Clock
 from kivy.core import window
 from kivy.properties import StringProperty, ObjectProperty
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.button import Button
 from kivy.uix.widget import Widget
 from kivy.utils import get_color_from_hex, rgba
 from kivy.core.window import Window
@@ -22,6 +23,7 @@ from layouts import KS_screen
 class MenuApp(App):
     manager = ObjectProperty(None)
     musicName = ""
+    soundEnabled = True
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.game_instance = None
@@ -63,13 +65,21 @@ class MenuApp(App):
             self.game_instance = None
             
     def ButtonSound(self):
-        sound = SoundLoader.load('client/sounds/ButtonClick2.wav')
-        sound.volume = 0.25
-        sound.play()
+        if self.soundEnabled:
+            sound = SoundLoader.load('client/sounds/ButtonClick2.wav')
+            sound.volume = 0.25
+            sound.play()
 
     def isWorldChosen(self,world):
         return not isinstance(world,StringProperty)
-
+    
+    def changeSoundMode(self, widget: Button):
+        self.soundEnabled = not self.soundEnabled
+        if self.soundEnabled:
+            widget.text = "Mute sounds"
+        else:
+            widget.text = "Unmute sounds"
+        
 
 
 

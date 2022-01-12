@@ -78,6 +78,7 @@ class KS_screen(Screen):
     def __init__(self, world, music, **kw):
         self.musicName = self.get_musicName(music)
         super().__init__(**kw)
+        self.app = App.get_running_app()
         self.world = world
         self.game = MainWidget(self.world, self)
         if self.game.theGame:
@@ -87,7 +88,7 @@ class KS_screen(Screen):
             self.start_button.bind(on_press=self.startingAnimation)
             self.ids.noActionBar.add_widget(self.start_button)
             self.game.theGame.callOutput()
-            self.app = App.get_running_app()
+            
 
     def quit(self):
         self.game.clear()
@@ -122,10 +123,7 @@ class KS_screen(Screen):
         self.add_widget(self.endGameMenu)
 
     def begin_game(self, dt):
-        # self.animation_id.remove_widget(self.imageB)
-        # self.remove_widget(self.animation_id)
-        # self.remove_widget(self.pg)
-
+        print("Fasten your seat belts, game is starting !!")
         self.game.start_theGame()
 
     def startingAnimation(self, instance):
@@ -186,18 +184,18 @@ class KS_screen(Screen):
     def startMusic(self):
         # Initialization of the music (with repetitions)
 
-        # if self.music != "No music" and not isinstance(self.music,StringProperty) and self.music.name != "":
-        try:
-            musicPath = path.join("client/sounds/music", self.musicName) + ".wav"
-            self.music = SoundLoader.load(musicPath)
-            # self.music_pos = 0
-            self.music.volume = 0.25
-            self.music.play()
-            # self.music.seek(self.music_pos)
-            self.music.loop = True
+        if self.app.soundEnabled:
+            try:
+                musicPath = path.join("client/sounds/music", self.musicName) + ".wav"
+                self.music = SoundLoader.load(musicPath)
+                # self.music_pos = 0
+                self.music.volume = 0.25
+                self.music.play()
+                # self.music.seek(self.music_pos)
+                self.music.loop = True
 
-        except:
-            pass
+            except:
+                pass
 
     def changeMusic(self, new_music):
         self.musicName = new_music
@@ -367,9 +365,10 @@ class UpdateWorldButton(Button):
         updateWorlds_output.text += "All worlds are up to date!"
         self._updating = False
         self.text = "Update the worlds now"
-        sound = SoundLoader.load("client/sounds/success-sound-effect.mp3")
-        sound.volume = 0.25
-        sound.play()
+        if App.get_running_app().soundEnabled:
+            sound = SoundLoader.load("client/sounds/success-sound-effect.mp3")
+            sound.volume = 0.25
+            sound.play()
 
 
 ##########################################################################

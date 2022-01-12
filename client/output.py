@@ -228,7 +228,7 @@ class OutputFactory:
             self._gates.append(lgeGate)
             ioGate = io_objects.FilledQuadrilateral(
                 LGEObject=lgeGate,
-                source="client/Images/gates.png",
+                source="client/Images/gate1.png",
                 scale=self._scale,
                 translate1=self._translation1,
                 translate2=self._translation2,

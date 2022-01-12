@@ -120,6 +120,13 @@
         size_hint: .05,.05
         text:"Exit"
         on_press: app.ButtonSound(), app.stop()
+    
+    Button:
+        pos_hint: {'x':.85,'y':0}
+        size_hint: .15,.05
+        text:"Mute Sound"
+        on_press: app.changeSoundMode(self)
+
 
 
 
@@ -179,15 +186,6 @@
             text: "00:00:00"
             color: 0.4, 1, 0.4, 1
 
-
-<BeginningImage>:
-    Image:
-        id: B_image
-        source:'client/Images/321go.gif'
-        size_hint: 1,1
-        pos_hint: {"center_x": .5, "center_y": .5}
-        keep_ratio: False
-        allow_stretch: True
 
 
 <MyScreenManager>:
