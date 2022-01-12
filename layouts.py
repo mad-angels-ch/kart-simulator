@@ -84,9 +84,10 @@ class KS_screen(Screen):
         if self.game.theGame:
             self.startMusic()
             self.ids.noActionBar.add_widget(self.game)
-            self.start_button = Button(text="start The game!", size_hint=(0.25, 0.1))
-            self.start_button.bind(on_press=self.startingAnimation)
-            self.ids.noActionBar.add_widget(self.start_button)
+            # self.start_button = Button(text="start The game!", size_hint=(0.25, 0.1))
+            # self.start_button.bind(on_press=self.startingAnimation)
+            # self.ids.noActionBar.add_widget(self.start_button)
+            self.startingAnimation()
             self.game.theGame.callOutput()
             
 
@@ -126,8 +127,7 @@ class KS_screen(Screen):
         print("Fasten your seat belts, game is starting !!")
         self.game.start_theGame()
 
-    def startingAnimation(self, instance):
-        self.ids.noActionBar.remove_widget(self.start_button)
+    def startingAnimation(self):
         start_animation3 = Label(text="3", font_size=0,halign = "center", color= (0.4, 1, 0.4, 1))
         start_animation2 = Label(text="2", font_size=0,halign = "center", color= (0.4, 1, 0.4, 1))
         start_animation1 = Label(text="1", font_size=0,halign = "center", color= (0.4, 1, 0.4, 1))
