@@ -63,7 +63,7 @@ class MainWidget(Widget):
             self.world = "2triangles"
 
         ##################### Création de la partie #####################
-        if self.world[:13] == "client/worlds":
+        if self.world != "client/easteregg.json":
             dataUrl = path.join("client/worlds", self.world) + ".json"
             self.isEasterEgg = False
         else:
