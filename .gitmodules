@@ -1,0 +1,6 @@
+[submodule "lib"]
+	path = lib
+	url = https://github.com/lj44-ch/kart-simulator-lib.git
+[submodule "game"]
+	path = game
+	url = https://github.com/lj44-ch/kart-simulator-game.git
