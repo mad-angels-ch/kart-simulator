@@ -1,3 +1,4 @@
+from kivy.graphics.transformation import Matrix
 from typing import List
 from kivy.graphics import Mesh, Rectangle, PushMatrix,Rotate, PopMatrix, Color
 from typing import List
@@ -22,15 +23,17 @@ class IO_FilledQuadrilateral(Rectangle):
         _angle = self._LGEFilledQuadrilateral.angle()*180/math.pi
         
         
-        center = self.get_center(self._LGEFilledQuadrilateral.center())
+        self.center = self.get_center(self._LGEFilledQuadrilateral.center())
         self._size = (self.get_sizeFromVertices()[0] / self._scale, self.get_sizeFromVertices()[1] / self._scale)
-        position = self.get_position(center)
+        position = self.get_position(self.center)
     
         PushMatrix()
-        Rotate(origin=center, angle=_angle)
+        Rotate(origin=self.center, angle=_angle)
         Rectangle.__init__(self,source=self._source,pos=position,size=self._size)
         PopMatrix()
-    
+        
+        
+        
     def updatePosition(self):
         pass
     

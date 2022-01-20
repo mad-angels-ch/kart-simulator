@@ -133,13 +133,13 @@ class MainWidget(Widget):
         s, mili = divmod(int(1000*self.timer), 1000)
         min, s= divmod(s, 60)
         if mili > 100:
-            self.parent.parent.ids.timer_id.text = (f'{min:d}:{s:02d}:{mili:02d}')
+            self.parent.parent.parent.ids.timer_id.text = (f'{min:d}:{s:02d}:{mili:02d}')
         else:
-            self.parent.parent.ids.timer_id.text = (f'{min:d}:{s:02d}:0{mili:02d}')
+            self.parent.parent.parent.ids.timer_id.text = (f'{min:d}:{s:02d}:0{mili:02d}')
     
     def updateLapsCount(self, finishLine: FinishLine) -> None:
         """Met l'affichage du nombre de tours terminés à jour"""
-        self.parent.parent.ids.laps_id.text = f"{finishLine.passagesCount(self.kart_ID)}/{finishLine.numberOfLapsRequired()}"
+        self.parent.parent.parent.ids.laps_id.text = f"{finishLine.passagesCount(self.kart_ID)}/{finishLine.numberOfLapsRequired()}"
 
     def updateGatesCount(self, gatesList: List[Gate]) -> None:
         """Met l'affiche du nombre de portillons (du tour) franchis à jour"""
@@ -148,11 +148,11 @@ class MainWidget(Widget):
             sum([gate.passagesCount(self.kart_ID) for gate in gatesList])
             % numberOfGates
         )
-        self.parent.parent.ids.gates_id.text = f"{gatesPassed}/{numberOfGates}"
+        self.parent.parent.parent.ids.gates_id.text = f"{gatesPassed}/{numberOfGates}"
 
     def checkIfGameIsOver(self, karts: List[Kart], finishLine: FinishLine) -> None:
         """Contrôle si la partie est terminée et si oui gère celle-ci"""
         if finishLine.completedAllLaps(self.kart_ID):
-            self.parentScreen.end_game(f"Completed!\n\nWell done!\n Your time: {self.parent.parent.ids.timer_id.text}")
+            self.parentScreen.end_game(f"Completed!\n\nWell done!\n Your time: {self.parent.parent.parent.ids.timer_id.text}")
         elif karts[0].hasBurned():
             self.parentScreen.end_game("You have burned!\n\nTry again!")
