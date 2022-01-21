@@ -21,9 +21,6 @@ class IO_Polygon(Mesh):
         self._translation2 = translate2
 
         
-        # self.perspective_point_y = 450
-        # self.perspective_point_x = 400
-        
         
         self.lastPos = []
         
@@ -62,23 +59,6 @@ class IO_Polygon(Mesh):
                 self._vertices.append(0)
                 self._vertices.append(0)
                 i += 1
-            # a = 0
-            # while a < len(self._vertices)-1:
-            #     self._vertices[a],self._vertices[a+1] = self.transform_perspective(self._vertices[a],self._vertices[a+1])
-            #     a += 2
+
                 
             self.vertices = self._vertices
-
-    # def transform_perspective(self, x, y):
-    #     lin_y = y * self.perspective_point_y / 300
-    #     if lin_y > self.perspective_point_y:
-    #         lin_y = self.perspective_point_y
-
-    #     diff_x = x-self.perspective_point_x
-    #     diff_y = self.perspective_point_y-lin_y
-    #     factor_y = diff_y/self.perspective_point_y  # 1 when diff_y == self.perspective_point_y / 0 when diff_y = 0
-    #     factor_y = pow(factor_y, 4)
-
-    #     tr_x = self.perspective_point_x + diff_x*factor_y
-    #     tr_y = self.perspective_point_y - factor_y*self.perspective_point_y
-    #     return int(tr_x), int(tr_y)

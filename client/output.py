@@ -56,8 +56,6 @@ class OutputFactory:
         self._karts = []
         self._gates = []
 
-        self.a = 0
-        self.b = 0
         
     def isInitialized(self) -> bool:
         """Retourne vrai si initialisé."""
@@ -125,10 +123,6 @@ class OutputFactory:
                 )
                 / 2
             )
-        # self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().translate(1,1,0),anchor=(0,0))
-        # self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().scale(self._scale,self._scale,self._scale),anchor=(0,0))
-        # self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().translate(self._translation2[0],self._translation2[1],0),anchor=(0,0))
-
         for obstacle in objects:
             if not self._initialized or obstacle.formID() not in self._createdObject:
                 if isinstance(obstacle, game_objects.Kart):
@@ -213,26 +207,6 @@ class OutputFactory:
                 translate2=self._translation2,
             )
         self._createdObject[lgeKart.formID()] = ioKart
-        # with self._w.canvas:
-        # #     Rectangle(pos=ioKart.pos)
-        # self.a=0
-        if not self.a:
-            self.a,self.b = ioKart.pos[0],ioKart.pos[1]
-            self.an = lgeKart.angle()
-            self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().translate(-self.a+100,-self.b+100,0),anchor=(0,0))
-            self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().scale(4,4,1),anchor=(0,0))
-            # self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().rotate(self.an,ioKart.center[0],ioKart.center[1],0),anchor=(0,0))
-            
-        self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().translate((-ioKart.pos[0]+self.a)*4,(-ioKart.pos[1]+self.b)*4,0),anchor=(0,0))
-        # self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().rotate(lgeKart.angle()-self.an,ioKart.center[0],ioKart.center[1],0),anchor=(0,0))
-        self.a,self.b = ioKart.pos[0],ioKart.pos[1]
-        self.an = lgeKart.angle()
-        
-        # self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().translate(self.a[0],self.a[1],0),anchor=(0,0))
-        # self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().translate(-ioKart.pos[0],-ioKart.pos[1],0),anchor=(0,0))
-        
-        # self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().translate(-1,-1,0),anchor=(0,0))
-        
         
         
     def createFinishLine(self, lgeFinishLine: game_objects.FinishLine) -> None:

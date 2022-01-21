@@ -102,11 +102,6 @@ class KS_screen(Screen):
         self.musicName = self.get_musicName(music)
         super().__init__(**kw)
         
-
-        # b1 = Button()
-        # b1.bind(on_press=self.test1)
-        # self.add_widget(b1)
-        
         
         
         self.app = App.get_running_app()
@@ -122,8 +117,6 @@ class KS_screen(Screen):
             self.startingAnimation()
             self.game.theGame.callOutput()
             
-    # def test1(self,value):
-    #     self.apply_transform(trans=Matrix().translate(-100,-100,0),anchor=(0,0))
         
     def quit(self):
         """Nettoyage du canvas de jeu après la partie"""
@@ -204,7 +197,7 @@ class KS_screen(Screen):
         )
         anim.start(start_animationGO)
         # Appel d'une instance de l'output afin d'afficher le circuit derrière l'animation
-        Clock.schedule_once(self.begin_game, 1)
+        Clock.schedule_once(self.begin_game, 6)
 
     def end_game(self, endGameMessage=""):
         """Appel du mode de fin de partie"""
