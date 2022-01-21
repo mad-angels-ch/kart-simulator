@@ -24,11 +24,14 @@ class IO_Circle(Ellipse):
     ):
         """Crée le cercle à ajouter au canvas et prépare son ajout"""
         self._w = widget
-        self._scale = scale
+        # self._scale = scale
+        self._scale = 1
         self._LGECircle = LGEObject
         self._radius = self._LGECircle.radius() / self._scale
-        self._translation1 = translate1
-        self._translation2 = translate2
+        # self._translation1 = translate1
+        # self._translation2 = translate2
+        self._translation1 = lib.Vector((0,0))
+        self._translation2 = lib.Vector((0,0))
         self.lastPos = lib.Point((0, 0))
         with self._w.canvas:
             Color(rgba=get_color_from_hex(self._LGECircle.fill().value()))
@@ -57,6 +60,7 @@ class IO_Circle(Ellipse):
         )
         centerAfter.translate(self._translation2)
         return centerAfter
+        # return centerBefore
 
     def get_position(self, center: lib.Point) -> lib.Point:
         """Retourne la position du sommet en bas à gauche du rectangle circonscrit au cercle 

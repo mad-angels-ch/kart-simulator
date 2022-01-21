@@ -14,11 +14,14 @@ class IO_FilledQuadrilateral(Rectangle):
     def __init__(self, LGEObject: "io_objects.IO_FilledQuadrilateral", source: str = None, scale=1, translate1: lib.Vector = lib.Vector((0,0)), translate2: lib.Vector = lib.Vector((0,0))):
         """Crée le rectangle à ajouter au canvas et prépare son ajout"""
 
-        self._scale = scale
+        # self._scale = scale
+        self._scale = 1
         self._LGEFilledQuadrilateral = LGEObject
         self._source = source
-        self._translation1 = translate1
-        self._translation2 = translate2
+        # self._translation1 = translate1
+        # self._translation2 = translate2
+        self._translation1 = lib.Vector((0,0))
+        self._translation2 = lib.Vector((0,0))
         self._verticesBR = self._LGEFilledQuadrilateral.verticesBeforeRotation()
         _angle = self._LGEFilledQuadrilateral.angle()*180/math.pi
         

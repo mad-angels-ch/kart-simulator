@@ -14,11 +14,14 @@ class IO_Polygon(Mesh):
     def __init__(self, widget: Widget, LGEObject: "io_objects.Polygon", scale=1, translate1: lib.Vector = lib.Vector((0,0)), translate2: lib.Vector = lib.Vector((0,0))):
         """Crée le polygone à ajouter au canvas et prépare son ajout"""
         self._w = widget
-        self._scale = scale
+        # self._scale = scale
+        self._scale = 1
         self._LGEPolygon = LGEObject
         self._vertices = []
-        self._translation1 = translate1
-        self._translation2 = translate2
+        # self._translation1 = translate1
+        # self._translation2 = translate2
+        self._translation1 = lib.Vector((0,0))
+        self._translation2 = lib.Vector((0,0))
 
         
         # self.perspective_point_y = 450
