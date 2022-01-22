@@ -2,7 +2,7 @@ from kivy.graphics.transformation import Matrix
 from logging import warning
 from typing import Any, Dict, List
 from kivy.app import App
-
+import math
 from kivy.utils import get_color_from_hex
 from kivy.graphics import Color, Rectangle
 from kivy.uix.widget import Widget
@@ -56,9 +56,8 @@ class OutputFactory:
         self._karts = []
         self._gates = []
 
-        self.a = 0
-        self.b = 0
-        self.c = 0
+        
+        self.kart_scalingFactor = 1
         
     def isInitialized(self) -> bool:
         """Retourne vrai si initialisé."""
@@ -127,11 +126,12 @@ class OutputFactory:
                 / 2
             )
             
-        if self.c == 0:
+            
             self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().translate(self._translation1[0],self._translation1[1],0),anchor=(0,0))
             self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().scale(self._scale,self._scale,self._scale),anchor=(0,0))
             self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().translate(self._translation2[0],self._translation2[1],0),anchor=(0,0))
-            self.c = 1
+            
+        # self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().rotate(0.01,0,0,1),anchor=(174.12,535.85))
             
         for obstacle in objects:
             if not self._initialized or obstacle.formID() not in self._createdObject:
@@ -166,7 +166,7 @@ class OutputFactory:
                 else:
                     raise "Unsupported color type"
 
-                self._initialized = True
+        
 
             else:
                 # mettres les positions à jour
@@ -178,6 +178,8 @@ class OutputFactory:
                     self.createKart(obstacle)
                 elif isinstance(obstacle, game_objects.Polygon):
                     io_object.updatePosition()
+                    
+        self._initialized = True    
 
     def createCircle(self, lgeCircle: game_objects.Circle) -> None:
         """Dessine le cercle sur le canvas du widget et l'ajout au registre"""
@@ -218,27 +220,10 @@ class OutputFactory:
             )
         self._createdObject[lgeKart.formID()] = ioKart
         
+        if not self.isInitialized():
+            self.setPOVPosition(lgeKart)
         
-        # if not self.a:
-        #     self.updateWorldPosition(lgeKart=lgeKart)
-            # self.a,self.b = ioKart.pos[0],ioKart.pos[1]
-            # posi = lib.Point((self.a,self.b))
-            # self.updatePositionInCanvas(posi)
-            # self.an = lgeKart.angle()
-            # self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().translate(-posi[0]+100,-posi[1]+100,0),anchor=(0,0))
-            # self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().scale(4,4,1),anchor=(0,0))
-            # self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().rotate(-self.an,0,0,1),anchor=(posi[0],posi[1]))
-        # posi = lib.Point((ioKart.pos[0],ioKart.pos[1]))
-        # self.updatePositionInCanvas(posi)
-        # self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().translate((-ioKart.pos[0]+self.a)*4,(-ioKart.pos[1]+self.b)*4,0),anchor=(0,0))
-        # self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().rotate(-(lgeKart.angle()-self.an),0,0,1),anchor=(100,100))
-        # self.a,self.b = ioKart.pos[0],ioKart.pos[1]
-        # self.an = lgeKart.angle()
-        
-        # self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().translate(self.a[0],self.a[1],0),anchor=(0,0))
-        # self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().translate(-ioKart.pos[0],-ioKart.pos[1],0),anchor=(0,0))
-        
-        # self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().translate(-1,-1,0),anchor=(0,0))
+        self.updatePOVposition(lgeKart)
         
         
         
@@ -269,19 +254,33 @@ class OutputFactory:
             )
         self._createdObject[lgeGate.formID()] = ioGate
 
-    # def updatePositionInCanvas(self, point):
-    #     point.translate(self._translation1)
-    #     point.scale(self._scale)
-    #     point.translate(self._translation2)
+
+
+    def get_updatedPositionInCanvas(self, point):
+        """Retourne une copie du point ajustée au canvas affiché"""
+        pt = lib.Point((point[0],point[1]))
+        pt.translate(self._translation1)
+        pt.scale(self._scale)
+        pt.translate(self._translation2)
+        return pt
         
-    # def updateWorldPosition(self,lgeKart):
-    #         self.a,self.b = lgeKart.center()[0],lgeKart.center()[1]
-    #         posi = lib.Point((lgeKart.center()[0],lgeKart.center()[1]))
-    #         self.updatePositionInCanvas(posi)
-    #         self.an = lgeKart.angle()
-    #         self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().translate(-posi[0]+100,-posi[1]+100,0),anchor=(0,0))
-    #         self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().scale(4,4,1),anchor=(0,0))
-    #         self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().rotate(-self.an,0,0,1),anchor=(posi[0]/4,posi[1]/4))
-            
-
-
+    def setPOVPosition(self,lgeKart):
+        """Etabli le "Point Of View" du début de la partie"""
+        self.KartPosition = self.get_updatedPositionInCanvas(lgeKart.center())
+        self.angle = lgeKart.angle()
+        kp1=self.get_updatedPositionInCanvas(lgeKart.center())
+        self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().rotate(math.pi/2-self.angle,0,0,1),anchor=(self.KartPosition[0],self.KartPosition[1]))
+        speedDirection = lib.Vector((self.KartPosition[0],self.KartPosition[1]))
+        self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().translate(-speedDirection[0],-speedDirection[1],0),anchor=(0,0))
+        self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().translate(self._maxWidth/(2/self.kart_scalingFactor/self._scale),50*self._scale,0),anchor=(0,0))
+        self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().scale(1/self.kart_scalingFactor/self._scale,1/self.kart_scalingFactor/self._scale,1),anchor=(0,0))
+        
+    def updatePOVposition(self,lgeKart):
+        """Met à jour le "Point Of View" par rapport au Kart à chaque frame"""
+        kp1=self.get_updatedPositionInCanvas(lgeKart.center())
+        speedDirection = lib.Vector.fromPoints(kp1,self.KartPosition)
+        speedDirection.rotate(self._w.parent.parent.rotation/180*math.pi)
+        self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().rotate(-(lgeKart.angle()-self.angle),0,0,1),anchor=(self._maxWidth/(2/self.kart_scalingFactor/self._scale)*1/self.kart_scalingFactor/self._scale,50*self._scale*1/self.kart_scalingFactor/self._scale))
+        self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().translate(speedDirection[0]*1/self.kart_scalingFactor/self._scale,speedDirection[1]*1/self.kart_scalingFactor/self._scale,0),anchor=(0,0))
+        self.angle = lgeKart.angle()
+        self.KartPosition = self.KartPosition = self.get_updatedPositionInCanvas(lgeKart.center())
