@@ -54,10 +54,11 @@ class MainWidget(Widget):
     dict_FilledQuadrilaterals = dict()
     kart_ID = 0
 
-    def __init__(self, world=None, parentScreen=None, **kwargs):
+    def __init__(self, world=None, parentScreen=None, POV = "Third Person", **kwargs):
         """Canvas dans lequel les objets d'une partie sont dessinés"""
         super().__init__(**kwargs)
         self.world = world
+        self.POV = POV
         self.parentScreen = parentScreen
         if isinstance(self.world, StringProperty):
             self.world = "2triangles"
@@ -83,6 +84,7 @@ class MainWidget(Widget):
                     frame_callback=self.frame_callback,
                     max_width=self.app.windowSize[0],
                     max_height=self.app.windowSize[1],
+                    POV = self.POV
                 ),
             )
 

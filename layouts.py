@@ -97,7 +97,7 @@ class PauseMode(FloatLayout):
 
 
 class KS_screen(Screen):
-    def __init__(self, world, music, **kw):
+    def __init__(self, world, music, POV, **kw):
         """Screen responsable d'afficher la partie"""
         self.musicName = self.get_musicName(music)
         super().__init__(**kw)
@@ -111,8 +111,9 @@ class KS_screen(Screen):
         
         self.app = App.get_running_app()
         self.world = world
+        self.POV = POV
         # Instantiation du canvas de jeu
-        self.game = MainWidget(self.world, self)
+        self.game = MainWidget(self.world, POV=self.POV, parentScreen=self)
         if self.game.theGame:
             self.startMusic()
             self.ids.noActionBar.add_widget(self.game)
@@ -228,7 +229,7 @@ class KS_screen(Screen):
                 musicPath = path.join("client/sounds/music", self.musicName) + ".wav"
                 self.music = SoundLoader.load(musicPath)
                 # self.music_pos = 0
-                self.music.volume = 0.25
+                self.music.volume = 1
                 self.music.play()
                 # self.music.seek(self.music_pos)
                 self.music.loop = True
@@ -304,6 +305,7 @@ class MainMenu2(FloatLayout):
         super().__init__(**kwargs)
         self.chosen_world = StringProperty("Choose your world")
         self.chosen_music = StringProperty("Choose your music")
+        self.chosen_POV = StringProperty("Choose your Point Of View")
 
     def changeWorldSpinnerText(self, text):
         """Change le texte affiché sur le dépliant de choix du circuit"""
@@ -312,6 +314,10 @@ class MainMenu2(FloatLayout):
     def changeMusicSpinnerText(self, text):
         """Change le texte affiché sur le dépliant de choix de la musique"""
         self.chosen_music = text
+        
+    def changePOVSpinnerText(self, text):
+        """Change le texte affiché sur le dépliant de choix du point de vue"""
+        self.chosen_POV = text
 
     def generateWorldsList(self):
         """Génère la liste des curcuits jouables"""
@@ -402,7 +408,7 @@ class UpdateWorldButton(Button):
         self.text = "Update the worlds now"
         if App.get_running_app().soundEnabled:
             sound = SoundLoader.load("client/sounds/success-sound-effect.mp3")
-            sound.volume = 0.25
+            sound.volume = 0.5
             sound.play()
 
 

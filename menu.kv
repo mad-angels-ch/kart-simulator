@@ -60,7 +60,7 @@
         size_hint: .4, .3
         text: "Play"
         background_color: (1.0, 0.0, 0.0, .75)
-        on_press: app.instanciate_ks(root.chosen_world, root.chosen_music), app.ButtonSound()
+        on_press: app.instanciate_ks(root.chosen_world, root.chosen_music, root.chosen_POV), app.ButtonSound()
 
     Spinner:
         id: worlds_spinner_id
@@ -79,6 +79,15 @@
         values: root.generateMusicsList()
         on_text:
             root.changeMusicSpinnerText(music_spinner_id.text), app.ButtonSound()
+
+    Spinner:
+        id: POV_spinner_id
+        pos_hint: {'x':.8,'y':.3}
+        size_hint: .2, .1
+        text: "Choose your POV !"
+        values: ["First Person","Third Person"]
+        on_text:
+            root.changePOVSpinnerText(POV_spinner_id.text), app.ButtonSound()
 
     Button:
         id: prewViewButton_ID

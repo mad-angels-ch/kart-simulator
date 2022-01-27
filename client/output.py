@@ -36,6 +36,7 @@ class OutputFactory:
         max_height: float = None,
         translate: lib.Vector = lib.Vector(),
         scale: float = 0,
+        POV: str = "Third Person"
     ) -> None:
         """Instancie et met à jour les objets à afficher"""
         if max_width and max_height:
@@ -56,6 +57,7 @@ class OutputFactory:
         self._karts = []
         self._gates = []
 
+        self.POV = POV
         
         self.kart_scalingFactor = 1
         
@@ -131,12 +133,13 @@ class OutputFactory:
             self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().scale(self._scale,self._scale,self._scale),anchor=(0,0))
             self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().translate(self._translation2[0],self._translation2[1],0),anchor=(0,0))
             
-        # self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().rotate(0.01,0,0,1),anchor=(174.12,535.85))
             
         for obstacle in objects:
             if not self._initialized or obstacle.formID() not in self._createdObject:
                 if isinstance(obstacle, game_objects.Kart):
                     self.createKart(obstacle)
+                    if not self.isInitialized() and self.POV == "First Person":
+                        self.setPOVPosition(obstacle)
 
                 elif isinstance(obstacle.fill(), game_fill.Hex):
                     if isinstance(obstacle, game_objects.Circle):
@@ -176,6 +179,9 @@ class OutputFactory:
                 elif isinstance(obstacle, game_objects.Kart):
                     self._w.canvas.remove(io_object)
                     self.createKart(obstacle)
+                    if self.POV == "First Person":
+                        self.updatePOVposition(obstacle)
+                    
                 elif isinstance(obstacle, game_objects.Polygon):
                     io_object.updatePosition()
                     
@@ -220,11 +226,6 @@ class OutputFactory:
             )
         self._createdObject[lgeKart.formID()] = ioKart
         
-        if not self.isInitialized():
-            self.setPOVPosition(lgeKart)
-        
-        self.updatePOVposition(lgeKart)
-        
         
         
     def createFinishLine(self, lgeFinishLine: game_objects.FinishLine) -> None:
@@ -258,7 +259,7 @@ class OutputFactory:
 
     def get_updatedPositionInCanvas(self, point):
         """Retourne une copie du point ajustée au canvas affiché"""
-        pt = lib.Point((point[0],point[1]))
+        pt = lib.Point(point)
         pt.translate(self._translation1)
         pt.scale(self._scale)
         pt.translate(self._translation2)
@@ -270,7 +271,7 @@ class OutputFactory:
         self.angle = lgeKart.angle()
         kp1=self.get_updatedPositionInCanvas(lgeKart.center())
         self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().rotate(math.pi/2-self.angle,0,0,1),anchor=(self.KartPosition[0],self.KartPosition[1]))
-        speedDirection = lib.Vector((self.KartPosition[0],self.KartPosition[1]))
+        speedDirection = lib.Vector(self.KartPosition)
         self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().translate(-speedDirection[0],-speedDirection[1],0),anchor=(0,0))
         self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().translate(self._maxWidth/(2/self.kart_scalingFactor/self._scale),50*self._scale,0),anchor=(0,0))
         self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().scale(1/self.kart_scalingFactor/self._scale,1/self.kart_scalingFactor/self._scale,1),anchor=(0,0))
