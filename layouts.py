@@ -276,6 +276,10 @@ class PreView(Widget):
             self.canvas.before.clear()
             self.canvas.clear()
             self.canvas.after.clear()
+            if self.parent.parent.scale != 1 and self.previewMode:
+                # Repositionne le ScatterLayout dans lequel se situe le preview à la position (0,0) et réinitialise son facteur scale à 1
+                self.parent.parent.pos = (0,0)
+                self.parent.parent.apply_transform(trans=Matrix().scale(1/self.theGame._output._scale, 1/self.theGame._output._scale, 1/self.theGame._output._scale),anchor=(0,0))
             if self.previewMode:
                 try:
                     self.dataUrl = self.dataUrl = (
@@ -285,11 +289,9 @@ class PreView(Widget):
                     self.theGame = game.Game(
                         self.dataUrl,
                         [],
-                        OutputFactory(self, max_width=200, max_height=200),
+                        OutputFactory(self, max_width=200, max_height=200, POV="PreView"),
                     )
-                    with self.canvas.before:
-                        Color(rgba=(1, 1, 1, 1))
-                        Rectangle(pos=(0, 0), size=(200, 200))
+
                     self.theGame.callOutput()
                 except ObjectCountError as OCE:
                     app.changeLabelText(OCE.message())

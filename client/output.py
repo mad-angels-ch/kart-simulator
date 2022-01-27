@@ -128,11 +128,14 @@ class OutputFactory:
                 / 2
             )
             
-            
-            self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().translate(self._translation1[0],self._translation1[1],0),anchor=(0,0))
-            self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().scale(self._scale,self._scale,self._scale),anchor=(0,0))
-            self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().translate(self._translation2[0],self._translation2[1],0),anchor=(0,0))
-            
+            if self.POV != "PreView":
+                self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().translate(self._translation1[0],self._translation1[1],0),anchor=(0,0))
+                self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().scale(self._scale,self._scale,self._scale),anchor=(0,0))
+                self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().translate(self._translation2[0],self._translation2[1],0),anchor=(0,0))
+            elif self.POV == "PreView":
+                self._w.parent.parent.apply_transform(trans=Matrix().translate(self._translation1[0],self._translation1[1],0),anchor=(0,0))
+                self._w.parent.parent.apply_transform(trans=Matrix().scale(self._scale,self._scale,self._scale),anchor=(0,0))
+                self._w.parent.parent.apply_transform(trans=Matrix().translate(self._translation2[0],self._translation2[1],0),anchor=(0,0))
             
         for obstacle in objects:
             if not self._initialized or obstacle.formID() not in self._createdObject:
