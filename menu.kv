@@ -96,10 +96,13 @@
         text: "Preview"
         on_press: preView_ID.updatePreviewMode(), preView_ID.changePreView(root.chosen_world), app.ButtonSound()
 
-    PreView:
-        id: preView_ID
-        pos_hint: {'x':0,'y':.1}
-        size_hint: .2, .1
+    ScatterLayout:
+        pos: 0,0
+        size_hint: .2, .2
+        PreView:
+            id: preView_ID
+            # pos_hint: {'x':0,'y':.1}
+            # size_hint: .2, .1
 
     Button:
         id:btnExit
