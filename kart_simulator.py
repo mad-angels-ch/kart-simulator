@@ -77,7 +77,6 @@ class MainWidget(Widget):
             # Création de la partie
             self.theGame = game.Game(
                 dataUrl,
-                self.eventsList,
                 OutputFactory(
                     self,
                     frame_callback=self.frame_callback,
@@ -95,11 +94,15 @@ class MainWidget(Widget):
             self.theGame = None
             self.app.changeLabelText(OCE.message())
 
+    def nextFrame(self, elapsedTime: float) -> None:
+        self.theGame.nextFrame(elapsedTime, self.eventsList)
+        self.eventsList.clear()
+
     def clear(self) -> None:
         """Nettoyage du canvas de jeu et arrêt de la pendule"""
         self.canvas.clear()
         if self.play:
-            self.my_clock.unschedule(self.theGame.nextFrame)
+            self.my_clock.unschedule(self.nextFrame)
 
     def change_gameState(self) -> None:
         """Change l'état du jeu: pause ou jeu"""
@@ -115,7 +118,7 @@ class MainWidget(Widget):
         self._keyboard.bind(on_key_down=self.on_keyboard_down)
         self._keyboard.bind(on_key_up=self.on_keyboard_up)
         self.my_clock = Clock
-        self.my_clock.schedule_interval(self.theGame.nextFrame, 1 / self.fps)
+        self.my_clock.schedule_interval(self.nextFrame, 1 / self.fps)
 
         self.play = True
 

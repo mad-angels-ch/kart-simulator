@@ -128,7 +128,7 @@ class KS_screen(Screen):
             self.pauseMusic()
 
         self.game.play = False
-        self.game.my_clock.unschedule(self.game.theGame.nextFrame)
+        self.game.my_clock.unschedule(self.game.nextFrame)
         self.pauseMenu = PauseMode(
             width=Window.width, height=Window.height, music=self.musicName
         )
@@ -140,7 +140,7 @@ class KS_screen(Screen):
             self.pauseMusic()
 
         self.game.play = False
-        self.game.my_clock.unschedule(self.game.theGame.nextFrame)
+        self.game.my_clock.unschedule(self.game.nextFrame)
         self.endGameMenu = EndGameMode()
         self.endGameMenu.ids.gameOverLabel_id.text = message
         anim = (
@@ -209,7 +209,7 @@ class KS_screen(Screen):
 
         self.game.play = True
         self.game.my_clock.schedule_interval(
-            self.game.theGame.nextFrame, 1 / self.game.fps
+            self.game.nextFrame, 1 / self.game.fps
         )
         self.remove_widget(self.pauseMenu)
 
@@ -276,7 +276,6 @@ class PreView(Widget):
                     app = App.get_running_app()
                     self.theGame = game.Game(
                         self.dataUrl,
-                        [],
                         OutputFactory(self, max_width=200, max_height=200),
                     )
                     with self.canvas.before:
@@ -352,7 +351,8 @@ class UpdateWorldButton(Button):
         session = requests.Session()
         for world in session.get(
             "https://lj44.ch/creator/kart/worldsjson",
-            params={"id": True, "version": True, "name": True}
+            params={"id": True, "version": True, "name": True},
+            timeout=1
         ).json():
             worldsInfo[world["name"]] = {"id": world["id"], "version": world["version"]}
         with open("client/worlds.json", "r") as f:
