@@ -8,4 +8,4 @@ kart_simulator.egg-info
 *.synctex.gz
 *.pyc
 venv/*
-client/worlds**.json
+client/worlds**

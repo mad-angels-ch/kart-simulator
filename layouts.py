@@ -13,7 +13,11 @@ import os.path
 from typing import Dict, List
 from kivy.core.window import Window
 from lib import Point
-import client.worlds
+try:
+    import client.worlds
+except ModuleNotFoundError:
+    os.makedirs("client/worlds")
+    import client.worlds
 from game.objects import *
 import game
 from kivy.app import App
