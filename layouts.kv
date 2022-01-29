@@ -12,6 +12,24 @@
         on_press: app.ButtonSound()
 
 
+<JoinGame>:
+    Label:
+        pos_hint: {'x':.3,'y':.5}
+        size_hint: .2, .05
+        text: "Game id:"
+    TextInput:
+        pos_hint: {'x':.5,'y':.5}
+        size_hint: .2, .05
+        id: gameid
+    Button:
+        pos_hint: {'x':.45,'y':.35}
+        size_hint: .1, .1
+        text: "Join"
+        on_press: app.ButtonSound()
+
+<CreateGame@Label>:
+    text: "Not done yet"
+
 
 <Rules@BoxLayout>:
     orientation: "vertical"

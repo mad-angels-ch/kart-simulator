@@ -446,3 +446,6 @@ class PasswordScreen(FloatLayout):
 class Controls(FloatLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
+class JoinGame(FloatLayout):
+    pass

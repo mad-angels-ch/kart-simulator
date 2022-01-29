@@ -38,6 +38,13 @@
         size_hint: .2, .05
         text: "Create/edit a world"
         on_press: webbrowser.open("https://lj44.ch/creator/kart"), app.ButtonSound()
+
+    Button:
+        pos_hint: {'x':.8,'y':.7}
+        size_hint: .2, .05
+        text: "Multiplayer"
+        on_press: app.manager.push("Multiplayer"), app.ButtonSound()
+
     Button:
         pos_hint: {'x':0,'y':.8}
         size_hint: .2, .05
@@ -178,6 +185,19 @@
         BoxLayoutWithActionBar:
             title: "Sign in / Log in"
             MenuTabbedPanel:
+    Screen:
+        name: "Multiplayer"
+        BoxLayoutWithActionBar:
+            title: "Multiplayer"
+            TabbedPanel:
+                do_default_tab: False
+                TabbedPanelItem:
+                    text: "Join a game"
+                    JoinGame:
+                TabbedPanelItem:
+                    text: "Create a game"
+                    CreateGame:
+
     Screen:
         name: "Rules"
         BoxLayoutWithActionBar:
