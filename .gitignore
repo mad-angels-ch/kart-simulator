@@ -9,3 +9,4 @@ kart_simulator.egg-info
 *.pyc
 venv/*
 client/worlds**
+data.json

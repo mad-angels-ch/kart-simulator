@@ -48,6 +48,8 @@ from game.objects.fill.Pattern import Pattern
 from kivy.uix.image import Image
 from kivy.animation import Animation
 
+import socketio
+
 #################### Gestion des différents screens ###################
 
 
@@ -448,4 +450,23 @@ class Controls(FloatLayout):
         super().__init__(**kwargs)
 
 class JoinGame(FloatLayout):
-    pass
+    def join(self):
+        sio = socketio.Client()
+        # @sio.event
+        # def connect():
+        #     print("I'm connected!")
+
+        # @sio.event
+        # def connect_error(data):
+        #     print("The connection failed!")
+
+        # @sio.event
+        # def disconnect():
+        #     print("I'm disconnected!")
+
+        @sio.event
+        def movements(changes: List) -> None:
+            print(changes)
+
+        sio.connect("http://localhost:5000")        
+        sio.emit("join_game", int(self.ids.gameid.text), callback=print)
