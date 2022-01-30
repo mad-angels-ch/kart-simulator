@@ -192,25 +192,19 @@ class OutputFactory:
 
     def createCircle(self, lgeCircle: game_objects.Circle) -> None:
         """Dessine le cercle sur le canvas du widget et l'ajout au registre"""
+        self._w.canvas.add(Color(rgba=(1,1,1,1)))
         ioCircle = io_objects.Circle(
             widget=self._w,
-            LGEObject=lgeCircle,
-            scale=self._scale,
-            translate1=self._translation1,
-            translate2=self._translation2,
-        )
+            LGEObject=lgeCircle) 
         self._w.canvas.add(ioCircle)
         self._createdObject[lgeCircle.formID()] = ioCircle
 
     def createPolygon(self, lgePolygon: game_objects.Polygon) -> None:
         """Dessine le polygon sur le canvas du widget et l'ajout au registre"""
+        self._w.canvas.add(Color(rgba=(1,1,1,1)))
         ioPolygon = io_objects.Polygon(
             widget=self._w,
-            LGEObject=lgePolygon,
-            scale=self._scale,
-            translate1=self._translation1,
-            translate2=self._translation2,
-        )
+            LGEObject=lgePolygon)
         self._w.canvas.add(ioPolygon)
         self._createdObject[lgePolygon.formID()] = ioPolygon
 
@@ -222,40 +216,30 @@ class OutputFactory:
             Color(rgba=(1, 1, 1, 1))
             ioKart = io_objects.FilledQuadrilateral(
                 LGEObject=lgeKart,
-                source="client/Images/KartInGame.jpg",
-                scale=self._scale,
-                translate1=self._translation1,
-                translate2=self._translation2,
-            )
+                source="client/Images/KartInGame.jpg")
         self._createdObject[lgeKart.formID()] = ioKart
         
         
         
     def createFinishLine(self, lgeFinishLine: game_objects.FinishLine) -> None:
         """Dessine la ligne d'arrivée sur le canvas du widget et l'ajout au registre"""
+        self._w.canvas.add(Color(rgba=(1,1,1,1)))
         with self._w.canvas:
             self._gates.append(lgeFinishLine)
             self._finishLine = lgeFinishLine
             ioFinishLine = io_objects.FilledQuadrilateral(
                 LGEObject=lgeFinishLine,
-                source="client/Images/finish_line.jpg",
-                scale=self._scale,
-                translate1=self._translation1,
-                translate2=self._translation2,
-            )
+                patternToRepeat="client/Images/finishLineMotif.jpg" )
         self._createdObject[lgeFinishLine.formID()] = ioFinishLine
 
     def createGate(self, lgeGate: game_objects.Gate) -> None:
         """Dessine le portillon sur le canvas du widget et l'ajout au registre"""
+        self._w.canvas.add(Color(rgba=(1,1,1,1)))
         with self._w.canvas:
             self._gates.append(lgeGate)
             ioGate = io_objects.FilledQuadrilateral(
                 LGEObject=lgeGate,
-                source="client/Images/gate1.png",
-                scale=self._scale,
-                translate1=self._translation1,
-                translate2=self._translation2,
-            )
+                patternToRepeat="client/Images/gates.png")
         self._createdObject[lgeGate.formID()] = ioGate
 
 
@@ -267,24 +251,27 @@ class OutputFactory:
         pt.scale(self._scale)
         pt.translate(self._translation2)
         return pt
+
         
     def setPOVPosition(self,lgeKart):
         """Etabli le "Point Of View" du début de la partie"""
-        self.KartPosition = self.get_updatedPositionInCanvas(lgeKart.center())
+        self.KartCenterPosition = self.get_updatedPositionInCanvas(lgeKart.center())
         self.angle = lgeKart.angle()
-        kp1=self.get_updatedPositionInCanvas(lgeKart.center())
-        self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().rotate(math.pi/2-self.angle,0,0,1),anchor=(self.KartPosition[0],self.KartPosition[1]))
-        speedDirection = lib.Vector(self.KartPosition)
+        self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().rotate(math.pi/2-self.angle,0,0,1),anchor=(self.KartCenterPosition[0],self.KartCenterPosition[1]))
+        speedDirection = lib.Vector(self.KartCenterPosition)
         self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().translate(-speedDirection[0],-speedDirection[1],0),anchor=(0,0))
         self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().translate(self._maxWidth/(2/self.kart_scalingFactor/self._scale),50*self._scale,0),anchor=(0,0))
         self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().scale(1/self.kart_scalingFactor/self._scale,1/self.kart_scalingFactor/self._scale,1),anchor=(0,0))
+                
         
     def updatePOVposition(self,lgeKart):
         """Met à jour le "Point Of View" par rapport au Kart à chaque frame"""
         kp1=self.get_updatedPositionInCanvas(lgeKart.center())
-        speedDirection = lib.Vector.fromPoints(kp1,self.KartPosition)
+        speedDirection = lib.Vector.fromPoints(kp1,self.KartCenterPosition)
         speedDirection.rotate(self._w.parent.parent.rotation/180*math.pi)
-        self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().rotate(-(lgeKart.angle()-self.angle),0,0,1),anchor=(self._maxWidth/(2/self.kart_scalingFactor/self._scale)*1/self.kart_scalingFactor/self._scale,50*self._scale*1/self.kart_scalingFactor/self._scale))
-        self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().translate(speedDirection[0]*1/self.kart_scalingFactor/self._scale,speedDirection[1]*1/self.kart_scalingFactor/self._scale,0),anchor=(0,0))
+        # self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().rotate(-(lgeKart.angle()-self.angle),0,0,1),anchor=(self._maxWidth/2,50/self.kart_scalingFactor))
+
+        self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().rotate(-(lgeKart.angle()-self.angle),0,0,1),anchor=(401,50))
+        self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().translate(speedDirection[0]/self.kart_scalingFactor/self._scale,speedDirection[1]/self.kart_scalingFactor/self._scale,0),anchor=(0,0))
         self.angle = lgeKart.angle()
-        self.KartPosition = self.KartPosition = self.get_updatedPositionInCanvas(lgeKart.center())
+        self.KartCenterPosition = self.KartCenterPosition = self.get_updatedPositionInCanvas(lgeKart.center())

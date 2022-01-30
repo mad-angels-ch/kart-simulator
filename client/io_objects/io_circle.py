@@ -17,21 +17,11 @@ class IO_Circle(Ellipse):
     def __init__(
         self,
         widget: Widget,
-        LGEObject: "io_objects.Circle",
-        scale=1,
-        translate1: lib.Vector = lib.Vector((0, 0)),
-        translate2: lib.Vector = lib.Vector((0, 0)),
-    ):
+        LGEObject: "io_objects.Circle"):
         """Crée le cercle à ajouter au canvas et prépare son ajout"""
         self._w = widget
-        # self._scale = scale
-        self._scale = 1
         self._LGECircle = LGEObject
-        self._radius = self._LGECircle.radius() / self._scale
-        # self._translation1 = translate1
-        # self._translation2 = translate2
-        self._translation1 = lib.Vector((0,0))
-        self._translation2 = lib.Vector((0,0))
+        self._radius = self._LGECircle.radius()
         self.lastPos = lib.Point((0, 0))
         with self._w.canvas:
             Color(rgba=get_color_from_hex(self._LGECircle.fill().value()))
@@ -45,22 +35,8 @@ class IO_Circle(Ellipse):
         if self._LGECircle.center() != self.lastPos:
             self.lastPos = lib.Point(self._LGECircle.center())
             self.pos = self.get_position(
-                self.get_center(lib.Point(self._LGECircle.center()))
+                self._LGECircle.center()
             )
-
-    def get_center(self, centerBefore: lib.Point) -> lib.Point:
-        """Calcule et retourne la position visuelle du centre du cercle 
-        à partir des coordonnées de son centre avant les translations et l'homotétie de centre (0;0)"""
-        centerBefore.translate(self._translation1)
-        centerScaledAndTranslated = (
-            lib.Vector((centerBefore[0], centerBefore[1])) / self._scale
-        )
-        centerAfter = lib.Point(
-            (centerScaledAndTranslated[0], centerScaledAndTranslated[1])
-        )
-        centerAfter.translate(self._translation2)
-        return centerAfter
-        # return centerBefore
 
     def get_position(self, center: lib.Point) -> lib.Point:
         """Retourne la position du sommet en bas à gauche du rectangle circonscrit au cercle 
