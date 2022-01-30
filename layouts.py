@@ -1,3 +1,4 @@
+from io import TextIOWrapper
 from kivy.graphics.transformation import Matrix
 from logging import warning
 from kivy.clock import Clock
@@ -9,10 +10,14 @@ from posixpath import abspath
 from re import S
 import time
 import os.path
-from typing import List
+from typing import Dict, List
 from kivy.core.window import Window
 from lib import Point
-import client.worlds
+try:
+    import client.worlds
+except ModuleNotFoundError:
+    os.makedirs("client/worlds")
+    import client.worlds
 from game.objects import *
 import game
 from kivy.app import App
@@ -48,6 +53,7 @@ from kivy.animation import Animation
 
 class NavigationScreenManager(ScreenManager):
     """Classe parente du manager qui gère les entrées et sorties des screens"""
+
     screen_stack = []
 
     def push(self, screen_name):
@@ -68,11 +74,13 @@ class NavigationScreenManager(ScreenManager):
 
 class MyScreenManager(NavigationScreenManager):
     """Manager qui gère les entrées et sorties des screens"""
+
     pass
 
 
 class EndGameMode(FloatLayout):
     """Menu de fin de partie"""
+
     pass
 
 
@@ -101,14 +109,7 @@ class KS_screen(Screen):
         """Screen responsable d'afficher la partie"""
         self.musicName = self.get_musicName(music)
         super().__init__(**kw)
-        
 
-        # b1 = Button()
-        # b1.bind(on_press=self.test1)
-        # self.add_widget(b1)
-        
-        
-        
         self.app = App.get_running_app()
         self.world = world
         self.POV = POV
@@ -122,10 +123,7 @@ class KS_screen(Screen):
             # self.ids.noActionBar.add_widget(self.start_button)
             self.startingAnimation()
             self.game.theGame.callOutput()
-            
-    # def test1(self,value):
-    #     self.apply_transform(trans=Matrix().translate(-100,-100,0),anchor=(0,0))
-        
+
     def quit(self):
         """Nettoyage du canvas de jeu après la partie"""
         self.game.clear()
@@ -136,7 +134,7 @@ class KS_screen(Screen):
             self.pauseMusic()
 
         self.game.play = False
-        self.game.my_clock.unschedule(self.game.theGame.nextFrame)
+        self.game.my_clock.unschedule(self.game.nextFrame)
         self.pauseMenu = PauseMode(
             width=Window.width, height=Window.height, music=self.musicName
         )
@@ -148,7 +146,7 @@ class KS_screen(Screen):
             self.pauseMusic()
 
         self.game.play = False
-        self.game.my_clock.unschedule(self.game.theGame.nextFrame)
+        self.game.my_clock.unschedule(self.game.nextFrame)
         self.endGameMenu = EndGameMode()
         self.endGameMenu.ids.gameOverLabel_id.text = message
         anim = (
@@ -168,44 +166,52 @@ class KS_screen(Screen):
     def startingAnimation(self):
         """Création et affichage de l'animation de début de partie"""
         # self.ids.noActionBar.remove_widget(self.start_button)
-        start_animation3 = Label(text="3", font_size=0,halign = "center", color= (0.4, 1, 0.4, 1))
-        start_animation2 = Label(text="2", font_size=0,halign = "center", color= (0.4, 1, 0.4, 1))
-        start_animation1 = Label(text="1", font_size=0,halign = "center", color= (0.4, 1, 0.4, 1))
-        start_animationGO = Label(text="GOOOO!!!!", font_size=0,halign = "center", color= (0.4, 1, 0.4, 1))
+        start_animation3 = Label(
+            text="3", font_size=0, halign="center", color=(0.4, 1, 0.4, 1)
+        )
+        start_animation2 = Label(
+            text="2", font_size=0, halign="center", color=(0.4, 1, 0.4, 1)
+        )
+        start_animation1 = Label(
+            text="1", font_size=0, halign="center", color=(0.4, 1, 0.4, 1)
+        )
+        start_animationGO = Label(
+            text="GOOOO!!!!", font_size=0, halign="center", color=(0.4, 1, 0.4, 1)
+        )
 
         self.ids.noActionBar.add_widget(start_animation3)
         self.ids.noActionBar.add_widget(start_animation2)
         self.ids.noActionBar.add_widget(start_animation1)
         self.ids.noActionBar.add_widget(start_animationGO)
         anim = (
-            Animation(font_size=74, duration=.5)
-            + Animation(font_size=200, duration=.5)
-            + Animation(font_size=0, duration=.5)
+            Animation(font_size=74, duration=0.5)
+            + Animation(font_size=200, duration=0.5)
+            + Animation(font_size=0, duration=0.5)
         )
         anim.start(start_animation3)
         anim = (
             Animation(duration=1.5)
-            + Animation(font_size=74, duration=.5)
-            + Animation(font_size=200, duration=.5)
-            + Animation(font_size=0, duration=.5)
+            + Animation(font_size=74, duration=0.5)
+            + Animation(font_size=200, duration=0.5)
+            + Animation(font_size=0, duration=0.5)
         )
         anim.start(start_animation2)
         anim = (
             Animation(duration=3)
-            + Animation(font_size=74, duration=.5)
-            + Animation(font_size=200, duration=.5)
-            + Animation(font_size=0, duration=.5)
+            + Animation(font_size=74, duration=0.5)
+            + Animation(font_size=200, duration=0.5)
+            + Animation(font_size=0, duration=0.5)
         )
         anim.start(start_animation1)
         anim = (
             Animation(duration=4.5)
-            + Animation(font_size=74, duration=.5)
-            + Animation(font_size=400, duration=.5)
-            + Animation(font_size=0, duration=.5)
+            + Animation(font_size=74, duration=0.5)
+            + Animation(font_size=400, duration=0.5)
+            + Animation(font_size=0, duration=0.5)
         )
         anim.start(start_animationGO)
         # Appel d'une instance de l'output afin d'afficher le circuit derrière l'animation
-        Clock.schedule_once(self.begin_game, 1)
+        Clock.schedule_once(self.begin_game, 6)
 
     def end_game(self, endGameMessage=""):
         """Appel du mode de fin de partie"""
@@ -216,9 +222,7 @@ class KS_screen(Screen):
         self.resumeMusic()
 
         self.game.play = True
-        self.game.my_clock.schedule_interval(
-            self.game.theGame.nextFrame, 1 / self.game.fps
-        )
+        self.game.my_clock.schedule_interval(self.game.nextFrame, 1 / self.game.fps)
         self.remove_widget(self.pauseMenu)
 
     def startMusic(self):
@@ -261,8 +265,6 @@ class KS_screen(Screen):
             return music
 
 
-
-
 class PreView(Widget):
     def __init__(self, **kwargs):
         """Widget créant le preview"""
@@ -288,7 +290,6 @@ class PreView(Widget):
                     app = App.get_running_app()
                     self.theGame = game.Game(
                         self.dataUrl,
-                        [],
                         OutputFactory(self, max_width=200, max_height=200, POV="PreView"),
                     )
 
@@ -332,15 +333,15 @@ class MainMenu2(FloatLayout):
         return music_list
 
 
-
 class UpdateWorlds(FloatLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        
+
     def on_text_validate(self, widget):
         if widget.text == "Vive le flipper":
             App.get_running_app().manager.push("EG1")
-        
+
+
 class UpdateWorldButton(Button):
     def __init__(self, **kwargs):
         """Bouton qui met à jour dynamiquement la liste des mondes jouables"""
@@ -360,17 +361,24 @@ class UpdateWorldButton(Button):
 
     def generateUpdatedWorldsListTask(self, updateWorlds_output, worlds_spinner):
         """Récupère les données des mondes et met à jour l'affichage"""
-        updateWorlds_output.text = (
-            "\nUpdating the worlds ...\n"
-        )
+        updateWorlds_output.text = "\nUpdating the worlds ...\n"
         worldsInfo = {}
         session = requests.Session()
         for world in session.get(
             "https://lj44.ch/creator/kart/worldsjson",
-            params={"id": True, "version": True, "name": True}
+            params={"id": True, "version": True, "name": True},
+            timeout=1,
         ).json():
             worldsInfo[world["name"]] = {"id": world["id"], "version": world["version"]}
-        with open("client/worlds.json", "r") as f:
+        try:
+            f = open("client/worlds.json", "r")
+        except FileNotFoundError:
+            f = open("client/worlds.json", "w")
+            f.write("{}")
+            f.close()
+            f = open("client/worlds.json", "r")
+
+        try:
             savedWorld = json.load(f)
             # mise à jour des mondes déjà téléchargés
             for name, data in savedWorld.items():
@@ -400,6 +408,8 @@ class UpdateWorldButton(Button):
                             ).text
                         )
                     updateWorlds_output.text += "done!\n"
+        finally:
+            f.close()
 
         with open("client/worlds.json", "w") as f:
             json.dump(worldsInfo, f)
@@ -416,29 +426,34 @@ class UpdateWorldButton(Button):
 
 ##########################################################################
 
+
 class PasswordScreen(FloatLayout):
     def __init__(self, nbr=0, **kw):
         self.nbr = nbr
         self.app = App.get_running_app()
         super().__init__(**kw)
+
     def on_text_validate(self, widget):
-        self.app.passwords[self.nbr-1] = False
+        self.app.passwords[self.nbr - 1] = False
         if self.nbr == 1:
             self.app.passwords[self.nbr] = False
             if widget.text == "Noe est le plus beau...":
-                self.app.passwords[self.nbr-1] = True
+                self.app.passwords[self.nbr - 1] = True
             self.app.manager.push("EG2")
-                
+
         elif self.nbr == 2:
             if widget.text == "...mais Lorin le suit de près":
-                self.app.passwords[self.nbr-1] = True
+                self.app.passwords[self.nbr - 1] = True
             for i in range(3):
                 self.app.manager.pop()
         widget.text = "Type the secret password:"
         if self.app.passwords[0] and self.app.passwords[1]:
-            self.app.instanciate_ks(world="client/easteregg.json", music = "No music")
+            self.app.instanciate_ks(world="client/easteregg.json", music="No music")
 
 
 class Controls(FloatLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
+class JoinGame(FloatLayout):
+    pass

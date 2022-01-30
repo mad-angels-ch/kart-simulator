@@ -12,6 +12,24 @@
         on_press: app.ButtonSound()
 
 
+<JoinGame>:
+    Label:
+        pos_hint: {'x':.3,'y':.5}
+        size_hint: .2, .05
+        text: "Game id:"
+    TextInput:
+        pos_hint: {'x':.5,'y':.5}
+        size_hint: .2, .05
+        id: gameid
+    Button:
+        pos_hint: {'x':.45,'y':.35}
+        size_hint: .1, .1
+        text: "Join"
+        on_press: app.ButtonSound()
+
+<CreateGame@Label>:
+    text: "Not done yet"
+
 
 <Rules@BoxLayout>:
     orientation: "vertical"
@@ -95,7 +113,7 @@
         pos_hint: {'center_x':.5,'center_y':.1}
         size_hint: .15,.15
         text:"EasterEgg"
-        on_press: app.manager.pop(), app.instanciate_ks(world="client/easteregg.json", music = "No music")
+        on_press: app.manager.pop(), app.instanciate_ks(world="client/easteregg.json", music = "No music", POV="Third Person")
     #############################################################################################################################
     
     Label:
