@@ -74,13 +74,11 @@ class NavigationScreenManager(ScreenManager):
 
 class MyScreenManager(NavigationScreenManager):
     """Manager qui gère les entrées et sorties des screens"""
-
     pass
 
 
 class EndGameMode(FloatLayout):
     """Menu de fin de partie"""
-
     pass
 
 
@@ -105,23 +103,24 @@ class PauseMode(FloatLayout):
 
 
 class KS_screen(Screen):
-    def __init__(self, world, music, **kw):
+    def __init__(self, world, music, POV, **kw):
         """Screen responsable d'afficher la partie"""
         self.musicName = self.get_musicName(music)
         super().__init__(**kw)
 
         self.app = App.get_running_app()
         self.world = world
+        self.POV = POV
         # Instantiation du canvas de jeu
-        self.game = MainWidget(self.world, self)
+        self.game = MainWidget(self.world, POV=self.POV, parentScreen=self)
         if self.game.theGame:
             self.startMusic()
             self.ids.noActionBar.add_widget(self.game)
             # self.start_button = Button(text="start The game!", size_hint=(0.25, 0.1))
             # self.start_button.bind(on_press=self.startingAnimation)
             # self.ids.noActionBar.add_widget(self.start_button)
-            self.startingAnimation()
             self.game.theGame.callOutput()
+            self.startingAnimation()
 
     def quit(self):
         """Nettoyage du canvas de jeu après la partie"""
@@ -178,10 +177,10 @@ class KS_screen(Screen):
             text="GOOOO!!!!", font_size=0, halign="center", color=(0.4, 1, 0.4, 1)
         )
 
-        self.ids.noActionBar.add_widget(start_animation3)
-        self.ids.noActionBar.add_widget(start_animation2)
-        self.ids.noActionBar.add_widget(start_animation1)
-        self.ids.noActionBar.add_widget(start_animationGO)
+        self.ids.animationLayout.add_widget(start_animation3)
+        self.ids.animationLayout.add_widget(start_animation2)
+        self.ids.animationLayout.add_widget(start_animation1)
+        self.ids.animationLayout.add_widget(start_animationGO)
         anim = (
             Animation(font_size=74, duration=0.5)
             + Animation(font_size=200, duration=0.5)
@@ -232,7 +231,7 @@ class KS_screen(Screen):
                 musicPath = path.join("client/sounds/music", self.musicName) + ".wav"
                 self.music = SoundLoader.load(musicPath)
                 # self.music_pos = 0
-                self.music.volume = 0.25
+                self.music.volume = 1
                 self.music.play()
                 # self.music.seek(self.music_pos)
                 self.music.loop = True
@@ -277,6 +276,10 @@ class PreView(Widget):
             self.canvas.before.clear()
             self.canvas.clear()
             self.canvas.after.clear()
+            if self.parent.parent.scale != 1 and self.previewMode:
+                # Repositionne le ScatterLayout dans lequel se situe le preview à la position (0,0) et réinitialise son facteur scale à 1
+                self.parent.parent.pos = (0,0)
+                self.parent.parent.apply_transform(trans=Matrix().scale(1/self.theGame._output._scale, 1/self.theGame._output._scale, 1/self.theGame._output._scale),anchor=(0,0))
             if self.previewMode:
                 try:
                     self.dataUrl = self.dataUrl = (
@@ -285,11 +288,9 @@ class PreView(Widget):
                     app = App.get_running_app()
                     self.theGame = game.Game(
                         self.dataUrl,
-                        OutputFactory(self, max_width=200, max_height=200),
+                        OutputFactory(self, max_width=200, max_height=200, POV="PreView"),
                     )
-                    with self.canvas.before:
-                        Color(rgba=(1, 1, 1, 1))
-                        Rectangle(pos=(0, 0), size=(200, 200))
+
                     self.theGame.callOutput()
                 except ObjectCountError as OCE:
                     app.changeLabelText(OCE.message())
@@ -305,6 +306,7 @@ class MainMenu2(FloatLayout):
         super().__init__(**kwargs)
         self.chosen_world = StringProperty("Choose your world")
         self.chosen_music = StringProperty("Choose your music")
+        self.chosen_POV = StringProperty("Choose your Point Of View")
 
     def changeWorldSpinnerText(self, text):
         """Change le texte affiché sur le dépliant de choix du circuit"""
@@ -313,6 +315,10 @@ class MainMenu2(FloatLayout):
     def changeMusicSpinnerText(self, text):
         """Change le texte affiché sur le dépliant de choix de la musique"""
         self.chosen_music = text
+        
+    def changePOVSpinnerText(self, text):
+        """Change le texte affiché sur le dépliant de choix du point de vue"""
+        self.chosen_POV = text
 
     def generateWorldsList(self):
         """Génère la liste des curcuits jouables"""
@@ -412,7 +418,7 @@ class UpdateWorldButton(Button):
         self.text = "Update the worlds now"
         if App.get_running_app().soundEnabled:
             sound = SoundLoader.load("client/sounds/success-sound-effect.mp3")
-            sound.volume = 0.25
+            sound.volume = 0.5
             sound.play()
 
 
@@ -440,7 +446,7 @@ class PasswordScreen(FloatLayout):
                 self.app.manager.pop()
         widget.text = "Type the secret password:"
         if self.app.passwords[0] and self.app.passwords[1]:
-            self.app.instanciate_ks(world="client/easteregg.json", music="No music")
+            self.app.instanciate_ks(world="client/easteregg.json", music="No music", POV="Thrid Person")
 
 
 class Controls(FloatLayout):
