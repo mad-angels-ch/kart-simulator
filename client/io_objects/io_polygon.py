@@ -6,17 +6,23 @@ from kivy.uix.widget import Widget
 from kivy.utils import get_color_from_hex
 import client
 from client import io_objects
+from kivy.uix.image import Image
 
 class IO_Polygon(Mesh):
     _w: Widget
     _scale: float
     _LGEPolygon: "io_objects.Polygon"
-    def __init__(self, widget: Widget, LGEObject: "io_objects.Polygon"):
+    def __init__(self, widget: Widget, LGEObject: "io_objects.Polygon", patternToRepeat: str = None):
         """Crée le polygone à ajouter au canvas et prépare son ajout"""
         self._w = widget
         self._LGEPolygon = LGEObject
         self._vertices = []
         
+        texture = None
+        if patternToRepeat:
+            texture = Image(source=patternToRepeat, allow_stretch = False, keep_ratio = True).texture
+            texture.wrap = "repeat"
+            texture.uvsize = (100,100)
         
         self.lastPos = []
         
@@ -33,7 +39,7 @@ class IO_Polygon(Mesh):
         # (les polygones non-convexes utilisés ont tous plus de 4 côtés):
         if len(self._vertices) > 16:
             Mesh.__init__(
-                self, mode="line_loop", vertices=self._vertices, indices=self._indices
+                self, texture=texture, mode="line_loop", vertices=self._vertices, indices=self._indices
             )
         else:
             Mesh.__init__(

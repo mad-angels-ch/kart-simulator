@@ -11,7 +11,7 @@ from game import objects as game_objects
 from game.objects import fill as game_fill
 from client import io_objects
 import lib
-
+from game.objects.Lava import Lava
 
 class OutputFactory:
     _w: Widget
@@ -143,7 +143,7 @@ class OutputFactory:
                     self.createKart(obstacle)
                     if not self.isInitialized() and self.POV == "First Person":
                         self.setPOVPosition(obstacle)
-
+                    
                 elif isinstance(obstacle.fill(), game_fill.Hex):
                     if isinstance(obstacle, game_objects.Circle):
                         self.createCircle(obstacle)
@@ -172,7 +172,7 @@ class OutputFactory:
                 else:
                     raise "Unsupported color type"
 
-        
+
 
             else:
                 # mettres les positions à jour
@@ -187,7 +187,9 @@ class OutputFactory:
                     
                 elif isinstance(obstacle, game_objects.Polygon):
                     io_object.updatePosition()
-                    
+                
+                
+                        
         self._initialized = True    
 
     def createCircle(self, lgeCircle: game_objects.Circle) -> None:
@@ -202,7 +204,13 @@ class OutputFactory:
     def createPolygon(self, lgePolygon: game_objects.Polygon) -> None:
         """Dessine le polygon sur le canvas du widget et l'ajout au registre"""
         self._w.canvas.add(Color(rgba=(1,1,1,1)))
-        ioPolygon = io_objects.Polygon(
+        if isinstance(lgePolygon, Lava):
+            ioPolygon = io_objects.Polygon(
+                widget=self._w,
+                LGEObject=lgePolygon,
+                patternToRepeat="client/Images/lava.jpg")
+        else:
+            ioPolygon = io_objects.Polygon(
             widget=self._w,
             LGEObject=lgePolygon)
         self._w.canvas.add(ioPolygon)
@@ -260,7 +268,7 @@ class OutputFactory:
         self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().rotate(math.pi/2-self.angle,0,0,1),anchor=(self.KartCenterPosition[0],self.KartCenterPosition[1]))
         speedDirection = lib.Vector(self.KartCenterPosition)
         self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().translate(-speedDirection[0],-speedDirection[1],0),anchor=(0,0))
-        self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().translate(self._maxWidth/(2/self.kart_scalingFactor/self._scale),50*self._scale,0),anchor=(0,0))
+        self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().translate(self._maxWidth/(2/self.kart_scalingFactor/self._scale),self._maxHeight/5*self._scale,0),anchor=(0,0))
         self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().scale(1/self.kart_scalingFactor/self._scale,1/self.kart_scalingFactor/self._scale,1),anchor=(0,0))
                 
         
@@ -271,7 +279,7 @@ class OutputFactory:
         speedDirection.rotate(self._w.parent.parent.rotation/180*math.pi)
         # self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().rotate(-(lgeKart.angle()-self.angle),0,0,1),anchor=(self._maxWidth/2,50/self.kart_scalingFactor))
 
-        self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().rotate(-(lgeKart.angle()-self.angle),0,0,1),anchor=(401,50))
+        self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().rotate(-(lgeKart.angle()-self.angle),0,0,1),anchor=(self._maxWidth/2,self._maxHeight/5))
         self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().translate(speedDirection[0]/self.kart_scalingFactor/self._scale,speedDirection[1]/self.kart_scalingFactor/self._scale,0),anchor=(0,0))
         self.angle = lgeKart.angle()
         self.KartCenterPosition = self.KartCenterPosition = self.get_updatedPositionInCanvas(lgeKart.center())

@@ -74,13 +74,11 @@ class NavigationScreenManager(ScreenManager):
 
 class MyScreenManager(NavigationScreenManager):
     """Manager qui gère les entrées et sorties des screens"""
-
     pass
 
 
 class EndGameMode(FloatLayout):
     """Menu de fin de partie"""
-
     pass
 
 
@@ -121,8 +119,8 @@ class KS_screen(Screen):
             # self.start_button = Button(text="start The game!", size_hint=(0.25, 0.1))
             # self.start_button.bind(on_press=self.startingAnimation)
             # self.ids.noActionBar.add_widget(self.start_button)
-            self.startingAnimation()
             self.game.theGame.callOutput()
+            self.startingAnimation()
 
     def quit(self):
         """Nettoyage du canvas de jeu après la partie"""
@@ -179,10 +177,10 @@ class KS_screen(Screen):
             text="GOOOO!!!!", font_size=0, halign="center", color=(0.4, 1, 0.4, 1)
         )
 
-        self.ids.noActionBar.add_widget(start_animation3)
-        self.ids.noActionBar.add_widget(start_animation2)
-        self.ids.noActionBar.add_widget(start_animation1)
-        self.ids.noActionBar.add_widget(start_animationGO)
+        self.ids.animationLayout.add_widget(start_animation3)
+        self.ids.animationLayout.add_widget(start_animation2)
+        self.ids.animationLayout.add_widget(start_animation1)
+        self.ids.animationLayout.add_widget(start_animationGO)
         anim = (
             Animation(font_size=74, duration=0.5)
             + Animation(font_size=200, duration=0.5)
@@ -448,7 +446,7 @@ class PasswordScreen(FloatLayout):
                 self.app.manager.pop()
         widget.text = "Type the secret password:"
         if self.app.passwords[0] and self.app.passwords[1]:
-            self.app.instanciate_ks(world="client/easteregg.json", music="No music")
+            self.app.instanciate_ks(world="client/easteregg.json", music="No music", POV="Thrid Person")
 
 
 class Controls(FloatLayout):
