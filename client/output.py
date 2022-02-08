@@ -197,7 +197,7 @@ class OutputFactory:
         self._w.canvas.add(Color(rgba=(1,1,1,1)))
         ioCircle = io_objects.Circle(
             widget=self._w,
-            LGEObject=lgeCircle) 
+            LGEObject=lgeCircle, source="client/Images/lava_circle.jpg") 
         self._w.canvas.add(ioCircle)
         self._createdObject[lgeCircle.formID()] = ioCircle
 
