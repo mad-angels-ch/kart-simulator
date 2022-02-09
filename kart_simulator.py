@@ -73,26 +73,27 @@ class MainWidget(Widget):
         # Récupération de l'app principale
         self.app = App.get_running_app()
         # A condition que ObjectFactory n'ai pas renvoyé d'erreur lorsde la création des objets physiques
-        try:
-            # Création de la partie
-            self.theGame = game.Game(
-                dataUrl,
-                OutputFactory(
-                    self,
-                    frame_callback=self.frame_callback,
-                    max_width=self.app.windowSize[0],
-                    max_height=self.app.windowSize[1],
-                ),
-            )
+        with open(dataUrl, "r", encoding="utf8") as f:
+            try:
+                # Création de la partie
+                self.theGame = game.Game(
+                    f.read(),
+                    OutputFactory(
+                        self,
+                        frame_callback=self.frame_callback,
+                        max_width=self.app.windowSize[0],
+                        max_height=self.app.windowSize[1],
+                    ),
+                )
 
-            self.app.manager.add_widget(self.parentScreen)
-            self.app.start_ks()
-            #################################################################
-            self.fps = 60
+                self.app.manager.add_widget(self.parentScreen)
+                self.app.start_ks()
+                #################################################################
+                self.fps = 60
 
-        except ObjectCountError as OCE:
-            self.theGame = None
-            self.app.changeLabelText(OCE.message())
+            except ObjectCountError as OCE:
+                self.theGame = None
+                self.app.changeLabelText(OCE.message())
 
     def nextFrame(self, elapsedTime: float) -> None:
         self.theGame.nextFrame(elapsedTime, self.eventsList)

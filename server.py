@@ -41,7 +41,8 @@ def createGame(sio: socketio.Client, world_id: int) -> None:
     def ping(changes: Dict):
         sio.emit("movements", changes)
 
-    g = game.Game("data.json", Output(ping))
+    with open("data.json", "r", encoding="utf8") as f:
+        g = game.Game(f.read(), Output(ping))
     deltaTime = 1 / 60
     while True:
         time.sleep(deltaTime)
