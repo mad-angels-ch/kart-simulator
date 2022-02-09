@@ -48,7 +48,7 @@ def on_keyboard_down(self, keyboard, keycode, text, modifiers):
             self.parentScreen.resumeGame(self.parentScreen.pauseMenu.chosen_music)
             self.play = True
             
-    if keycode[1] == "j":
+    if keycode[1] == "x":
         if self.kart_ID:
             self.eventsList.append(
                 game.events.FireBallEvent(launcherFormID=self.kart_ID)

@@ -165,16 +165,16 @@ class KS_screen(Screen):
         """Création et affichage de l'animation de début de partie"""
         # self.ids.noActionBar.remove_widget(self.start_button)
         start_animation3 = Label(
-            text="3", font_size=0, halign="center", color=(0.4, 1, 0.4, 1)
+            text="3", font_size=0, halign="center", color=(1, 0, 1, 1)
         )
         start_animation2 = Label(
-            text="2", font_size=0, halign="center", color=(0.4, 1, 0.4, 1)
+            text="2", font_size=0, halign="center", color=(1, 0, 1, 1)
         )
         start_animation1 = Label(
-            text="1", font_size=0, halign="center", color=(0.4, 1, 0.4, 1)
+            text="1", font_size=0, halign="center", color=(1, 0, 1, 1)
         )
         start_animationGO = Label(
-            text="GOOOO!!!!", font_size=0, halign="center", color=(0.4, 1, 0.4, 1)
+            text="GOOOO!!!!", font_size=0, halign="center", color=(1, 0, 1, 1)
         )
 
         self.ids.animationLayout.add_widget(start_animation3)
