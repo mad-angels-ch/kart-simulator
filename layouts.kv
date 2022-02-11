@@ -196,3 +196,9 @@
         pos_hint: {'x':.4, 'y': .45}
         text:"Quit game"
         on_release: app.manager.pop(),app.clear_game(), app.ButtonSound()
+
+    Button:
+        size_hint: .2,.1
+        pos_hint: {'x':.4, 'y': .35}
+        text:"Try again"
+        on_release: app.manager.pop(), app.clear_game(), app.instanciate_ks(app.world, app.music, app.POV), app.ButtonSound()
