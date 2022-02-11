@@ -7,7 +7,7 @@ def test():
     # constructeur
     v1 = Vector(1, 2)
     assert v1._x == 1 and v1._y == 2
-    v2 = Vector(*v1)
+    v2 = Vector(v1)
     assert v2._x == 1 and v2._y == 2
 
     # == and !=
@@ -125,4 +125,4 @@ def test():
 
     # fromPoints
     assert Vector.fromPoints(Point(0, 0), Point(1, 2)) == v1
-    assert Vector.fromPoints(Point(*v1), Point(0, 3)) == Vector(-1, 1)
+    assert Vector.fromPoints(Point(v1), Point(0, 3)) == Vector(-1, 1)

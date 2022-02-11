@@ -11,7 +11,7 @@ from kart_simulator import MainWidget
 from kivy.core.audio import SoundLoader
 from kivy.graphics import Rectangle, Color
 from kivy.uix.label import Label
-
+from kivy.uix.image import Image
 from navigation_screen_manager import MyScreenManager
 from layouts import KS_screen
 
@@ -25,10 +25,12 @@ class MenuApp(App):
     musicName = ""
     soundEnabled = True
     passwords = [False,False]
+    
     def __init__(self, **kwargs):
         """L'application kivy qui gère toute l'interface graphique"""
         super().__init__(**kwargs)
         self.game_instance = None
+        
 
     def build(self):
         """Création du manager qui gèrera les screens et de l'espace qui affichera les éventuelles erreurs"""
@@ -39,17 +41,18 @@ class MenuApp(App):
             self.errorLabel=Label(bold=True,underline=True,font_size=32,text="",pos=(Window.width/2-50,Window.height/2-10),color=(1,1,1,.5))
         return self.manager
     
-    def instanciate_ks(self, world, music):
+    def instanciate_ks(self, world, music, POV):
         """Création du support de la partie et de ses attributs: 
         monde et musique choisis ainsi que la taille de la fenêtre"""
         self.windowSize = Window.size
         if self.isWorldChosen(world):
             self.world = world
             self.music = music
+            self.POV = POV
             if self.manager.has_screen("Kart_Simulator"):
                 screen = self.manager.get_screen("Kart_Simulator")
                 self.manager.remove_widget(screen)
-            self.game_instance = KS_screen(self.world, self.music)
+            self.game_instance = KS_screen(self.world, self.music, self.POV)
         elif not self.isWorldChosen(world):
             self.errorLabel.text+="Choose a world before playing !\n"
             Clock.schedule_once(self.popErrorScreen, 2)

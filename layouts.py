@@ -76,13 +76,11 @@ class NavigationScreenManager(ScreenManager):
 
 class MyScreenManager(NavigationScreenManager):
     """Manager qui gère les entrées et sorties des screens"""
-
     pass
 
 
 class EndGameMode(FloatLayout):
     """Menu de fin de partie"""
-
     pass
 
 
@@ -107,23 +105,24 @@ class PauseMode(FloatLayout):
 
 
 class KS_screen(Screen):
-    def __init__(self, world, music, **kw):
+    def __init__(self, world, music, POV, **kw):
         """Screen responsable d'afficher la partie"""
         self.musicName = self.get_musicName(music)
         super().__init__(**kw)
 
         self.app = App.get_running_app()
         self.world = world
+        self.POV = POV
         # Instantiation du canvas de jeu
-        self.game = MainWidget(self.world, self)
+        self.game = MainWidget(self.world, POV=self.POV, parentScreen=self)
         if self.game.theGame:
             self.startMusic()
             self.ids.noActionBar.add_widget(self.game)
             # self.start_button = Button(text="start The game!", size_hint=(0.25, 0.1))
             # self.start_button.bind(on_press=self.startingAnimation)
             # self.ids.noActionBar.add_widget(self.start_button)
-            self.startingAnimation()
             self.game.theGame.callOutput()
+            self.startingAnimation()
 
     def quit(self):
         """Nettoyage du canvas de jeu après la partie"""
@@ -168,22 +167,22 @@ class KS_screen(Screen):
         """Création et affichage de l'animation de début de partie"""
         # self.ids.noActionBar.remove_widget(self.start_button)
         start_animation3 = Label(
-            text="3", font_size=0, halign="center", color=(0.4, 1, 0.4, 1)
+            text="3", font_size=0, halign="center", color=(1, 0, 1, 1)
         )
         start_animation2 = Label(
-            text="2", font_size=0, halign="center", color=(0.4, 1, 0.4, 1)
+            text="2", font_size=0, halign="center", color=(1, 0, 1, 1)
         )
         start_animation1 = Label(
-            text="1", font_size=0, halign="center", color=(0.4, 1, 0.4, 1)
+            text="1", font_size=0, halign="center", color=(1, 0, 1, 1)
         )
         start_animationGO = Label(
-            text="GOOOO!!!!", font_size=0, halign="center", color=(0.4, 1, 0.4, 1)
+            text="GOOOO!!!!", font_size=0, halign="center", color=(1, 0, 1, 1)
         )
 
-        self.ids.noActionBar.add_widget(start_animation3)
-        self.ids.noActionBar.add_widget(start_animation2)
-        self.ids.noActionBar.add_widget(start_animation1)
-        self.ids.noActionBar.add_widget(start_animationGO)
+        self.ids.animationLayout.add_widget(start_animation3)
+        self.ids.animationLayout.add_widget(start_animation2)
+        self.ids.animationLayout.add_widget(start_animation1)
+        self.ids.animationLayout.add_widget(start_animationGO)
         anim = (
             Animation(font_size=74, duration=0.5)
             + Animation(font_size=200, duration=0.5)
@@ -234,7 +233,7 @@ class KS_screen(Screen):
                 musicPath = path.join("client/sounds/music", self.musicName) + ".wav"
                 self.music = SoundLoader.load(musicPath)
                 # self.music_pos = 0
-                self.music.volume = 0.25
+                self.music.volume = 1
                 self.music.play()
                 # self.music.seek(self.music_pos)
                 self.music.loop = True
@@ -279,20 +278,25 @@ class PreView(Widget):
             self.canvas.before.clear()
             self.canvas.clear()
             self.canvas.after.clear()
+            if self.parent.parent.scale != 1 and self.previewMode:
+                # Repositionne le ScatterLayout dans lequel se situe le preview à la position (0,0) et réinitialise son facteur scale à 1
+                self.parent.parent.pos = (0,0)
+                self.parent.parent.apply_transform(trans=Matrix().scale(1/self.theGame._output._scale, 1/self.theGame._output._scale, 1/self.theGame._output._scale),anchor=(0,0))
             if self.previewMode:
                 try:
                     self.dataUrl = self.dataUrl = (
                         path.join("client/worlds", world) + ".json"
                     )
                     app = App.get_running_app()
-                    with open(self.dataUrl, "r", encoding="utf8") as f:
-                        self.theGame = game.Game(
-                            f.read(),
-                            OutputFactory(self, max_width=200, max_height=200),
-                        )
                     with self.canvas.before:
                         Color(rgba=(1, 1, 1, 1))
                         Rectangle(pos=(0, 0), size=(200, 200))
+                    with open(self.dataUrl, "r", encoding="utf8") as f:
+                        self.theGame = game.Game(
+                            f.read(),
+                            OutputFactory(self, max_width=200, max_height=200, POV="PreView"),
+                        )
+
                     self.theGame.callOutput()
                 except ObjectCountError as OCE:
                     app.changeLabelText(OCE.message())
@@ -308,6 +312,7 @@ class MainMenu2(FloatLayout):
         super().__init__(**kwargs)
         self.chosen_world = StringProperty("Choose your world")
         self.chosen_music = StringProperty("Choose your music")
+        self.chosen_POV = StringProperty("Choose your Point Of View")
 
     def changeWorldSpinnerText(self, text):
         """Change le texte affiché sur le dépliant de choix du circuit"""
@@ -316,6 +321,10 @@ class MainMenu2(FloatLayout):
     def changeMusicSpinnerText(self, text):
         """Change le texte affiché sur le dépliant de choix de la musique"""
         self.chosen_music = text
+        
+    def changePOVSpinnerText(self, text):
+        """Change le texte affiché sur le dépliant de choix du point de vue"""
+        self.chosen_POV = text
 
     def generateWorldsList(self):
         """Génère la liste des curcuits jouables"""
@@ -359,27 +368,50 @@ class UpdateWorldButton(Button):
         updateWorlds_output.text = "\nUpdating the worlds ...\n"
         worldsInfo = {}
         session = requests.Session()
-        for world in session.get(
-            "https://lj44.ch/creator/kart/worldsjson",
-            params={"id": True, "version": True, "name": True},
-            timeout=1,
-        ).json():
-            worldsInfo[world["name"]] = {"id": world["id"], "version": world["version"]}
         try:
-            f = open("client/worlds.json", "r")
-        except FileNotFoundError:
-            f = open("client/worlds.json", "w")
-            f.write("{}")
-            f.close()
-            f = open("client/worlds.json", "r")
+            worlds = session.get(
+                "https://lj44.ch/creator/kart/worldsjson",
+                params={"id": True, "version": True, "name": True},
+                timeout=1,
+            )
+        except requests.ConnectionError:
+            updateWorlds_output.text += "ERROR: The server in unreachable"
+            self._updating = False
+            self.text = "Update the worlds now"
+        else:
+            for world in worlds:
+                worldsInfo[world["name"]] = {"id": world["id"], "version": world["version"]}
+            try:
+                f = open("client/worlds.json", "r")
+            except FileNotFoundError:
+                f = open("client/worlds.json", "w")
+                f.write("{}")
+                f.close()
+                f = open("client/worlds.json", "r")
 
-        try:
-            savedWorld = json.load(f)
-            # mise à jour des mondes déjà téléchargés
-            for name, data in savedWorld.items():
-                if name in worldsInfo:
-                    if data["version"] != worldsInfo[name]["version"]:
-                        updateWorlds_output.text += f"Updating world {name} ... "
+            try:
+                savedWorld = json.load(f)
+                # mise à jour des mondes déjà téléchargés
+                for name, data in savedWorld.items():
+                    if name in worldsInfo:
+                        if data["version"] != worldsInfo[name]["version"]:
+                            updateWorlds_output.text += f"Updating world {name} ... "
+                            with open(f"client/worlds/{name}.json", "w") as worldJSON:
+                                worldJSON.write(
+                                    session.get(
+                                        f"https://lj44.ch/creator/kart/worlds/{worldsInfo[name]['id']}/fabric"
+                                    ).text
+                                )
+                            updateWorlds_output.text += "done!\n"
+                            data["version"] = worldsInfo[name]["version"]
+                    else:
+                        updateWorlds_output.text += f"Deleting world {name} ... "
+                        os.remove(f"client/worlds/{name}.json")
+                        updateWorlds_output.text += "done!\n"
+                # téléchargement des autres
+                for name, data in worldsInfo.items():
+                    if name not in savedWorld:
+                        updateWorlds_output.text += f"Downloading world {name} ... "
                         with open(f"client/worlds/{name}.json", "w") as worldJSON:
                             worldJSON.write(
                                 session.get(
@@ -387,36 +419,20 @@ class UpdateWorldButton(Button):
                                 ).text
                             )
                         updateWorlds_output.text += "done!\n"
-                        data["version"] = worldsInfo[name]["version"]
-                else:
-                    updateWorlds_output.text += f"Deleting world {name} ... "
-                    os.remove(f"client/worlds/{name}.json")
-                    updateWorlds_output.text += "done!\n"
-            # téléchargement des autres
-            for name, data in worldsInfo.items():
-                if name not in savedWorld:
-                    updateWorlds_output.text += f"Downloading world {name} ... "
-                    with open(f"client/worlds/{name}.json", "w") as worldJSON:
-                        worldJSON.write(
-                            session.get(
-                                f"https://lj44.ch/creator/kart/worlds/{worldsInfo[name]['id']}/fabric"
-                            ).text
-                        )
-                    updateWorlds_output.text += "done!\n"
-        finally:
-            f.close()
+            finally:
+                f.close()
 
-        with open("client/worlds.json", "w") as f:
-            json.dump(worldsInfo, f)
+            with open("client/worlds.json", "w") as f:
+                json.dump(worldsInfo, f)
 
-        worlds_spinner.values = [world[:-5] for world in listdir("client/worlds")]
-        updateWorlds_output.text += "All worlds are up to date!"
-        self._updating = False
-        self.text = "Update the worlds now"
-        if App.get_running_app().soundEnabled:
-            sound = SoundLoader.load("client/sounds/success-sound-effect.mp3")
-            sound.volume = 0.25
-            sound.play()
+            worlds_spinner.values = [world[:-5] for world in listdir("client/worlds")]
+            updateWorlds_output.text += "All worlds are up to date!"
+            self._updating = False
+            self.text = "Update the worlds now"
+            if App.get_running_app().soundEnabled:
+                sound = SoundLoader.load("client/sounds/success-sound-effect.mp3")
+                sound.volume = 0.5
+                sound.play()
 
 
 ##########################################################################
@@ -443,7 +459,7 @@ class PasswordScreen(FloatLayout):
                 self.app.manager.pop()
         widget.text = "Type the secret password:"
         if self.app.passwords[0] and self.app.passwords[1]:
-            self.app.instanciate_ks(world="client/easteregg.json", music="No music")
+            self.app.instanciate_ks(world="client/easteregg.json", music="No music", POV="Thrid Person")
 
 
 class Controls(FloatLayout):

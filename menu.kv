@@ -67,7 +67,7 @@
         size_hint: .4, .3
         text: "Play"
         background_color: (1.0, 0.0, 0.0, .75)
-        on_press: app.instanciate_ks(root.chosen_world, root.chosen_music), app.ButtonSound()
+        on_press: app.instanciate_ks(root.chosen_world, root.chosen_music, root.chosen_POV), app.ButtonSound()
 
     Spinner:
         id: worlds_spinner_id
@@ -87,6 +87,15 @@
         on_text:
             root.changeMusicSpinnerText(music_spinner_id.text), app.ButtonSound()
 
+    Spinner:
+        id: POV_spinner_id
+        pos_hint: {'x':.8,'y':.3}
+        size_hint: .2, .1
+        text: "Choose your POV !"
+        values: ["First Person","Third Person"]
+        on_text:
+            root.changePOVSpinnerText(POV_spinner_id.text), app.ButtonSound()
+
     Button:
         id: prewViewButton_ID
         pos_hint: {'x':.2,'y':.6}
@@ -94,10 +103,13 @@
         text: "Preview"
         on_press: preView_ID.updatePreviewMode(), preView_ID.changePreView(root.chosen_world), app.ButtonSound()
 
-    PreView:
-        id: preView_ID
-        pos_hint: {'x':0,'y':.1}
-        size_hint: .2, .1
+    ScatterLayout:
+        pos: 0,0
+        size_hint: .2, .2
+        PreView:
+            id: preView_ID
+            # pos_hint: {'x':0,'y':.1}
+            # size_hint: .2, .1
 
     Button:
         id:btnExit
@@ -131,11 +143,26 @@
 <KS_screen>:
     name: "Kart_Simulator"
     layout_id: noActionBar
+    size: app.windowSize
 
-    RelativeLayout:
+    ScatterLayout:
         id: noActionBar
         pos: 0,0
-        # do_translation: False
+        size: root.size
+        do_translation: False
+        do_rotation: False
+        do_scale: False
+
+    FloatLayout:
+        id: animationLayout
+        pos: 0,0
+        size: app.windowSize
+        # canvas.before:
+        #     Color: 
+        #         rgba: 0,0,0,1
+        #     Rectangle:
+        #         size: self.size[0]/2,self.size[1]/2
+
     
     GridLayout:
         cols: 2
@@ -144,35 +171,35 @@
         size_hint: .15, .1
         canvas.before:
             Color:
-                rgba: 0,0,0,1
+                rgba: 0,0,0,.5
             Rectangle:
                 pos: self.pos
                 size: self.size
 
         Label:
             text: "Laps"
-            color: 0.4, 1, 0.4, 1
+            color: 0.4, 1, 0.4, .5
 
         Label:
             id: laps_id
             text: "0/1"
-            color: 0.4, 1, 0.4, 1
+            color: 0.4, 1, 0.4, .5
 
         Label:
             text: "Gates"
-            color: 0.4, 1, 0.4, 1
+            color: 0.4, 1, 0.4, .5
 
         Label:
             id: gates_id
             text: "0/2"
-            color: 0.4, 1, 0.4, 1
+            color: 0.4, 1, 0.4, .5
         Label:
             text: "Timer"
-            color: 0.4, 1, 0.4, 1
+            color: 0.4, 1, 0.4, .5
         Label:
             id: timer_id
             text: "00:00:00"
-            color: 0.4, 1, 0.4, 1
+            color: 0.4, 1, 0.4, .5
 
 
 

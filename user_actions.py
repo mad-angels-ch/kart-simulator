@@ -47,7 +47,13 @@ def on_keyboard_down(self, keyboard, keycode, text, modifiers):
         else:
             self.parentScreen.resumeGame(self.parentScreen.pauseMenu.chosen_music)
             self.play = True
-
+            
+    if keycode[1] == "x":
+        if self.kart_ID:
+            self.eventsList.append(
+                game.events.FireBallEvent(launcherFormID=self.kart_ID)
+            )
+            
     return True
 
 
@@ -81,6 +87,7 @@ def on_keyboard_up(self, keyboard, keycode):
             self.eventsList.append(
                 game.events.KartMoveEvent(direction=0, targetFormID=self.kart_ID)
             )
+
 
 
 def on_touch_down(self, touch):
