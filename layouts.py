@@ -362,27 +362,50 @@ class UpdateWorldButton(Button):
         updateWorlds_output.text = "\nUpdating the worlds ...\n"
         worldsInfo = {}
         session = requests.Session()
-        for world in session.get(
-            "https://lj44.ch/creator/kart/worldsjson",
-            params={"id": True, "version": True, "name": True},
-            timeout=1,
-        ).json():
-            worldsInfo[world["name"]] = {"id": world["id"], "version": world["version"]}
         try:
-            f = open("client/worlds.json", "r")
-        except FileNotFoundError:
-            f = open("client/worlds.json", "w")
-            f.write("{}")
-            f.close()
-            f = open("client/worlds.json", "r")
+            worlds = session.get(
+                "https://lj44.ch/creator/kart/worldsjson",
+                params={"id": True, "version": True, "name": True},
+                timeout=1,
+            )
+        except requests.ConnectionError:
+            updateWorlds_output.text += "ERROR: The server in unreachable"
+            self._updating = False
+            self.text = "Update the worlds now"
+        else:
+            for world in worlds:
+                worldsInfo[world["name"]] = {"id": world["id"], "version": world["version"]}
+            try:
+                f = open("client/worlds.json", "r")
+            except FileNotFoundError:
+                f = open("client/worlds.json", "w")
+                f.write("{}")
+                f.close()
+                f = open("client/worlds.json", "r")
 
-        try:
-            savedWorld = json.load(f)
-            # mise à jour des mondes déjà téléchargés
-            for name, data in savedWorld.items():
-                if name in worldsInfo:
-                    if data["version"] != worldsInfo[name]["version"]:
-                        updateWorlds_output.text += f"Updating world {name} ... "
+            try:
+                savedWorld = json.load(f)
+                # mise à jour des mondes déjà téléchargés
+                for name, data in savedWorld.items():
+                    if name in worldsInfo:
+                        if data["version"] != worldsInfo[name]["version"]:
+                            updateWorlds_output.text += f"Updating world {name} ... "
+                            with open(f"client/worlds/{name}.json", "w") as worldJSON:
+                                worldJSON.write(
+                                    session.get(
+                                        f"https://lj44.ch/creator/kart/worlds/{worldsInfo[name]['id']}/fabric"
+                                    ).text
+                                )
+                            updateWorlds_output.text += "done!\n"
+                            data["version"] = worldsInfo[name]["version"]
+                    else:
+                        updateWorlds_output.text += f"Deleting world {name} ... "
+                        os.remove(f"client/worlds/{name}.json")
+                        updateWorlds_output.text += "done!\n"
+                # téléchargement des autres
+                for name, data in worldsInfo.items():
+                    if name not in savedWorld:
+                        updateWorlds_output.text += f"Downloading world {name} ... "
                         with open(f"client/worlds/{name}.json", "w") as worldJSON:
                             worldJSON.write(
                                 session.get(
@@ -390,36 +413,20 @@ class UpdateWorldButton(Button):
                                 ).text
                             )
                         updateWorlds_output.text += "done!\n"
-                        data["version"] = worldsInfo[name]["version"]
-                else:
-                    updateWorlds_output.text += f"Deleting world {name} ... "
-                    os.remove(f"client/worlds/{name}.json")
-                    updateWorlds_output.text += "done!\n"
-            # téléchargement des autres
-            for name, data in worldsInfo.items():
-                if name not in savedWorld:
-                    updateWorlds_output.text += f"Downloading world {name} ... "
-                    with open(f"client/worlds/{name}.json", "w") as worldJSON:
-                        worldJSON.write(
-                            session.get(
-                                f"https://lj44.ch/creator/kart/worlds/{worldsInfo[name]['id']}/fabric"
-                            ).text
-                        )
-                    updateWorlds_output.text += "done!\n"
-        finally:
-            f.close()
+            finally:
+                f.close()
 
-        with open("client/worlds.json", "w") as f:
-            json.dump(worldsInfo, f)
+            with open("client/worlds.json", "w") as f:
+                json.dump(worldsInfo, f)
 
-        worlds_spinner.values = [world[:-5] for world in listdir("client/worlds")]
-        updateWorlds_output.text += "All worlds are up to date!"
-        self._updating = False
-        self.text = "Update the worlds now"
-        if App.get_running_app().soundEnabled:
-            sound = SoundLoader.load("client/sounds/success-sound-effect.mp3")
-            sound.volume = 0.5
-            sound.play()
+            worlds_spinner.values = [world[:-5] for world in listdir("client/worlds")]
+            updateWorlds_output.text += "All worlds are up to date!"
+            self._updating = False
+            self.text = "Update the worlds now"
+            if App.get_running_app().soundEnabled:
+                sound = SoundLoader.load("client/sounds/success-sound-effect.mp3")
+                sound.volume = 0.5
+                sound.play()
 
 
 ##########################################################################
