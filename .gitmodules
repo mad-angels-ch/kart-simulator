@@ -3,4 +3,4 @@
 	url = https://github.com/lj44-ch/kart-simulator-lib.git
 [submodule "game"]
 	path = game
-	url = https://github.com/lj44-ch/kart-simulator-game.git
+	url = git@github.com:lj44-ch/kart-simulator-game.git

@@ -7,5 +7,6 @@ kart_simulator.egg-info
 *.out
 *.synctex.gz
 *.pyc
-venv/*
+venv**
 client/worlds**
+data.json
