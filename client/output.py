@@ -220,11 +220,12 @@ class OutputFactory:
         """Dessine le kart sur le canvas du widget et l'ajout au registre"""
         self._w.kart_ID = lgeKart.formID()
         self._karts.append(lgeKart)
-        with self._w.canvas:  # Ce type d'objet doit être placé dans l'instruction 'with self.canvas:'
+        with self._w.canvas:
             Color(rgba=(1, 1, 1, 1))
-            ioKart = io_objects.FilledQuadrilateral(
-                LGEObject=lgeKart,
-                source="client/Images/KartInGame.jpg")
+        ioKart = io_objects.FilledQuadrilateral(
+            widget=self._w,
+            LGEObject=lgeKart,
+            source="client/Images/KartInGame.jpg")
         self._createdObject[lgeKart.formID()] = ioKart
         
         
@@ -232,22 +233,22 @@ class OutputFactory:
     def createFinishLine(self, lgeFinishLine: game_objects.FinishLine) -> None:
         """Dessine la ligne d'arrivée sur le canvas du widget et l'ajout au registre"""
         self._w.canvas.add(Color(rgba=(1,1,1,1)))
-        with self._w.canvas:
-            self._gates.append(lgeFinishLine)
-            self._finishLine = lgeFinishLine
-            ioFinishLine = io_objects.FilledQuadrilateral(
-                LGEObject=lgeFinishLine,
-                patternToRepeat="client/Images/finishLineMotif.jpg" )
+        self._gates.append(lgeFinishLine)
+        self._finishLine = lgeFinishLine
+        ioFinishLine = io_objects.FilledQuadrilateral(
+            widget=self._w,
+            LGEObject=lgeFinishLine,
+            patternToRepeat="client/Images/finishLineMotif.jpg" )
         self._createdObject[lgeFinishLine.formID()] = ioFinishLine
 
     def createGate(self, lgeGate: game_objects.Gate) -> None:
         """Dessine le portillon sur le canvas du widget et l'ajout au registre"""
         self._w.canvas.add(Color(rgba=(1,1,1,1)))
-        with self._w.canvas:
-            self._gates.append(lgeGate)
-            ioGate = io_objects.FilledQuadrilateral(
-                LGEObject=lgeGate,
-                patternToRepeat="client/Images/gates.png")
+        self._gates.append(lgeGate)
+        ioGate = io_objects.FilledQuadrilateral(
+            widget=self._w,
+            LGEObject=lgeGate,
+            patternToRepeat="client/Images/gates.png")
         self._createdObject[lgeGate.formID()] = ioGate
 
 
