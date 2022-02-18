@@ -377,7 +377,7 @@ class UpdateWorldButton(Button):
             self._updating = False
             self.text = "Update the worlds now"
         else:
-            for world in worlds:
+            for world in worlds.json():
                 worldsInfo[world["name"]] = {"id": world["id"], "version": world["version"]}
             try:
                 f = open("client/worlds.json", "r")
