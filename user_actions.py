@@ -15,6 +15,7 @@ def on_keyboard_down(self, keyboard, keycode, text, modifiers):
             self.eventsList.append(
                 game.events.KartTurnEvent(direction=1, targetFormID=self.kart_ID)
             )
+    if keycode[1] in ["j"]:
         self.eventsList.append(
             game.events.FlipperEvent(upward=True, targetsName="leftFlipper")
         )
@@ -24,6 +25,7 @@ def on_keyboard_down(self, keyboard, keycode, text, modifiers):
             self.eventsList.append(
                 game.events.KartTurnEvent(direction=-1, targetFormID=self.kart_ID)
             )
+    if keycode[1] in ["l"]:
         self.eventsList.append(
             game.events.FlipperEvent(upward=True, targetsName="rightFlipper")
         )
@@ -63,6 +65,7 @@ def on_keyboard_up(self, keyboard, keycode):
             self.eventsList.append(
                 game.events.KartTurnEvent(direction=0, targetFormID=self.kart_ID)
             )
+    if keycode[1] in ["j"]:
         self.eventsList.append(
             game.events.FlipperEvent(upward=False, targetsName="leftFlipper")
         )
@@ -72,6 +75,7 @@ def on_keyboard_up(self, keyboard, keycode):
             self.eventsList.append(
                 game.events.KartTurnEvent(direction=0, targetFormID=self.kart_ID)
             )
+    if keycode[1] in ["l"]:
         self.eventsList.append(
             game.events.FlipperEvent(upward=False, targetsName="rightFlipper")
         )
