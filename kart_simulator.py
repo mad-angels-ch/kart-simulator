@@ -60,6 +60,7 @@ class MainWidget(Widget):
         self.world = world
         self.POV = POV
         self.parentScreen = parentScreen
+        self.play = False
         if isinstance(self.world, StringProperty):
             self.world = "2triangles"
 
