@@ -1,5 +1,4 @@
 import game.events
-from kivy.lang import Builder
 
 # Liens utilisateur-programme à travers le clavier, relié à la class MainWidget lors de l'instanciation d'un partie
 
@@ -43,12 +42,12 @@ def on_keyboard_down(self, keyboard, keycode, text, modifiers):
             )
 
     if keycode[1] == "escape":
-        if self.play:
-            self.play = False
+        if self.play == 1:
+            self.play = 0
             self.parentScreen.pauseMode()
-        else:
+        elif self.play == 0:
             self.parentScreen.resumeGame(self.parentScreen.pauseMenu.chosen_music)
-            self.play = True
+            self.play = 1
             
     if keycode[1] == "x":
         if self.kart_ID:
