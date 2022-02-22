@@ -226,7 +226,7 @@ class KS_screen(Screen):
         """Initialisation de la musique (avec répétitions)"""
 
         if self.app.soundEnabled:
-            try:
+            if self.musicName in list(music[:-4] for music in listdir("client/sounds/music")):
                 musicPath = path.join("client/sounds/music", self.musicName) + ".wav"
                 self.music = SoundLoader.load(musicPath)
                 # self.music_pos = 0
@@ -234,9 +234,6 @@ class KS_screen(Screen):
                 self.music.play()
                 # self.music.seek(self.music_pos)
                 self.music.loop = True
-
-            except:
-                pass
 
     def changeMusic(self, new_music):
         """Changement de la musique"""
