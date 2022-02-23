@@ -58,6 +58,33 @@
                 pos: self.pos
                 size: self.size
 
+<Credits@BoxLayout>:
+    orientation: "vertical"
+    Label:
+        bold: True
+        text: "Credits for the Kart Simulator"
+        font_size: 32
+        color: .8,.4,.2,1
+        size_hint: 1,.1
+        canvas.before:
+            Color:
+                rgba: 0, 0, 0, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+    Label:
+        italic: True
+        text: " - ON S'EN BAT LES COUILLES."
+        font_size: 16
+        color: 0,0,0,1
+        size_hint: 1,.9
+        canvas.before:
+            Color:
+                rgba: .8,.4,.2,1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
 
 
 <Controls>:
@@ -135,7 +162,7 @@
         size_hint: 1, .2
         text: "Update the worlds now"
         on_press:
-            self.generateUpdatedWorldsList(updateWorlds_output_id, app.manager.get_screen("MainMenu").children[0].ids.worlds_spinner_id),
+            self.generateUpdatedWorldsList(updateWorlds_output_id, app.manager.get_screen("PlayingMenu").children[0].ids.worlds_spinner_id),
             app.ButtonSound()
 
     Label:
