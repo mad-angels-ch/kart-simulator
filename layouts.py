@@ -13,6 +13,7 @@ import os.path
 from typing import Dict, List
 from kivy.core.window import Window
 from lib import Point
+from kivy.uix.videoplayer import VideoPlayer
 try:
     import client.worlds
 except ModuleNotFoundError:
@@ -47,9 +48,10 @@ from game.objects.fill.Hex import Hex
 from game.objects.fill.Pattern import Pattern
 from kivy.uix.image import Image
 from kivy.animation import Animation
+from kivy.uix.videoplayer import Video
 
-#################### Gestion des différents screens ###################
-
+#################### Gestion des différents screens ###################     
+        
 
 class NavigationScreenManager(ScreenManager):
     """Classe parente du manager qui gère les entrées et sorties des screens"""
@@ -262,6 +264,7 @@ class KS_screen(Screen):
             return music
 
 
+
 class PreView(Widget):
     def __init__(self, **kwargs):
         """Widget créant le preview"""
@@ -307,6 +310,20 @@ class MainMenu1(FloatLayout):
 
 
 
+
+class Start_anim(Screen):
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        
+        video = Video(source="client/videos/start_anim.MP4", state="play")
+        video.bind(eos=self.callback)
+        self.add_widget(video)
+        
+    
+    def callback(self, inst, dt):
+        App.get_running_app().manager.push("MainMenu")
+        
+    
 class MainMenu2(FloatLayout):
     def __init__(self, **kwargs):
         """Menu principal du jeu"""
@@ -314,7 +331,7 @@ class MainMenu2(FloatLayout):
         self.chosen_world = StringProperty("Choose your world")
         self.chosen_music = StringProperty("Choose your music")
         self.chosen_POV = StringProperty("Choose your Point Of View")
-
+        
     def changeWorldSpinnerText(self, text):
         """Change le texte affiché sur le dépliant de choix du circuit"""
         self.chosen_world = text

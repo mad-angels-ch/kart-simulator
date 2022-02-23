@@ -13,8 +13,7 @@ from kivy.graphics import Rectangle, Color
 from kivy.uix.label import Label
 from kivy.uix.image import Image
 from navigation_screen_manager import MyScreenManager
-from layouts import KS_screen
-
+from layouts import KS_screen, Start_anim
 
 ######################## App de lancement de kivy ########################
 
@@ -36,9 +35,13 @@ class MenuApp(App):
         """Création du manager qui gèrera les screens et de l'espace qui affichera les éventuelles erreurs"""
         Window.clearcolor = get_color_from_hex("#ffffff")
         self.icon = 'client/Images/kart.png'
-        self.manager = MyScreenManager()        
+
+        self.manager = MyScreenManager()
         with self.manager.screens[0].canvas:
             self.errorLabel=Label(bold=True,underline=True,font_size=32,text="",pos=(Window.width/2-50,Window.height/2-10),color=(1,1,1,.5))
+        return self.manager
+    
+    def start_manager(self):
         return self.manager
     
     def instanciate_ks(self, world, music, POV):
@@ -102,7 +105,7 @@ class MenuApp(App):
 
 from kivy.config import Config
 from kivy.core.window import Window
-# Window.fullscreen = 'auto'
+Window.fullscreen = 'auto'
 Config.set('kivy', 'exit_on_escape', '0')
 Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 
