@@ -1,3 +1,4 @@
+from logging import info
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.core import window
@@ -15,6 +16,8 @@ from kivy.uix.image import Image
 from navigation_screen_manager import MyScreenManager
 from layouts import KS_screen
 
+import requests, pickle
+
 
 ######################## App de lancement de kivy ########################
 
@@ -30,6 +33,14 @@ class MenuApp(App):
         """L'application kivy qui gère toute l'interface graphique"""
         super().__init__(**kwargs)
         self.game_instance = None
+        self.session = requests.session()
+        try:
+            with open('client/cookies.txt', 'rb') as f:
+                self.session.cookies.update(pickle.load(f))
+        except FileNotFoundError:
+            info("No cookies found")
+        except EOFError:
+            info("Cookies empty")
         
 
     def build(self):

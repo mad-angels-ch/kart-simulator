@@ -3,6 +3,7 @@ from kivy.graphics.transformation import Matrix
 from logging import warning
 from kivy.clock import Clock
 from kivy.uix.relativelayout import RelativeLayout
+from kivy.uix.gridlayout import GridLayout
 import requests, json, os, threading
 from kart_simulator import game, path, Rectangle, Color
 from os import path, listdir, write
@@ -47,6 +48,8 @@ from game.objects.fill.Hex import Hex
 from game.objects.fill.Pattern import Pattern
 from kivy.uix.image import Image
 from kivy.animation import Animation
+
+import pickle
 
 #################### Gestion des différents screens ###################
 
@@ -463,6 +466,19 @@ class PasswordScreen(FloatLayout):
 class Controls(FloatLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
+class LogIn(GridLayout):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.app = App.get_running_app()
+
+    def logIn(self):
+        data = {"username": self.ids.username.text, "password": self.ids.username.text}
+        r = self.app.session.post("http://localhost:5000/auth/login", data=data)
+        with open('client/cookies.txt', 'wb') as f:
+            pickle.dump(self.app.session.cookies, f)
+        print(r.text)
+
 
 class JoinGame(FloatLayout):
     def join(self):

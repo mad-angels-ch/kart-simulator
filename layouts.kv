@@ -6,10 +6,21 @@
         text: "provisoire - Sign in"
         on_press: app.ButtonSound()
 
-<LogIn@BoxLayout>:
+<LogIn>:
+    id: logIn
+    cols: 2
+    Label:
+        text: "Username"
+    TextInput:
+        id: username
+    Label:
+        text: "Password"
+    TextInput:
+        id: password
+        password: True
     Button:
-        text: "provisoire - Log in"
-        on_press: app.ButtonSound()
+        text: "Log in"
+        on_press: app.ButtonSound(), logIn.logIn()
 
 
 <JoinGame>:
