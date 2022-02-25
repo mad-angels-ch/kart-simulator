@@ -131,7 +131,6 @@ class KS_screen(Screen):
         if self.musicName:
             self.pauseMusic()
 
-        self.game.play = False
         self.game.my_clock.unschedule(self.game.nextFrame)
         self.pauseMenu = PauseMode(
             width=Window.width, height=Window.height, music=self.musicName
@@ -143,7 +142,6 @@ class KS_screen(Screen):
         if self.musicName:
             self.pauseMusic()
 
-        self.game.play = False
         self.game.my_clock.unschedule(self.game.nextFrame)
         self.endGameMenu = EndGameMode()
         self.endGameMenu.ids.gameOverLabel_id.text = message
@@ -214,12 +212,13 @@ class KS_screen(Screen):
     def end_game(self, endGameMessage=""):
         """Appel du mode de fin de partie"""
         self.endGameMode(endGameMessage)
+        self.game.play = -1
 
     def resumeGame(self, new_music):
         """Reprise de la partie à la fin de la pause"""
         self.resumeMusic()
 
-        self.game.play = True
+        self.game.play = 1
         self.game.my_clock.schedule_interval(self.game.nextFrame, 1 / self.game.fps)
         self.remove_widget(self.pauseMenu)
 
@@ -227,7 +226,7 @@ class KS_screen(Screen):
         """Initialisation de la musique (avec répétitions)"""
 
         if self.app.soundEnabled:
-            try:
+            if self.musicName in list(music[:-4] for music in listdir("client/sounds/music")):
                 musicPath = path.join("client/sounds/music", self.musicName) + ".wav"
                 self.music = SoundLoader.load(musicPath)
                 # self.music_pos = 0
@@ -235,9 +234,6 @@ class KS_screen(Screen):
                 self.music.play()
                 # self.music.seek(self.music_pos)
                 self.music.loop = True
-
-            except:
-                pass
 
     def changeMusic(self, new_music):
         """Changement de la musique"""
