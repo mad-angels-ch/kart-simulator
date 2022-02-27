@@ -5,14 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python : Fichier actuel",
-            "type": "python",
-            "request": "launch",
-            "program": "${file}",
-            "console": "integratedTerminal"
-        },
-        {
-            "name": "Launch ks client",
+            "name": "Kart Simulator",
             "type": "python",
             "request": "launch",
             "program": "kart_simulator_launcher.py",
@@ -20,12 +13,11 @@
             "console": "integratedTerminal"
         },
         {
-            "name": "Launch ks server",
+            "name": "Python : Fichier actuel",
             "type": "python",
             "request": "launch",
-            "program": "server.py",
-            "console": "integratedTerminal",
-            "cwd": "${workspaceFolder}"
+            "program": "${file}",
+            "console": "integratedTerminal"
         }
     ]
 }
