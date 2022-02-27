@@ -371,13 +371,13 @@ class UpdateWorldButton(Button):
                 "https://lj44.ch/creator/kart/worldsjson",
                 params={"id": True, "version": True, "name": True},
                 timeout=1,
-            )
+            ).json()
         except requests.ConnectionError:
             updateWorlds_output.text += "ERROR: The server in unreachable"
             self._updating = False
             self.text = "Update the worlds now"
         else:
-            for world in worlds.json():
+            for world in worlds:
                 worldsInfo[world["name"]] = {"id": world["id"], "version": world["version"]}
             try:
                 f = open("client/worlds.json", "r")
