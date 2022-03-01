@@ -10,8 +10,8 @@ class MultiplayerGame(ClientNamespace):
     def on_connect(self):
         print("Connected!")
         self.emit(
-            "create",
-            ("test", 56),
+            "join",
+            "test",
             callback=lambda error=None: print(error),
         )
 
