@@ -82,7 +82,7 @@ class MultiplayerGame(ClientNamespace):
 )
 def main(create, join):
     """Create a player to test the ks multiplayer"""
-    sio = Client()
+    sio = Client(logger=True, engineio_logger=True)
     sio.register_namespace(MultiplayerGame("/kartmultiplayer", create, join))
     try:
         sio.connect("http://localhost:5000", namespaces="/kartmultiplayer")
