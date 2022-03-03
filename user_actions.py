@@ -1,5 +1,4 @@
 import game.events
-from kivy.lang import Builder
 
 # Liens utilisateur-programme à travers le clavier, relié à la class MainWidget lors de l'instanciation d'un partie
 
@@ -15,6 +14,7 @@ def on_keyboard_down(self, keyboard, keycode, text, modifiers):
             self.eventsList.append(
                 game.events.KartTurnEvent(direction=1, targetFormID=self.kart_ID)
             )
+    if keycode[1] in ["j"]:
         self.eventsList.append(
             game.events.FlipperEvent(upward=True, targetsName="leftFlipper")
         )
@@ -24,6 +24,7 @@ def on_keyboard_down(self, keyboard, keycode, text, modifiers):
             self.eventsList.append(
                 game.events.KartTurnEvent(direction=-1, targetFormID=self.kart_ID)
             )
+    if keycode[1] in ["l"]:
         self.eventsList.append(
             game.events.FlipperEvent(upward=True, targetsName="rightFlipper")
         )
@@ -41,12 +42,12 @@ def on_keyboard_down(self, keyboard, keycode, text, modifiers):
             )
 
     if keycode[1] == "escape":
-        if self.play:
-            self.play = False
+        if self.play == 1:
+            self.play = 0
             self.parentScreen.pauseMode()
-        else:
+        elif self.play == 0:
             self.parentScreen.resumeGame(self.parentScreen.pauseMenu.chosen_music)
-            self.play = True
+            self.play = 1
             
     if keycode[1] == "x":
         if self.kart_ID:
@@ -63,6 +64,7 @@ def on_keyboard_up(self, keyboard, keycode):
             self.eventsList.append(
                 game.events.KartTurnEvent(direction=0, targetFormID=self.kart_ID)
             )
+    if keycode[1] in ["j"]:
         self.eventsList.append(
             game.events.FlipperEvent(upward=False, targetsName="leftFlipper")
         )
@@ -72,6 +74,7 @@ def on_keyboard_up(self, keyboard, keycode):
             self.eventsList.append(
                 game.events.KartTurnEvent(direction=0, targetFormID=self.kart_ID)
             )
+    if keycode[1] in ["l"]:
         self.eventsList.append(
             game.events.FlipperEvent(upward=False, targetsName="rightFlipper")
         )

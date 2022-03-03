@@ -1,6 +1,7 @@
+from locale import delocalize
 from kivy.graphics.transformation import Matrix
 from logging import warning
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 from kivy.app import App
 import math
 from kivy.utils import get_color_from_hex
@@ -10,13 +11,15 @@ from kivy.uix.widget import Widget
 from game import objects as game_objects
 from game.objects import fill as game_fill
 from client import io_objects
+from game.objects.ObjectFactory import ObjectFactory
 import lib
 from game.objects.Lava import Lava
+
 
 class OutputFactory:
     _w: Widget
     _frameCallback: "function"
-    _createdObject: Dict[int, Any]
+    _createdObjects: Dict[int, Any]
     _maxWidth: float
     _maxHeight: float
     _center: List[float]
@@ -36,7 +39,7 @@ class OutputFactory:
         max_height: float = None,
         translate: lib.Vector = lib.Vector(),
         scale: float = 0,
-        POV: str = "Third Person"
+        POV: str = "Third Person",
     ) -> None:
         """Instancie et met à jour les objets à afficher"""
         if max_width and max_height:
@@ -51,16 +54,16 @@ class OutputFactory:
             raise "Either the dimensions or the scale must be given"
         self._w = widget
         self._frameCallback = frame_callback
-        self._createdObject = {}
+        self._createdObjects = {}
         self._initialized = False
 
         self._karts = []
         self._gates = []
 
         self.POV = POV
-        
+
         self.kart_scalingFactor = 1
-        
+
     def isInitialized(self) -> bool:
         """Retourne vrai si initialisé."""
         return self._initialized
@@ -79,7 +82,10 @@ class OutputFactory:
         """Retourne la ligne d'arrivée du jeu"""
         return self._finishLine
 
-    def __call__(self, objects: List[game_objects.Object]) -> None:
+    def __call__(self, factory: ObjectFactory) -> None:
+        """Instantie les objets dans le canvas, met à jour la taille de celui-ci en fonction de la taille
+        de la fenêtre et de la POV choisie, et met à jour la position des objets."""
+        objects = factory.objects()
         self._frameCallback(self, objects)
         if not self._scale:
             # calculer la taille du canvas
@@ -87,6 +93,7 @@ class OutputFactory:
             rights = []
             bottoms = []
             tops = []
+
             for obj in objects:
                 if isinstance(obj, game_objects.Circle):
                     lefts.append(obj.center().x() - obj.radius())
@@ -127,23 +134,54 @@ class OutputFactory:
                 )
                 / 2
             )
-            
+
             if self.POV != "PreView":
-                self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().translate(self._translation1[0],self._translation1[1],0),anchor=(0,0))
-                self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().scale(self._scale,self._scale,self._scale),anchor=(0,0))
-                self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().translate(self._translation2[0],self._translation2[1],0),anchor=(0,0))
+                self._w.parent.parent.parent.ids.noActionBar.apply_transform(
+                    trans=Matrix().translate(
+                        self._translation1[0], self._translation1[1], 0
+                    ),
+                    anchor=(0, 0),
+                )
+                self._w.parent.parent.parent.ids.noActionBar.apply_transform(
+                    trans=Matrix().scale(self._scale, self._scale, self._scale),
+                    anchor=(0, 0),
+                )
+                self._w.parent.parent.parent.ids.noActionBar.apply_transform(
+                    trans=Matrix().translate(
+                        self._translation2[0], self._translation2[1], 0
+                    ),
+                    anchor=(0, 0),
+                )
             elif self.POV == "PreView":
-                self._w.parent.parent.apply_transform(trans=Matrix().translate(self._translation1[0],self._translation1[1],0),anchor=(0,0))
-                self._w.parent.parent.apply_transform(trans=Matrix().scale(self._scale,self._scale,self._scale),anchor=(0,0))
-                self._w.parent.parent.apply_transform(trans=Matrix().translate(self._translation2[0],self._translation2[1],0),anchor=(0,0))
-            
+                self._w.parent.parent.apply_transform(
+                    trans=Matrix().translate(
+                        self._translation1[0], self._translation1[1], 0
+                    ),
+                    anchor=(0, 0),
+                )
+                self._w.parent.parent.apply_transform(
+                    trans=Matrix().scale(self._scale, self._scale, self._scale),
+                    anchor=(0, 0),
+                )
+                self._w.parent.parent.apply_transform(
+                    trans=Matrix().translate(
+                        self._translation2[0], self._translation2[1], 0
+                    ),
+                    anchor=(0, 0),
+                )
+
+        for delObj in factory.deletedObjects().keys():
+            if delObj in self._createdObjects.keys():
+                self._w.canvas.remove(self._createdObjects[delObj][1])
+                del self._createdObjects[delObj]
         for obstacle in objects:
-            if not self._initialized or obstacle.formID() not in self._createdObject:
+
+            if not self._initialized or obstacle.formID() not in self._createdObjects:
                 if isinstance(obstacle, game_objects.Kart):
                     self.createKart(obstacle)
                     if not self.isInitialized() and self.POV == "First Person":
                         self.setPOVPosition(obstacle)
-                    
+
                 elif isinstance(obstacle.fill(), game_fill.Hex):
                     if isinstance(obstacle, game_objects.Circle):
                         self.createCircle(obstacle)
@@ -165,92 +203,87 @@ class OutputFactory:
                                     angle=obstacle.angle(),
                                     scale=self._scale,
                                 )
-                            self._createdObject[obstacle.formID()] = io_obstacle
+                            self._createdObjects[obstacle.formID()] = (
+                                obstacle,
+                                io_obstacle,
+                            )
                     else:
                         raise "Only quadrilaterals can be filled with a pattern"
 
                 else:
                     raise "Unsupported color type"
 
-
-
             else:
                 # mettres les positions à jour
-                io_object = self._createdObject[obstacle.formID()]
-                if isinstance(obstacle, game_objects.Circle):
-                    io_object.updatePosition()
-                elif isinstance(obstacle, game_objects.Kart):
-                    self._w.canvas.remove(io_object)
-                    self.createKart(obstacle)
-                    if self.POV == "First Person":
-                        self.updatePOVposition(obstacle)
-                    
-                elif isinstance(obstacle, game_objects.Polygon):
-                    io_object.updatePosition()
-                
-                
-                        
-        self._initialized = True    
+                io_object = self._createdObjects[obstacle.formID()][1]
+                if not obstacle.isStatic():
+                    if isinstance(obstacle, game_objects.Circle):
+                        io_object.updatePosition()
+                    elif isinstance(obstacle, game_objects.Kart):
+                        self._w.canvas.remove(io_object)
+                        self.createKart(obstacle)
+                        if self.POV == "First Person":
+                            self.updatePOVposition(obstacle)
+
+                    elif isinstance(obstacle, game_objects.Polygon):
+                        io_object.updatePosition()
+
+        self._initialized = True
 
     def createCircle(self, lgeCircle: game_objects.Circle) -> None:
         """Dessine le cercle sur le canvas du widget et l'ajout au registre"""
-        self._w.canvas.add(Color(rgba=(1,1,1,1)))
+        self._w.canvas.add(Color(rgba=(1, 1, 1, 1)))
         ioCircle = io_objects.Circle(
-            widget=self._w,
-            LGEObject=lgeCircle, source="client/Images/lava_circle.jpg") 
+            widget=self._w, LGEObject=lgeCircle, source="client/Images/lava_circle.jpg"
+        )
         self._w.canvas.add(ioCircle)
-        self._createdObject[lgeCircle.formID()] = ioCircle
+        self._createdObjects[lgeCircle.formID()] = (lgeCircle, ioCircle)
 
     def createPolygon(self, lgePolygon: game_objects.Polygon) -> None:
         """Dessine le polygon sur le canvas du widget et l'ajout au registre"""
-        self._w.canvas.add(Color(rgba=(1,1,1,1)))
+        self._w.canvas.add(Color(rgba=(1, 1, 1, 1)))
         if isinstance(lgePolygon, Lava):
             ioPolygon = io_objects.Polygon(
                 widget=self._w,
                 LGEObject=lgePolygon,
-                patternToRepeat="client/Images/lava.jpg")
+                patternToRepeat="client/Images/lava.jpg",
+            )
         else:
-            ioPolygon = io_objects.Polygon(
-            widget=self._w,
-            LGEObject=lgePolygon)
+            ioPolygon = io_objects.Polygon(widget=self._w, LGEObject=lgePolygon)
         self._w.canvas.add(ioPolygon)
-        self._createdObject[lgePolygon.formID()] = ioPolygon
+        self._createdObjects[lgePolygon.formID()] = (lgePolygon, ioPolygon)
 
     def createKart(self, lgeKart: game_objects.Kart) -> None:
         """Dessine le kart sur le canvas du widget et l'ajout au registre"""
         self._w.kart_ID = lgeKart.formID()
         self._karts.append(lgeKart)
-        with self._w.canvas:  # Ce type d'objet doit être placé dans l'instruction 'with self.canvas:'
+        with self._w.canvas:
             Color(rgba=(1, 1, 1, 1))
-            ioKart = io_objects.FilledQuadrilateral(
-                LGEObject=lgeKart,
-                source="client/Images/KartInGame.jpg")
-        self._createdObject[lgeKart.formID()] = ioKart
-        
-        
-        
+        ioKart = io_objects.FilledQuadrilateral(
+            widget=self._w, LGEObject=lgeKart, source="client/Images/KartInGame.jpg"
+        )
+        self._createdObjects[lgeKart.formID()] = (lgeKart, ioKart)
+
     def createFinishLine(self, lgeFinishLine: game_objects.FinishLine) -> None:
         """Dessine la ligne d'arrivée sur le canvas du widget et l'ajout au registre"""
-        self._w.canvas.add(Color(rgba=(1,1,1,1)))
-        with self._w.canvas:
-            self._gates.append(lgeFinishLine)
-            self._finishLine = lgeFinishLine
-            ioFinishLine = io_objects.FilledQuadrilateral(
-                LGEObject=lgeFinishLine,
-                patternToRepeat="client/Images/finishLineMotif.jpg" )
-        self._createdObject[lgeFinishLine.formID()] = ioFinishLine
+        self._w.canvas.add(Color(rgba=(1, 1, 1, 1)))
+        self._gates.append(lgeFinishLine)
+        self._finishLine = lgeFinishLine
+        ioFinishLine = io_objects.FilledQuadrilateral(
+            widget=self._w,
+            LGEObject=lgeFinishLine,
+            patternToRepeat="client/Images/finishLineMotif.jpg",
+        )
+        self._createdObjects[lgeFinishLine.formID()] = (lgeFinishLine, ioFinishLine)
 
     def createGate(self, lgeGate: game_objects.Gate) -> None:
         """Dessine le portillon sur le canvas du widget et l'ajout au registre"""
-        self._w.canvas.add(Color(rgba=(1,1,1,1)))
-        with self._w.canvas:
-            self._gates.append(lgeGate)
-            ioGate = io_objects.FilledQuadrilateral(
-                LGEObject=lgeGate,
-                patternToRepeat="client/Images/gates.png")
-        self._createdObject[lgeGate.formID()] = ioGate
-
-
+        self._w.canvas.add(Color(rgba=(1, 1, 1, 1)))
+        self._gates.append(lgeGate)
+        ioGate = io_objects.FilledQuadrilateral(
+            widget=self._w, LGEObject=lgeGate, patternToRepeat="client/Images/gates.png"
+        )
+        self._createdObjects[lgeGate.formID()] = (lgeGate, ioGate)
 
     def get_updatedPositionInCanvas(self, point):
         """Retourne une copie du point ajustée au canvas affiché"""
@@ -260,26 +293,56 @@ class OutputFactory:
         pt.translate(self._translation2)
         return pt
 
-        
-    def setPOVPosition(self,lgeKart):
+    def setPOVPosition(self, lgeKart):
         """Etabli le "Point Of View" du début de la partie"""
         self.KartCenterPosition = self.get_updatedPositionInCanvas(lgeKart.center())
         self.angle = lgeKart.angle()
-        self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().rotate(math.pi/2-self.angle,0,0,1),anchor=(self.KartCenterPosition[0],self.KartCenterPosition[1]))
+        self._w.parent.parent.parent.ids.noActionBar.apply_transform(
+            trans=Matrix().rotate(math.pi / 2 - self.angle, 0, 0, 1),
+            anchor=(self.KartCenterPosition[0], self.KartCenterPosition[1]),
+        )
         speedDirection = lib.Vector(self.KartCenterPosition)
-        self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().translate(-speedDirection[0],-speedDirection[1],0),anchor=(0,0))
-        self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().translate(self._maxWidth/(2/self.kart_scalingFactor/self._scale),self._maxHeight/5*self._scale,0),anchor=(0,0))
-        self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().scale(1/self.kart_scalingFactor/self._scale,1/self.kart_scalingFactor/self._scale,1),anchor=(0,0))
-                
-        
-    def updatePOVposition(self,lgeKart):
+        self._w.parent.parent.parent.ids.noActionBar.apply_transform(
+            trans=Matrix().translate(-speedDirection[0], -speedDirection[1], 0),
+            anchor=(0, 0),
+        )
+        self._w.parent.parent.parent.ids.noActionBar.apply_transform(
+            trans=Matrix().translate(
+                self._maxWidth / (2 / self.kart_scalingFactor / self._scale),
+                self._maxHeight / 5 * self._scale,
+                0,
+            ),
+            anchor=(0, 0),
+        )
+        self._w.parent.parent.parent.ids.noActionBar.apply_transform(
+            trans=Matrix().scale(
+                1 / self.kart_scalingFactor / self._scale,
+                1 / self.kart_scalingFactor / self._scale,
+                1,
+            ),
+            anchor=(0, 0),
+        )
+
+    def updatePOVposition(self, lgeKart):
         """Met à jour le "Point Of View" par rapport au Kart à chaque frame"""
-        kp1=self.get_updatedPositionInCanvas(lgeKart.center())
-        speedDirection = lib.Vector.fromPoints(kp1,self.KartCenterPosition)
-        speedDirection.rotate(self._w.parent.parent.rotation/180*math.pi)
+        kp1 = self.get_updatedPositionInCanvas(lgeKart.center())
+        speedDirection = lib.Vector.fromPoints(kp1, self.KartCenterPosition)
+        speedDirection.rotate(self._w.parent.parent.rotation / 180 * math.pi)
         # self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().rotate(-(lgeKart.angle()-self.angle),0,0,1),anchor=(self._maxWidth/2,50/self.kart_scalingFactor))
 
-        self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().rotate(-(lgeKart.angle()-self.angle),0,0,1),anchor=(self._maxWidth/2,self._maxHeight/5))
-        self._w.parent.parent.parent.ids.noActionBar.apply_transform(trans=Matrix().translate(speedDirection[0]/self.kart_scalingFactor/self._scale,speedDirection[1]/self.kart_scalingFactor/self._scale,0),anchor=(0,0))
+        self._w.parent.parent.parent.ids.noActionBar.apply_transform(
+            trans=Matrix().rotate(-(lgeKart.angle() - self.angle), 0, 0, 1),
+            anchor=(self._maxWidth / 2, self._maxHeight / 5),
+        )
+        self._w.parent.parent.parent.ids.noActionBar.apply_transform(
+            trans=Matrix().translate(
+                speedDirection[0] / self.kart_scalingFactor / self._scale,
+                speedDirection[1] / self.kart_scalingFactor / self._scale,
+                0,
+            ),
+            anchor=(0, 0),
+        )
         self.angle = lgeKart.angle()
-        self.KartCenterPosition = self.KartCenterPosition = self.get_updatedPositionInCanvas(lgeKart.center())
+        self.KartCenterPosition = (
+            self.KartCenterPosition
+        ) = self.get_updatedPositionInCanvas(lgeKart.center())

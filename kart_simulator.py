@@ -42,9 +42,7 @@ class MainWidget(Widget):
     from user_actions import (
         keyboard_closed,
         on_keyboard_down,
-        # on_touch_up,
-        on_keyboard_up,
-        # on_touch_down,
+        on_keyboard_up
     )
 
     dict_polygons = dict()
@@ -60,6 +58,7 @@ class MainWidget(Widget):
         self.world = world
         self.POV = POV
         self.parentScreen = parentScreen
+        self.play = -1
         if isinstance(self.world, StringProperty):
             self.world = "2triangles"
 
@@ -104,12 +103,12 @@ class MainWidget(Widget):
     def clear(self) -> None:
         """Nettoyage du canvas de jeu et arrêt de la pendule"""
         self.canvas.clear()
-        if self.play:
+        if self.play == 1:
             self.my_clock.unschedule(self.nextFrame)
 
     def change_gameState(self) -> None:
         """Change l'état du jeu: pause ou jeu"""
-        if self.play:
+        if self.play == 1:
             self.parent.parent.pauseMode()
         else:
             self.parent.parent.resumeGame()
@@ -123,7 +122,7 @@ class MainWidget(Widget):
         self.my_clock = Clock
         self.my_clock.schedule_interval(self.nextFrame, 1 / self.fps)
 
-        self.play = True
+        self.play = 1
 
     def frame_callback(self, output: OutputFactory, objects: List[Object]) -> None:
         """Fonction appellée à chaque frame par output"""

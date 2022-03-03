@@ -1,0 +1,84 @@
+{
+    "version": "4.4.0",
+    "objects": [
+        {
+            "type": "LGEPolygon",
+            "version": "4.4.0",
+            "originX": "center",
+            "originY": "center",
+            "left": 0,
+            "top": 0,
+            "width": 25.5,
+            "height": 25.5,
+            "fill": "rgb(0,0,0)",
+            "stroke": null,
+            "strokeWidth": 1,
+            "strokeDashArray": null,
+            "strokeLineCap": "butt",
+            "strokeDashOffset": 0,
+            "strokeLineJoin": "miter",
+            "strokeUniform": false,
+            "strokeMiterLimit": 4,
+            "scaleX": 10.47,
+            "scaleY": 10.47,
+            "angle": -179.7,
+            "flipX": false,
+            "flipY": false,
+            "opacity": 1,
+            "shadow": null,
+            "visible": true,
+            "backgroundColor": "",
+            "fillRule": "nonzero",
+            "paintFirst": "fill",
+            "globalCompositeOperation": "source-over",
+            "skewX": 0,
+            "skewY": 0,
+            "lge": {
+                "friction": 0,
+                "mass": 0,
+                "motion": {
+                    "angle": {
+                        "acceleration": 0,
+                        "center": {
+                            "x": 0,
+                            "y": 0
+                        },
+                        "type": "none",
+                        "velocity": 0
+                    },
+                    "vector": {
+                        "acceleration": {
+                            "x": 0,
+                            "y": 0
+                        },
+                        "type": "none",
+                        "velocity": {
+                            "x": 0,
+                            "y": 0
+                        }
+                    }
+                },
+                "score": 0,
+                "version": "1.0.0"
+            },
+            "points": [
+                {
+                    "x": 0,
+                    "y": 25
+                },
+                {
+                    "x": 25,
+                    "y": 25
+                },
+                {
+                    "x": 25,
+                    "y": 0
+                },
+                {
+                    "x": 0,
+                    "y": 0
+                }
+            ]
+        }
+    ]
+}

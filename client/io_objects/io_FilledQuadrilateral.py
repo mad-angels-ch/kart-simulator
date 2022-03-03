@@ -16,6 +16,7 @@ class IO_FilledQuadrilateral(Rectangle):
 
     def __init__(
         self,
+        widget,
         LGEObject: "io_objects.IO_FilledQuadrilateral",
         source: str = None,
         patternToRepeat: str = None
@@ -37,17 +38,19 @@ class IO_FilledQuadrilateral(Rectangle):
             texture = Image(source=patternToRepeat, allow_stretch = False, keep_ratio = True).texture
             texture.wrap = "repeat"
             texture.uvsize = (self._size[0]//10,self._size[1]//10)
-            PushMatrix()
-            Rotate(origin=self.center, angle=_angle)
-            Rectangle.__init__(self, texture=texture, pos=position, size=self._size)
-            PopMatrix()
+            with widget.canvas:         # Ce type d'objet doit être placé dans l'instruction 'with self.canvas:'
+                PushMatrix()
+                Rotate(origin=self.center, angle=_angle)
+                Rectangle.__init__(self, texture=texture, pos=position, size=self._size)
+                PopMatrix()
             
 
         else:
-            PushMatrix()
-            Rotate(origin=self.center, angle=_angle)
-            Rectangle.__init__(self, source=source, pos=position, size=self._size)
-            PopMatrix()
+            with widget.canvas:
+                PushMatrix()
+                Rotate(origin=self.center, angle=_angle)
+                Rectangle.__init__(self, source=source, pos=position, size=self._size)
+                PopMatrix()
 
     def updatePosition(self):
         pass
