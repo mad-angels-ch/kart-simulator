@@ -70,6 +70,8 @@ class MultiplayerGame(ClientNamespace):
 
 
 @click.command()
+@click.option("--username", type=str, prompt=True, help="Username")
+@click.option("--password", type=str, prompt=True, hide_input=True, help="Password")
 @click.option(
     "--create",
     type=(str, int),
@@ -80,9 +82,20 @@ class MultiplayerGame(ClientNamespace):
     type=str,
     help="Use this option if you want to join a game, e.g: 'python player.py --join TestGame'",
 )
-def main(create, join):
+def main(username, password, create, join):
     """Create a player to test the ks multiplayer"""
-    sio = Client(logger=True, engineio_logger=True)
+    session = requests.Session()
+    data = {"username": username, "password": password}
+    response = session.post("http://localhost:5000/auth/login", data=data).text
+    title = "<title>"
+    pos = response.find(title) + len(title)
+    error = "Error | "
+    if response[pos : pos + len(error)] == error:
+        click.echo("Invalid username or password")
+        raise click.Abort()
+
+    sio = Client()
+    # sio = Client(logger=True, engineio_logger=True)
     sio.register_namespace(MultiplayerGame("/kartmultiplayer", create, join))
     try:
         sio.connect("http://localhost:5000", namespaces="/kartmultiplayer")
