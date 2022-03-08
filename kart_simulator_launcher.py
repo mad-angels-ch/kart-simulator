@@ -13,7 +13,7 @@ from kivy.graphics import Rectangle, Color
 from kivy.uix.label import Label
 from kivy.uix.image import Image
 from navigation_screen_manager import MyScreenManager
-from layouts import KS_screen, Start_anim
+from layouts import KS_screen
 
 ######################## App de lancement de kivy ########################
 

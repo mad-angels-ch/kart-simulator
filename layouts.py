@@ -13,7 +13,6 @@ import os.path
 from typing import Dict, List
 from kivy.core.window import Window
 from lib import Point
-from kivy.uix.videoplayer import VideoPlayer
 try:
     import client.worlds
 except ModuleNotFoundError:
@@ -48,7 +47,6 @@ from game.objects.fill.Hex import Hex
 from game.objects.fill.Pattern import Pattern
 from kivy.uix.image import Image
 from kivy.animation import Animation
-from kivy.uix.videoplayer import Video
 
 #################### Gestion des différents screens ###################     
         
@@ -307,17 +305,6 @@ class PreView(Widget):
 class MainMenu1(FloatLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-
-
-
-
-class Start_anim(Screen):
-    def __init__(self, **kw):
-        super().__init__(**kw)
-        
-        video = Video(source="client/videos/start_anim.MP4", state="play")
-        video.bind(eos=self.callback)
-        self.add_widget(video)
         
     
     def callback(self, inst, dt):
