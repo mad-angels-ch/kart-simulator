@@ -216,14 +216,7 @@
         name: "Multiplayer"
         BoxLayoutWithActionBar:
             title: "Multiplayer"
-            TabbedPanel:
-                do_default_tab: False
-                TabbedPanelItem:
-                    text: "Join a game"
-                    JoinGame:
-                TabbedPanelItem:
-                    text: "Create a game"
-                    CreateGame:
+            GameConnection:
 
     Screen:
         name: "Rules"
@@ -257,8 +250,5 @@
     do_default_tab: False
     TabbedPanelItem:
         text: "Log in"
-        LogIn:
-    TabbedPanelItem:
-        text: "Sign in"
-        SignIn:
+        GameConnection:
 

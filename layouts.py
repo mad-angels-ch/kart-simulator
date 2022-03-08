@@ -380,7 +380,7 @@ class UpdateWorldButton(Button):
             self._updating = False
             self.text = "Update the worlds now"
         else:
-            for world in worlds:
+            for world in worlds.json():
                 worldsInfo[world["name"]] = {"id": world["id"], "version": world["version"]}
             try:
                 f = open("client/worlds.json", "r")
@@ -480,6 +480,59 @@ class LogIn(GridLayout):
         print(r.text)
 
 
+from player import *
+
+class GameConnection(FloatLayout):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        
+    def main(self, create, join):
+        """Create a player of the ks multiplayer"""
+        username = self.ids.username.text
+        password = self.ids.password.text
+        session = requests.Session()
+        data = {"username": username, "password": password}
+        response = session.post("http://localhost:5000/auth/login", data=data).text
+        title = "<title>"
+        pos = response.find(title) + len(title)
+        error = "Error | "
+        if response[pos : pos + len(error)] == error:
+            self.ids.errors.text="Wrong username of password. Try again."
+        else:
+            sio = Client()
+            # sio = Client(logger=True, engineio_logger=True)
+            sio.register_namespace(MultiplayerGame("/kartmultiplayer", create="Test", join=""))
+            try:
+                sio.connect("http://localhost:5000", namespaces="/kartmultiplayer")
+            except BaseException as e:
+                self.ids.errors.text=str(e)
+    
+    
+    
+    
 class JoinGame(FloatLayout):
-    def join(self):
-        pass
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.username = self.ids.username.text
+        self.password = self.ids.password.text
+        
+    def main(self):
+        """Create a player of the ks multiplayer"""
+        session = requests.Session()
+        data = {"username": self.username, "password": self.password}
+        response = session.post("http://localhost:5000/auth/login", data=data).text
+        title = "<title>"
+        pos = response.find(title) + len(title)
+        error = "Error | "
+        if response[pos : pos + len(error)] == error:
+            self.ids.errors.text="Wrong username of password. Try again."
+            raise click.Abort()
+
+        sio = Client()
+        # sio = Client(logger=True, engineio_logger=True)
+        # sio.register_namespace(MultiplayerGame("/kartmultiplayer", create, join))
+        try:
+            sio.connect("http://localhost:5000", namespaces="/kartmultiplayer")
+        except BaseException as e:
+            click.echo(e)
+            sys.exit()
