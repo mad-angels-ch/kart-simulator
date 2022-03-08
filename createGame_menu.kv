@@ -1,0 +1,59 @@
+<CreateGame>:
+    BoxLayout:
+        orientation:"vertical"
+        # Image de fond
+        canvas.before:
+            BorderImage:
+                border: 10, 10, 10, 10
+                source: 'client/Images/background.jpg'
+                pos: self.pos
+                size: self.size
+
+        # Label:
+        #     bold: True
+        #     text: "Kart Simulator"
+        #     font_size: 50
+        #     color: 1,0,0,1
+        #     pos_hint: {'x':0,'y':.85}
+        #     size_hint: 1,.15
+        #     canvas.before:
+        #         Color:
+        #             rgba: 0, 0, 0, .75
+        #         Rectangle:
+        #             pos: self.pos
+        #             size: self.size
+
+        BoxLayout:
+            orientation: "horizontal"
+            size_hint: 1,.1
+            
+            Spinner:
+                id: worlds_spinner_id
+                size_hint: .25,1
+                text: "Chose your world !"
+                values: root.generateWorldsList()
+                on_text:
+                    root.changeWorldSpinnerText(worlds_spinner_id.text), app.ButtonSound(), preView_ID.changePreView(root.chosen_world)
+
+            Button:
+                size_hint: .5,.5
+                pos_hint: {'top': 1}
+                text: "Update the worlds"
+                # on_press: app.manager.push("UpdateWorlds"), app.ButtonSound()
+
+            Button:
+                size_hint: .25,1
+                text: "Play"
+                background_color: (1.0, 0.0, 0.0, .75)
+                # on_press: app.instanciate_ks(root.chosen_world, root.chosen_music, root.chosen_POV), app.ButtonSound()
+
+        ScatterLayout:
+            PreView:
+                maxSize: self.size
+                id: preView_ID
+
+    Label:
+        id: labelID
+        pos_hint: {"center_x":.5,"center_y":.5}
+        text:""
+        font_size: 32

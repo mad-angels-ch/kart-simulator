@@ -10,6 +10,7 @@ from kivy.uix.widget import Widget
 from game import objects as game_objects
 from game.objects import fill as game_fill
 from client import io_objects
+from game.objects.ObjectFactory import ObjectFactory
 import lib
 from game.objects.Lava import Lava
 
@@ -79,7 +80,8 @@ class OutputFactory:
         """Retourne la ligne d'arrivée du jeu"""
         return self._finishLine
 
-    def __call__(self, objects: List[game_objects.Object]) -> None:
+    def __call__(self, factory: ObjectFactory) -> None:
+        objects = factory.objects()
         self._frameCallback(self, objects)
         if not self._scale:
             # calculer la taille du canvas

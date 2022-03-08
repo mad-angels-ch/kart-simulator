@@ -2,171 +2,115 @@
 #:import layouts layouts
 #:import action_bar action_bar
 #:import webbrowser webbrowser
-
+#:import mainMenu1 mainMenu1
+#:import playingMode_menu playingMode_menu
+#:import create_or_join create_or_join
+#:import join_game_menu join_game_menu
+#:import createGame_menu createGame_menu
 # Création de l'interface de tous les screens
-<MainMenu1>:
-    GridLayout:
-    # Image de fond
-        canvas.before:
-            BorderImage:
-                border: 10, 10, 10, 10
-                source: 'client/Images/le_laveau.png'
-                pos: self.pos
-                size: self.size
-    BoxLayout:
-        pos_hint: {"x": .25, "y": .3}
-        size_hint: .2,.3
-        orientation: 'vertical'
-        Label:
-            id: updateWorlds_output_id
-            pos_hint: {'center_x':.5,'center_y':.5}
-            text: ""
-            font_size: 16
-            color: 1,1,1,1
-            size_hint: 1,.7
-        # Button:
-        #     text: "Play"
-        #     background_color: (1.0, 0.0, 0.0, .75)
-        #     on_press: app.manager.push("PlayingMenu")
-        UpdateWorldButton:
-            text: "Play"
-            background_color: (1.0, 0.0, 0.0, .75)
-            on_press:
-                self.generateUpdatedWorldsList(updateWorlds_output_id, app.manager.get_screen("MainMenu").children[0].ids.worlds_spinner_id),
-                app.ButtonSound(),
-                app.manager.push("PlayingMenu")
 
 
-        Button:
-            text: "Rules of the game"
-            on_press: app.manager.push("Rules"), app.ButtonSound()
+# <MainMenu2>:
+#     GridLayout:
+#     # Image de fond
+#         canvas.before:
+#             BorderImage:
+#                 border: 10, 10, 10, 10
+#                 source: 'client/Images/background.jpg'
+#                 pos: self.pos
+#                 size: self.size
+#     Label:
+#         bold: True
+#         text: "Kart Simulator"
+#         font_size: 50
+#         color: 1,0,0,1
+#         pos_hint: {'x':0,'y':.85}
+#         size_hint: 1,.15
+#         canvas.before:
+#             Color:
+#                 rgba: 0, 0, 0, .75
+#             Rectangle:
+#                 pos: self.pos
+#                 size: self.size
+#     Button:
+#         pos_hint: {'x':.3,'y':.3}
+#         size_hint: .4, .3
+#         text: "Play"
+#         background_color: (1.0, 0.0, 0.0, .75)
+#         on_press: app.instanciate_ks(root.chosen_world, root.chosen_music, root.chosen_POV), app.ButtonSound()
 
-        Button:
-            text: "Controls of the game"
-            on_press: app.manager.push("Controls"), app.ButtonSound()
-        
-        Button:
-            text: "Credits"
-            on_press: app.manager.push("credits"), app.ButtonSound()
-        
-    Button:
-        pos_hint: {"x":.9, "y": 0}
-        size_hint: .1,.05
-        text:"Mute Sound"
-        on_press: app.changeSoundMode(self)
+#     Button:
+#         pos_hint: {'x':.8,'y':.8}
+#         size_hint: .2, .05
+#         text: "Sign in / Log in"
+#         on_press: app.manager.push("connection"), app.ButtonSound()
 
-    Button:
-        id:btnExit
-        pos_hint: {"x":.9, "y": .95}
-        size_hint: .1,.05
-        text:"Exit"
-        on_press: app.ButtonSound(), app.stop()
+#     Button:
+#         pos_hint: {'x':.8,'y':.75}
+#         size_hint: .2, .05
+#         text: "Create/edit a world"
+#         on_press: webbrowser.open("https://lj44.ch/creator/kart"), app.ButtonSound()
 
-
-
-
-
-
-<MainMenu2>:
-    GridLayout:
-    # Image de fond
-        canvas.before:
-            BorderImage:
-                border: 10, 10, 10, 10
-                source: 'client/Images/background.jpg'
-                pos: self.pos
-                size: self.size
-    Label:
-        bold: True
-        text: "Kart Simulator"
-        font_size: 50
-        color: 1,0,0,1
-        pos_hint: {'x':0,'y':.85}
-        size_hint: 1,.15
-        canvas.before:
-            Color:
-                rgba: 0, 0, 0, .75
-            Rectangle:
-                pos: self.pos
-                size: self.size
-    Button:
-        pos_hint: {'x':.3,'y':.3}
-        size_hint: .4, .3
-        text: "Play"
-        background_color: (1.0, 0.0, 0.0, .75)
-        on_press: app.instanciate_ks(root.chosen_world, root.chosen_music, root.chosen_POV), app.ButtonSound()
-
-    Button:
-        pos_hint: {'x':.8,'y':.8}
-        size_hint: .2, .05
-        text: "Sign in / Log in"
-        on_press: app.manager.push("connection"), app.ButtonSound()
-
-    Button:
-        pos_hint: {'x':.8,'y':.75}
-        size_hint: .2, .05
-        text: "Create/edit a world"
-        on_press: webbrowser.open("https://lj44.ch/creator/kart"), app.ButtonSound()
-
-    Button:
-        pos_hint: {'x':.8,'y':.7}
-        size_hint: .2, .05
-        text: "Multiplayer"
-        on_press: app.manager.push("Multiplayer"), app.ButtonSound()
+#     Button:
+#         pos_hint: {'x':.8,'y':.7}
+#         size_hint: .2, .05
+#         text: "Multiplayer"
+#         on_press: app.manager.push("Multiplayer"), app.ButtonSound()
 
 
-    Button:
-        pos_hint: {'x':0,'y':.7}
-        size_hint: .2, .05
-        text: "Update the worlds"
-        on_press: app.manager.push("UpdateWorlds"), app.ButtonSound()
+#     Button:
+#         pos_hint: {'x':0,'y':.7}
+#         size_hint: .2, .05
+#         text: "Update the worlds"
+#         on_press: app.manager.push("UpdateWorlds"), app.ButtonSound()
 
 
-    Spinner:
-        id: worlds_spinner_id
-        pos_hint: {'x':0,'y':.6}
-        size_hint: .2, .1
-        text: "Chose your world !"
-        values: root.generateWorldsList()
-        on_text:
-            root.changeWorldSpinnerText(worlds_spinner_id.text), app.ButtonSound(), preView_ID.changePreView(root.chosen_world)
+#     Spinner:
+#         id: worlds_spinner_id
+#         pos_hint: {'x':0,'y':.6}
+#         size_hint: .2, .1
+#         text: "Chose your world !"
+#         values: root.generateWorldsList()
+#         on_text:
+#             root.changeWorldSpinnerText(worlds_spinner_id.text), app.ButtonSound(), preView_ID.changePreView(root.chosen_world)
 
-    Spinner:
-        id: music_spinner_id
-        pos_hint: {'x':.8,'y':.6}
-        size_hint: .2, .1
-        text: "Choose your music !"
-        values: root.generateMusicsList()
-        on_text:
-            root.changeMusicSpinnerText(music_spinner_id.text), app.ButtonSound()
+#     Spinner:
+#         id: music_spinner_id
+#         pos_hint: {'x':.8,'y':.6}
+#         size_hint: .2, .1
+#         text: "Choose your music !"
+#         values: root.generateMusicsList()
+#         on_text:
+#             root.changeMusicSpinnerText(music_spinner_id.text), app.ButtonSound()
 
-    Spinner:
-        id: POV_spinner_id
-        pos_hint: {'x':.8,'y':.3}
-        size_hint: .2, .1
-        text: "Choose your POV !"
-        values: ["First Person","Third Person"]
-        on_text:
-            root.changePOVSpinnerText(POV_spinner_id.text), app.ButtonSound()
+#     Spinner:
+#         id: POV_spinner_id
+#         pos_hint: {'x':.8,'y':.3}
+#         size_hint: .2, .1
+#         text: "Choose your POV !"
+#         values: ["First Person","Third Person"]
+#         on_text:
+#             root.changePOVSpinnerText(POV_spinner_id.text), app.ButtonSound()
 
-    Button:
-        id: prewViewButton_ID
-        pos_hint: {'x':.2,'y':.6}
-        size_hint: .08, .1
-        text: "Preview"
-        on_press: preView_ID.updatePreviewMode(), preView_ID.changePreView(root.chosen_world), app.ButtonSound()
+#     Button:
+#         id: prewViewButton_ID
+#         pos_hint: {'x':.2,'y':.6}
+#         size_hint: .08, .1
+#         text: "Preview"
+#         on_press: preView_ID.updatePreviewMode(), preView_ID.changePreView(root.chosen_world), app.ButtonSound()
 
-    ScatterLayout:
-        pos: 0,0
-        size_hint: .2, .2
-        PreView:
-            id: preView_ID
+#     ScatterLayout:
+#         pos: 0,0
+#         size_hint: .2, .2
+#         PreView:
+#             maxSize:(100,100)
+#             id: preView_ID
 
 
 <KS_screen>:
     name: "Kart_Simulator"
     layout_id: noActionBar
-    size: app.windowSize
+    size: app.windowSize()
 
     ScatterLayout:
         id: noActionBar
@@ -179,7 +123,7 @@
     FloatLayout:
         id: animationLayout
         pos: 0,0
-        size: app.windowSize
+        size: app.windowSize()
         # canvas.before:
         #     Color: 
         #         rgba: 0,0,0,1
@@ -228,17 +172,46 @@
 
 <MyScreenManager>:
     Screen:
-        name: "MainMenu"
+        name:"MainMenu"
         MainMenu1:
     Screen:
-        name: "PlayingMenu"
+        name: "CreateSPGame"
+        BoxLayoutWithActionBar:
+            title: "Create/Join A Game"
+            CreateGame:
+    Screen:
+        name: "CreateMPGame"
+        BoxLayoutWithActionBar:
+            title: "Create/Join A Game"
+            CreateGame:
+                FloatLayout:
+                    TextInput:
+                        id:gameName
+                        font_size: 12
+                        pos_hint: {"x":.499,"y":.91}
+                        size_hint: .25,.045
+
+                    Label:
+                        font_size:16
+                        pos_hint: {"x":.25,"y":.88}
+                        size_hint: .25,.1
+                        text: "Name of the game:"
+
+    Screen:
+        name:"CreateOrJoin"
+        BoxLayoutWithActionBar:
+            title: "Playing Mode"
+            CreateOrJoin:
+
+    Screen:
+        name: "Playingmode"
         BoxLayoutWithActionBar:
             title: "Main Menu"
-            MainMenu2:
+            PlayingMode:
     Screen:
         name: "connection"
         BoxLayoutWithActionBar:
-            title: "Sign in / Log in"
+            title: "Sign In / Log In"
             MenuTabbedPanel:
     Screen:
         name: "Multiplayer"
@@ -259,7 +232,7 @@
     Screen:
         name: "UpdateWorlds"
         BoxLayoutWithActionBar:
-            title: "Update the worlds"
+            title: "Update The Worlds"
             UpdateWorlds:    
     Screen:
         name: "EG1"

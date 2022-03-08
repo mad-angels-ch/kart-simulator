@@ -55,7 +55,7 @@ class MenuApp(App):
     def instanciate_ks(self, world, music, POV):
         """Création du support de la partie et de ses attributs: 
         monde et musique choisis ainsi que la taille de la fenêtre"""
-        self.windowSize = Window.size
+        
         if self.isWorldChosen(world):
             self.world = world
             self.music = music
@@ -67,7 +67,8 @@ class MenuApp(App):
         elif not self.isWorldChosen(world):
             self.errorLabel.text+="Choose a world before playing !\n"
             Clock.schedule_once(self.popErrorScreen, 2)
-            
+    def windowSize(self):
+        return Window.size
     def start_ks(self):
         """Affichage de la partie"""
         self.manager.push("Kart_Simulator")

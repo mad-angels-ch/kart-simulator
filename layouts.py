@@ -266,54 +266,9 @@ class KS_screen(Screen):
             return music
 
 
-class PreView(Widget):
-    def __init__(self, **kwargs):
-        """Widget créant le preview"""
-        super().__init__(**kwargs)
-        self.previewMode = False
-
-    def changePreView(self, world):
-        """Change le mode de preview pour afficher le nouveau circuit"""
-        # Se comporte comme MainWidget, mais n'instancie qu'une seule frame
-        if not isinstance(world, StringProperty):
-            self.canvas.before.clear()
-            self.canvas.clear()
-            self.canvas.after.clear()
-            if self.parent.parent.scale != 1 and self.previewMode:
-                # Repositionne le ScatterLayout dans lequel se situe le preview à la position (0,0) et réinitialise son facteur scale à 1
-                self.parent.parent.pos = (0,0)
-                self.parent.parent.apply_transform(trans=Matrix().scale(1/self.theGame._output._scale, 1/self.theGame._output._scale, 1/self.theGame._output._scale),anchor=(0,0))
-            if self.previewMode:
-                try:
-                    self.dataUrl = self.dataUrl = (
-                        path.join("client/worlds", world) + ".json"
-                    )
-                    app = App.get_running_app()
-                    with self.canvas.before:
-                        Color(rgba=(1, 1, 1, 1))
-                        Rectangle(pos=(0, 0), size=(200, 200))
-                    with open(self.dataUrl, "r", encoding="utf8") as f:
-                        self.theGame = game.Game(
-                            f.read(),
-                            OutputFactory(self, max_width=200, max_height=200, POV="PreView"),
-                        )
-
-                    self.theGame.callOutput()
-                except ObjectCountError as OCE:
-                    app.changeLabelText(OCE.message())
-
-    def updatePreviewMode(self):
-        """Met à jour le mode de preview: vrai si il faut afficher un preview et faux sinon"""
-        self.previewMode = not self.previewMode
 
 
-class MainMenu1(FloatLayout):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        
-    
-    def callback(self, inst, dt):
-        App.get_running_app().manager.push("MainMenu")
+
 
 
 class MainMenu2(FloatLayout):
@@ -519,29 +474,29 @@ class GameConnection(FloatLayout):
     
     
     
-class JoinGame(FloatLayout):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.username = self.ids.username.text
-        self.password = self.ids.password.text
+# class JoinGame(FloatLayout):
+#     def __init__(self, **kwargs):
+#         super().__init__(**kwargs)
+#         self.username = self.ids.username.text
+#         self.password = self.ids.password.text
         
-    def main(self):
-        """Create a player of the ks multiplayer"""
-        session = requests.Session()
-        data = {"username": self.username, "password": self.password}
-        response = session.post("http://localhost:5000/auth/login", data=data).text
-        title = "<title>"
-        pos = response.find(title) + len(title)
-        error = "Error | "
-        if response[pos : pos + len(error)] == error:
-            self.ids.errors.text="Wrong username of password. Try again."
-            raise click.Abort()
+#     def main(self):
+#         """Create a player of the ks multiplayer"""
+#         session = requests.Session()
+#         data = {"username": self.username, "password": self.password}
+#         response = session.post("http://localhost:5000/auth/login", data=data).text
+#         title = "<title>"
+#         pos = response.find(title) + len(title)
+#         error = "Error | "
+#         if response[pos : pos + len(error)] == error:
+#             self.ids.errors.text="Wrong username of password. Try again."
+#             raise click.Abort()
 
-        sio = Client()
-        # sio = Client(logger=True, engineio_logger=True)
-        # sio.register_namespace(MultiplayerGame("/kartmultiplayer", create, join))
-        try:
-            sio.connect("http://localhost:5000", namespaces="/kartmultiplayer")
-        except BaseException as e:
-            click.echo(e)
-            sys.exit()
+#         sio = Client()
+#         # sio = Client(logger=True, engineio_logger=True)
+#         # sio.register_namespace(MultiplayerGame("/kartmultiplayer", create, join))
+#         try:
+#             sio.connect("http://localhost:5000", namespaces="/kartmultiplayer")
+#         except BaseException as e:
+#             click.echo(e)
+#             sys.exit()

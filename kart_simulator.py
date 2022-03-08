@@ -82,8 +82,8 @@ class MainWidget(Widget):
                     OutputFactory(
                         self,
                         frame_callback=self.frame_callback,
-                        max_width=self.app.windowSize[0],
-                        max_height=self.app.windowSize[1],
+                        max_width=self.app.windowSize()[0],
+                        max_height=self.app.windowSize()[1],
                         POV = self.POV
                     ),
                 )
