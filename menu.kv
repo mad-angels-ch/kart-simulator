@@ -17,11 +17,25 @@
         pos_hint: {"x": .25, "y": .3}
         size_hint: .2,.3
         orientation: 'vertical'
-
-        Button:
+        Label:
+            id: updateWorlds_output_id
+            pos_hint: {'center_x':.5,'center_y':.5}
+            text: ""
+            font_size: 16
+            color: 1,1,1,1
+            size_hint: 1,.7
+        # Button:
+        #     text: "Play"
+        #     background_color: (1.0, 0.0, 0.0, .75)
+        #     on_press: app.manager.push("PlayingMenu")
+        UpdateWorldButton:
             text: "Play"
             background_color: (1.0, 0.0, 0.0, .75)
-            on_press: app.manager.push("PlayingMenu")
+            on_press:
+                self.generateUpdatedWorldsList(updateWorlds_output_id, app.manager.get_screen("MainMenu").children[0].ids.worlds_spinner_id),
+                app.ButtonSound(),
+                app.manager.push("PlayingMenu")
+
 
         Button:
             text: "Rules of the game"
@@ -263,7 +277,39 @@
         name: "EG2"
         PasswordScreen:
             nbr:2
+    Screen:
+        name: "credits"
+        BoxLayoutWithActionBar:
+            title: "Credits"
+            Credits:
 
+
+<Credits@BoxLayout>:
+    orientation: "vertical"
+    Label:
+        bold: True
+        text: "Credits for the Kart Simulator"
+        font_size: 32
+        color: .8,.4,.2,1
+        size_hint: 1,.1
+        canvas.before:
+            Color:
+                rgba: 0, 0, 0, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+    Label:
+        italic: True
+        text: " - ON S'EN BAT LES COUILLES."
+        font_size: 16
+        color: 0,0,0,1
+        size_hint: 1,.9
+        canvas.before:
+            Color:
+                rgba: .8,.4,.2,1
+            Rectangle:
+                pos: self.pos
+                size: self.size
 
 
 
