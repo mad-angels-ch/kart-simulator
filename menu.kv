@@ -4,6 +4,68 @@
 #:import webbrowser webbrowser
 
 # Création de l'interface de tous les screens
+<MainMenu1>:
+    GridLayout:
+    # Image de fond
+        canvas.before:
+            BorderImage:
+                border: 10, 10, 10, 10
+                source: 'client/Images/le_laveau.png'
+                pos: self.pos
+                size: self.size
+    BoxLayout:
+        pos_hint: {"x": .25, "y": .3}
+        size_hint: .2,.3
+        orientation: 'vertical'
+        Label:
+            id: updateWorlds_output_id
+            pos_hint: {'center_x':.5,'center_y':.5}
+            text: ""
+            font_size: 16
+            color: 1,1,1,1
+            size_hint: 1,.7
+        # Button:
+        #     text: "Play"
+        #     background_color: (1.0, 0.0, 0.0, .75)
+        #     on_press: app.manager.push("PlayingMenu")
+        UpdateWorldButton:
+            text: "Play"
+            background_color: (1.0, 0.0, 0.0, .75)
+            on_press:
+                self.generateUpdatedWorldsList(updateWorlds_output_id, app.manager.get_screen("MainMenu").children[0].ids.worlds_spinner_id),
+                app.ButtonSound(),
+                app.manager.push("PlayingMenu")
+
+
+        Button:
+            text: "Rules of the game"
+            on_press: app.manager.push("Rules"), app.ButtonSound()
+
+        Button:
+            text: "Controls of the game"
+            on_press: app.manager.push("Controls"), app.ButtonSound()
+        
+        Button:
+            text: "Credits"
+            on_press: app.manager.push("credits"), app.ButtonSound()
+        
+    Button:
+        pos_hint: {"x":.9, "y": 0}
+        size_hint: .1,.05
+        text:"Mute Sound"
+        on_press: app.changeSoundMode(self)
+
+    Button:
+        id:btnExit
+        pos_hint: {"x":.9, "y": .95}
+        size_hint: .1,.05
+        text:"Exit"
+        on_press: app.ButtonSound(), app.stop()
+
+
+
+
+
 
 <MainMenu2>:
     GridLayout:
@@ -28,6 +90,13 @@
                 pos: self.pos
                 size: self.size
     Button:
+        pos_hint: {'x':.3,'y':.3}
+        size_hint: .4, .3
+        text: "Play"
+        background_color: (1.0, 0.0, 0.0, .75)
+        on_press: app.instanciate_ks(root.chosen_world, root.chosen_music, root.chosen_POV), app.ButtonSound()
+
+    Button:
         pos_hint: {'x':.8,'y':.8}
         size_hint: .2, .05
         text: "Sign in / Log in"
@@ -45,16 +114,6 @@
         text: "Multiplayer"
         on_press: app.manager.push("Multiplayer"), app.ButtonSound()
 
-    Button:
-        pos_hint: {'x':0,'y':.8}
-        size_hint: .2, .05
-        text: "Rules of the game"
-        on_press: app.manager.push("Rules"), app.ButtonSound()
-    Button:
-        pos_hint: {'x':0,'y':.75}
-        size_hint: .2, .05
-        text: "Controls of the game"
-        on_press: app.manager.push("Controls"), app.ButtonSound()
 
     Button:
         pos_hint: {'x':0,'y':.7}
@@ -62,12 +121,6 @@
         text: "Update the worlds"
         on_press: app.manager.push("UpdateWorlds"), app.ButtonSound()
 
-    Button:
-        pos_hint: {'x':.3,'y':.3}
-        size_hint: .4, .3
-        text: "Play"
-        background_color: (1.0, 0.0, 0.0, .75)
-        on_press: app.instanciate_ks(root.chosen_world, root.chosen_music, root.chosen_POV), app.ButtonSound()
 
     Spinner:
         id: worlds_spinner_id
@@ -108,36 +161,6 @@
         size_hint: .2, .2
         PreView:
             id: preView_ID
-            # pos_hint: {'x':0,'y':.1}
-            # size_hint: .2, .1
-
-    Button:
-        id:btnExit
-        pos_hint: {'x':.95,'y':.95}
-        size_hint: .05,.05
-        text:"Exit"
-        on_press: app.ButtonSound(), app.stop()
-    
-    Button:
-        pos_hint: {'x':.85,'y':0}
-        size_hint: .15,.05
-        text:"Mute Sound"
-        on_press: app.changeSoundMode(self)
-    
-            
-
-
-
-<PasswordScreen>:
-    TextInput:
-        pos_hint: {'center_x':.5,'center_y':.5}
-        size_hint: .25, .1
-        width: "100dp"
-        text: "Type the secret password:"
-        multiline: False
-        on_text_validate: root.on_text_validate(self)
-
-
 
 
 <KS_screen>:
@@ -206,7 +229,12 @@
 <MyScreenManager>:
     Screen:
         name: "MainMenu"
-        MainMenu2:
+        MainMenu1:
+    Screen:
+        name: "PlayingMenu"
+        BoxLayoutWithActionBar:
+            title: "Main Menu"
+            MainMenu2:
     Screen:
         name: "connection"
         BoxLayoutWithActionBar:
@@ -242,7 +270,39 @@
         name: "EG2"
         PasswordScreen:
             nbr:2
+    Screen:
+        name: "credits"
+        BoxLayoutWithActionBar:
+            title: "Credits"
+            Credits:
 
+
+<Credits@BoxLayout>:
+    orientation: "vertical"
+    Label:
+        bold: True
+        text: "Credits for the Kart Simulator"
+        font_size: 32
+        color: .8,.4,.2,1
+        size_hint: 1,.1
+        canvas.before:
+            Color:
+                rgba: 0, 0, 0, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+    Label:
+        italic: True
+        text: " - ON S'EN BAT LES COUILLES."
+        font_size: 16
+        color: 0,0,0,1
+        size_hint: 1,.9
+        canvas.before:
+            Color:
+                rgba: .8,.4,.2,1
+            Rectangle:
+                pos: self.pos
+                size: self.size
 
 
 
