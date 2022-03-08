@@ -26,10 +26,11 @@ class MultiplayerGame(ClientNamespace):
             raise click.Abort()
 
     def on_connect(self):
-        click.echo("Connected!")
         worldVersion_id = None
         if self.create:
             name, worldVersion_id = self.create
+            self.join = name
+            self.create = None
         elif self.join:
             name = self.join
         else:
@@ -41,6 +42,7 @@ class MultiplayerGame(ClientNamespace):
                 show_default=False,
             )
             name = click.prompt("Name of the game", type=str)
+            self.join = name
             if action == "c":
                 worldVersion_id = str(
                     click.prompt("worldVersion_id of the world to be used", type=int)
@@ -66,7 +68,7 @@ class MultiplayerGame(ClientNamespace):
         click.echo(f"objects_update: {outputs}")
 
     def on_disconnect(self):
-        click.echo("Disconnected!")
+        click.echo("Connection lost!")
 
 
 @click.command()
@@ -94,7 +96,7 @@ def main(username, password, create, join):
         click.echo("Invalid username or password")
         raise click.Abort()
 
-    sio = Client()
+    sio = Client(http_session = session)
     # sio = Client(logger=True, engineio_logger=True)
     sio.register_namespace(MultiplayerGame("/kartmultiplayer", create, join))
     try:
