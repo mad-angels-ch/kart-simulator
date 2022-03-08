@@ -307,6 +307,15 @@ class PreView(Widget):
         self.previewMode = not self.previewMode
 
 
+class MainMenu1(FloatLayout):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        
+    
+    def callback(self, inst, dt):
+        App.get_running_app().manager.push("MainMenu")
+
+
 class MainMenu2(FloatLayout):
     def __init__(self, **kwargs):
         """Menu principal du jeu"""
