@@ -96,8 +96,8 @@ def main(username, password, create, join):
         click.echo("Invalid username or password")
         raise click.Abort()
 
-    sio = Client(http_session = session)
-    # sio = Client(logger=True, engineio_logger=True)
+    sio = Client(http_session=session)
+    # sio = Client(http_session = session, logger=True, engineio_logger=True)
     sio.register_namespace(MultiplayerGame("/kartmultiplayer", create, join))
     try:
         sio.connect("http://localhost:5000", namespaces="/kartmultiplayer")
