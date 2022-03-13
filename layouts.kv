@@ -39,43 +39,6 @@
 
 
 
-<Controls>:
-    TextInput:
-        pos_hint: {'center_x':.55,'center_y':.38}
-        size_hint: .015, .015
-        width: "100dp"
-        text: ""
-        multiline: False
-        on_text_validate: root.on_text_validate(self)
-
-    Label:
-        bold: True
-        text: "Controls of the Kart Simulator"
-        pos_hint: {'x':0,'y':.9}
-        font_size: 32
-        color: .8,.4,.2,1
-        size_hint: 1,.1
-        canvas.before:
-            Color:
-                rgba: 0, 0, 0, 1
-            Rectangle:
-                pos: self.pos
-                size: self.size
-
-    Label:
-        italic: True
-        text: ' - Avancer/Accélérer: W / up\n\n - Reculer/Ralentir: S / down\n\n - Tourner à gauche: A / left\n\n - Tourner à droite: D / right\n\n - Pause/Reprendre: Esc'
-        font_size: 16
-        color: 0,0,0,1
-        size_hint: 1,.9
-        canvas.before:
-            Color:
-                rgba: .8,.4,.2,1
-            Rectangle:
-                pos: self.pos
-                size: self.size
-
-
 
 
 
@@ -131,47 +94,3 @@
                 pos: self.pos
                 size: self.size
 
-
-<PauseMode>:
-    Button:
-        size_hint:.2,.1
-        pos_hint: {'x': .4 , 'y': .5 }
-        text:"Resume"
-        on_release: app.game_instance.resumeGame(root.chosen_music), app.ButtonSound()
-    
-    Button:
-        size_hint:.2,.1
-        pos_hint: {'x': .4 , 'y': .4 }
-        text:"Quit game"
-        on_release: app.manager.pop(),app.clear_game(), app.ButtonSound()
-
-    Spinner:
-        id: music_spinner_id
-        pos_hint: {'x':.8,'y':.6}
-        size_hint: .2, .1
-        text: root.chosen_music
-        values: root.generateMusicsList()
-        on_text:
-            root.changeMusicSpinnerText(music_spinner_id.text), app.ButtonSound(), app.game_instance.changeMusic(root.chosen_music)
-
-
-<EndGameMode>:
-    canvas.before:
-        Color:
-            rgba: 0,0,0,.5
-        Rectangle:
-            pos: self.pos
-            size: self.size
-
-    Label:
-        id: gameOverLabel_id
-        text: ""
-        font_size: 74
-        halign: 'center'
-        color: 0.4, 1, 0.4, 1
-
-    Button:
-        size_hint:.2,.1
-        pos_hint: {'x':.4, 'y': .45}
-        text:"Quit game"
-        on_release: app.manager.pop(),app.clear_game(), app.ButtonSound()

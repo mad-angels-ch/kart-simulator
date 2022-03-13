@@ -14,7 +14,7 @@ from kivy.graphics import Rectangle, Color
 from kivy.uix.label import Label
 from kivy.uix.image import Image
 from navigation_screen_manager import MyScreenManager
-from layouts import KS_screen
+from InGameScreen import KS_screen
 
 import requests, pickle
 
@@ -24,7 +24,6 @@ import requests, pickle
 
 class MenuApp(App):
     manager = ObjectProperty(None)
-    musicName = ""
     soundEnabled = True
     passwords = [False,False]
     
@@ -32,8 +31,8 @@ class MenuApp(App):
         """L'application kivy qui gère toute l'interface graphique"""
         super().__init__(**kwargs)
         self.game_instance = None
-        self.session = requests.session()
-        # self.session.post("http://localhost:5000/auth/login/kart", data={"username": "Noe", "password": "flipper"})
+        self.session = requests.Session()
+        self.session.post("http://localhost:5000/auth/login/kart", data={"username": "Noe", "password": "flipper"})
         try:
             with open('client/cookies.txt', 'rb') as f:
                 self.session.cookies.update(pickle.load(f))
@@ -52,27 +51,25 @@ class MenuApp(App):
             self.errorLabel=Label(bold=True,underline=True,font_size=32,text="",pos=(Window.width/2-50,Window.height/2-10),color=(1,1,1,.5))
         return self.manager
     
-    
-    def instanciate_ks(self, world, music, POV):
+    def instanciate_ks(self, world, POV):
         """Création du support de la partie et de ses attributs: 
-        monde et musique choisis ainsi que la taille de la fenêtre"""
+        monde choisi ainsi que la taille de la fenêtre"""
         
         if self.isWorldChosen(world):
-            self.world = world
-            self.music = music
-            self.POV = POV
             if self.manager.has_screen("Kart_Simulator"):
                 screen = self.manager.get_screen("Kart_Simulator")
                 self.manager.remove_widget(screen)
-            self.game_instance = KS_screen(self.world, self.music, self.POV)
+            self.game_instance = KS_screen(world=world, POV=POV)
         elif not self.isWorldChosen(world):
             self.errorLabel.text+="Choose a world before playing !\n"
             Clock.schedule_once(self.popErrorScreen, 2)
-    def windowSize(self):
-        return Window.size
+        
     def start_ks(self):
         """Affichage de la partie"""
         self.manager.push("Kart_Simulator")
+        
+    def windowSize(self):
+        return Window.size
         
     def popErrorScreen(self,dt):
         """Vidage du message d'erreur après un temps donné"""

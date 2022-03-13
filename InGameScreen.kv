@@ -1,0 +1,100 @@
+<EndGameMode>:
+    canvas.before:
+        Color:
+            rgba: 0,0,0,.5
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    Label:
+        id: gameOverLabel_id
+        text: ""
+        font_size: 74
+        halign: 'center'
+        color: 0.4, 1, 0.4, 1
+
+    Button:
+        size_hint:.2,.1
+        pos_hint: {'x':.4, 'y': .45}
+        text:"Quit game"
+        on_release: app.manager.pop(),app.clear_game(), app.ButtonSound()
+
+
+
+
+<PauseMode>:
+    Button:
+        size_hint:.2,.1
+        pos_hint: {'x': .4 , 'y': .5 }
+        text:"Resume"
+        on_release: app.game_instance.resumeGame(), app.ButtonSound()
+    
+    Button:
+        size_hint:.2,.1
+        pos_hint: {'x': .4 , 'y': .4 }
+        text:"Quit game"
+        on_release: app.windowSize(), app.manager.pop(), app.ButtonSound()
+
+
+
+
+<KS_screen>:
+    name: "Kart_Simulator"
+    layout_id: noActionBar
+    size: app.windowSize()
+
+    ScatterLayout:
+        id: noActionBar
+        pos: 0,0
+        size: root.size
+        do_translation: False
+        do_rotation: False
+        do_scale: False
+
+    FloatLayout:
+        id: animationLayout
+        pos: 0,0
+        size: app.windowSize()
+        # canvas.before:
+        #     Color: 
+        #         rgba: 0,0,0,1
+        #     Rectangle:
+        #         size: self.size[0]/2,self.size[1]/2
+
+    
+    GridLayout:
+        cols: 2
+        rows: 3
+        pos_hint: {'x': .45, 'y': .9}
+        size_hint: .15, .1
+        canvas.before:
+            Color:
+                rgba: 0,0,0,.5
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Label:
+            text: "Laps"
+            color: 0.4, 1, 0.4, .5
+
+        Label:
+            id: laps_id
+            text: "0/1"
+            color: 0.4, 1, 0.4, .5
+
+        Label:
+            text: "Gates"
+            color: 0.4, 1, 0.4, .5
+
+        Label:
+            id: gates_id
+            text: "0/2"
+            color: 0.4, 1, 0.4, .5
+        Label:
+            text: "Timer"
+            color: 0.4, 1, 0.4, .5
+        Label:
+            id: timer_id
+            text: "00:00:00"
+            color: 0.4, 1, 0.4, .5
