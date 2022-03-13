@@ -101,7 +101,6 @@ class PauseMode(FloatLayout):
     def generateMusicsList(self):
         """Génère la liste des musiques disponibles"""
         music_list = list(music[:-4] for music in listdir("client/sounds/music"))
-        music_list.append("No music")
         return music_list
 
 
@@ -431,17 +430,7 @@ class Controls(FloatLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-class LogIn(GridLayout):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.app = App.get_running_app()
 
-    def logIn(self):
-        data = {"username": self.ids.username.text, "password": self.ids.username.text}
-        r = self.app.session.post("http://localhost:5000/auth/login", data=data)
-        with open('client/cookies.txt', 'wb') as f:
-            pickle.dump(self.app.session.cookies, f)
-        print(r.text)
 
 
 from player import *

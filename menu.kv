@@ -7,6 +7,12 @@
 #:import create_or_join create_or_join
 #:import join_game_menu join_game_menu
 #:import createGame_menu createGame_menu
+#:import rules rules
+#:import credits credits
+#:import log_in log_in
+#:import kart_settings kart_settings
+#:import settings settings
+#:import music_settings music_settings
 # Création de l'interface de tous les screens
 
 
@@ -209,10 +215,34 @@
             title: "Main Menu"
             PlayingMode:
     Screen:
-        name: "connection"
+        Widget:
+            canvas:
+                Color:
+                    rgba: 0, 0, 0, 1
+                Rectangle:
+            BoxLayout:
+                Image:
+                    source: "client/Images/karts/Red_kart.png"
+    Screen:
+        name:"SettingsMenu"
         BoxLayoutWithActionBar:
-            title: "Sign In / Log In"
-            MenuTabbedPanel:
+            title: "Settings Menu"
+            UserSettings:
+    Screen:
+        name:"Music_Settings"
+        BoxLayoutWithActionBar:
+            title:"Music Settings"
+            MusicSettings:
+    Screen:
+        name:"Kart_Settings"
+        BoxLayoutWithActionBar:
+            title: "Kart settings"
+            KartSettings:
+    Screen:
+        name: "LogIn"
+        BoxLayoutWithActionBar:
+            title: "Log In"
+            LogIn:
     Screen:
         name: "Multiplayer"
         BoxLayoutWithActionBar:
@@ -244,38 +274,13 @@
         PasswordScreen:
             nbr:2
     Screen:
-        name: "credits"
+        name: "Credits"
         BoxLayoutWithActionBar:
             title: "Credits"
             Credits:
 
 
-<Credits@BoxLayout>:
-    orientation: "vertical"
-    Label:
-        bold: True
-        text: "Credits for the Kart Simulator"
-        font_size: 32
-        color: .8,.4,.2,1
-        size_hint: 1,.1
-        canvas.before:
-            Color:
-                rgba: 0, 0, 0, 1
-            Rectangle:
-                pos: self.pos
-                size: self.size
-    Label:
-        italic: True
-        text: " - ON S'EN BAT LES COUILLES."
-        font_size: 16
-        color: 0,0,0,1
-        size_hint: 1,.9
-        canvas.before:
-            Color:
-                rgba: .8,.4,.2,1
-            Rectangle:
-                pos: self.pos
-                size: self.size
+
 
 
 

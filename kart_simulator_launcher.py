@@ -18,7 +18,6 @@ from layouts import KS_screen
 
 import requests, pickle
 
-
 ######################## App de lancement de kivy ########################
 
 
@@ -34,6 +33,7 @@ class MenuApp(App):
         super().__init__(**kwargs)
         self.game_instance = None
         self.session = requests.session()
+        # self.session.post("http://localhost:5000/auth/login/kart", data={"username": "Noe", "password": "flipper"})
         try:
             with open('client/cookies.txt', 'rb') as f:
                 self.session.cookies.update(pickle.load(f))
@@ -51,6 +51,7 @@ class MenuApp(App):
         with self.manager.screens[0].canvas:
             self.errorLabel=Label(bold=True,underline=True,font_size=32,text="",pos=(Window.width/2-50,Window.height/2-10),color=(1,1,1,.5))
         return self.manager
+    
     
     def instanciate_ks(self, world, music, POV):
         """Création du support de la partie et de ses attributs: 
@@ -106,7 +107,6 @@ class MenuApp(App):
             widget.text = "Mute sounds"
         else:
             widget.text = "Unmute sounds"
-        
 
 
 

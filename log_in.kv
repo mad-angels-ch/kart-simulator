@@ -1,0 +1,27 @@
+<LogIn>:
+    canvas:
+        Color: 
+            rgba: 0,0,0,1
+        Rectangle:
+            size:self.size
+    Label:
+        pos_hint: {'x':.3,'y':.6}
+        size_hint: .2, .06
+        text: "Username"
+    TextInput:
+        pos_hint: {'x':.5,'y':.6}
+        size_hint: .2, .06
+        id: username
+    Label:
+        pos_hint: {'x':.3,'y':.5}
+        size_hint: .2, .06
+        text: "Password"
+    TextInput:
+        pos_hint: {'x':.5,'y':.5}
+        size_hint: .2, .06
+        id: password
+    Button:
+        text:"Log In"
+        pos_hint: {'x':.4,'y':.4}
+        size_hint: .2, .06
+        on_press: root.log_in()
