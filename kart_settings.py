@@ -36,10 +36,10 @@ class KartSettings(GridLayout):
         """Met à jour les paramètres du comte du joueur."""
         if self._chosenKart != "":
             app = App.get_running_app()
-            data = app.session.get("http://localhost:5000/auth/myaccount/kart.json").json()
+            data = app.get_userSettings()
             data["kart"] = self._chosenKart
-            rep = app.session.put("http://localhost:5000/auth/myaccount/kart.json", data)
-            print(rep)
+            app.session.put("http://localhost:5000/auth/myaccount/kart.json", data)
+            app.update_userSettings()
             
     def updateChosenKart(self,button):
         """Met à jour le nom du kart choisi."""

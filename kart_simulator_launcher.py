@@ -33,6 +33,7 @@ class MenuApp(App):
         self.game_instance = None
         self.session = requests.Session()
         self.session.post("http://localhost:5000/auth/login/kart", data={"username": "Noe", "password": "flipper"})
+        self.update_userSettings()
         try:
             with open('client/cookies.txt', 'rb') as f:
                 self.session.cookies.update(pickle.load(f))
@@ -104,6 +105,23 @@ class MenuApp(App):
             widget.text = "Mute sounds"
         else:
             widget.text = "Unmute sounds"
+            
+    def get_userSettings(self):
+        """Retourne le dictionnaire contenant les information relatives aux paramètres du joueur connecté."""
+        return self.userSettings
+
+    def update_userSettings(self):
+        """Met à jour les information relatives aux paramètres du joueur connecté."""
+        if self.is_loggedId():
+            self.userSettings = self.session.get("http://localhost:5000/auth/myaccount/kart.json").json()
+            return self.userSettings
+        else:
+            self.userSettings = {"kart":"Green_kart","music":"No Music","volume":1,"pov":"Third Person"}
+        
+        
+    def is_loggedId(self):
+        """Retourne vrai si un utilisateur est connecté à son compte."""
+        return False
 
 
 

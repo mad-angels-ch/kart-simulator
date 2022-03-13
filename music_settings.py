@@ -42,9 +42,10 @@ class MusicSettings(GridLayout):
     def updateUserSettings(self, instance):
         """Met à jour les paramètres du comte du joueur."""
         app = App.get_running_app()
-        data = app.session.get("http://localhost:5000/auth/myaccount/kart.json").json()
+        data = app.get_userSettings()
         data["music"] = self._chosenMusic
         app.session.put("http://localhost:5000/auth/myaccount/kart.json", data)
+        app.update_userSettings()
         
     def updateChosenKart(self,button):
         """Met à jour le nom de la musique choisie et en joue un extrait."""
