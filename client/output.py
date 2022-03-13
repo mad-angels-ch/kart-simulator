@@ -224,10 +224,12 @@ class OutputFactory:
         self._karts.append(lgeKart)
         with self._w.canvas:  # Ce type d'objet doit être placé dans l'instruction 'with self.canvas:'
             Color(rgba=(1, 1, 1, 1))
+            imageName = App.get_running_app().get_userSettings()["kart"]
             ioKart = io_objects.FilledQuadrilateral(
                 LGEObject=lgeKart,
-                source="client/Images/KartInGame.jpg")
+                source=f"client/Images/karts/{imageName}.png")
         self._createdObject[lgeKart.formID()] = ioKart
+         
         
         
         
