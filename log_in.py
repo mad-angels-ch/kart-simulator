@@ -14,4 +14,9 @@ class LogIn(FloatLayout):
     def log_in(self):
         data = {"username" : self.ids.username.text, "password" : self.ids.password.text}
         response = self.app.session.post("http://localhost:5000/auth/login/kart", data=data)
-        print(response.json())
+        if response.json().get("error",0):
+            self.ids.errorLabel.text = response.json()['error']
+        else:
+            self.app._isLogged = True
+            self.app.manager.pop()
+

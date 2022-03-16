@@ -5,6 +5,11 @@
         Rectangle:
             size:self.size
     Label:
+        id: errorLabel
+        pos_hint: {'center_x':.5,'center_y':.8}
+        size_hint: .4, .06
+        text: ""
+    Label:
         pos_hint: {'x':.3,'y':.6}
         size_hint: .2, .06
         text: "Username"
@@ -19,6 +24,7 @@
     TextInput:
         pos_hint: {'x':.5,'y':.5}
         size_hint: .2, .06
+        password: True
         id: password
     Button:
         text:"Log In"

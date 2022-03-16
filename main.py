@@ -25,15 +25,14 @@ import requests, pickle
 class MenuApp(App):
     manager = ObjectProperty(None)
     soundEnabled = True
-    passwords = [False,False]
     
     def __init__(self, **kwargs):
         """L'application kivy qui gère toute l'interface graphique"""
         super().__init__(**kwargs)
-        print("App launched !!")
         self.game_instance = None
+        self._isLogged = False
         self.session = requests.Session()
-        self.session.post("http://localhost:5000/auth/login/kart", data={"username": "4444", "password": "4444"})
+        # self.session.post("http://localhost:5000/auth/login/kart", data={"username": "4444", "password": "4444"})
         self.update_userSettings()
         # try:
         #     with open('client/cookies.txt', 'rb') as f:
@@ -66,8 +65,7 @@ class MenuApp(App):
         elif not self.isWorldChosen(world):
             self.errorLabel.text+="Choose a world before playing !\n"
             Clock.schedule_once(self.popErrorScreen, 2)
-    def print_test(self):
-        print("fonctionne")
+            
     def start_ks(self):
         """Affichage de la partie"""
         self.manager.push("Kart_Simulator")
@@ -89,7 +87,6 @@ class MenuApp(App):
         if self.game_instance:
             self.game_instance.quit()
             self.game_instance = None
-            print("Game cleared !!")
             
     def ButtonSound(self):
         """Crée le son produit par un bouton si l'utilisateur n'a pas disactivé les effets sonores"""
@@ -116,16 +113,16 @@ class MenuApp(App):
 
     def update_userSettings(self):
         """Met à jour les information relatives aux paramètres du joueur connecté."""
-        if self.is_loggedId():
+        if self.is_logged():
             self.userSettings = self.session.get("http://localhost:5000/auth/myaccount/kart.json").json()
             return self.userSettings
         else:
-            self.userSettings = {"kart":"Green_kart","music":"No Music","volume":1,"pov":"Third Person"}
+            self.userSettings = {"kart":"Green_kart", "music":"No Music", "pov":"Third Person", "username": "Anonyme user", "volume":1}
         
-        
-    def is_loggedId(self):
+    def is_logged(self):
         """Retourne vrai si un utilisateur est connecté à son compte."""
-        return True
+        return self._isLogged
+    
 
 
 

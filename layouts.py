@@ -213,3 +213,26 @@ class GameConnection(FloatLayout):
 #         except BaseException as e:
 #             click.echo(e)
 #             sys.exit()
+
+
+
+
+
+from functools import partial
+from kivy.uix.popup import Popup
+
+
+class LogInQuestion(Popup):
+    """Classe qui demande à l'utilisateur s'il veut se connecter à son compte ou non, puis se détruit."""
+    def __init__(self, parent, **kwargs):
+        super().__init__(title="You are not logged in.",**kwargs)
+        self.pos_hint = {"center_x":.5, "center_y": .7}
+        self.size_hint = (.5,.2)
+        box1 = BoxLayout(orientation='vertical')
+        app = App.get_running_app()
+        box1.add_widget(Label(text = "Do you want to log in ?"))
+        box2 = BoxLayout(orientation = "horizontal")
+        box1.add_widget(box2)
+        box2.add_widget(Button(text = "Yes", on_release = lambda screen:app.manager.push("LogIn"), on_press = lambda s: parent.remove_widget(self)))
+        box2.add_widget(Button(text = "No", on_release = lambda screen:app.manager.push("Playingmode"), on_press = lambda s: parent.remove_widget(self)))
+        self.content = box1
