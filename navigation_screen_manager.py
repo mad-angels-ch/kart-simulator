@@ -18,6 +18,12 @@ class NavigationScreenManager(ScreenManager):
             del self.screen_stack[-1]
             self.transition.direction = "right"
             self.current = screen_name
+    
+    def popAll(self):
+            screen_name = self.screen_stack[0]
+            del self.screen_stack[0:]
+            self.transition.direction = "right"
+            self.current = screen_name
 
 class MyScreenManager(NavigationScreenManager):
     pass

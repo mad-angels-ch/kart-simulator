@@ -38,8 +38,9 @@ class KartSettings(GridLayout):
             app = App.get_running_app()
             data = app.get_userSettings()
             data["kart"] = self._chosenKart
-            app.session.put("http://localhost:5000/auth/myaccount/kart.json", data)
+            rep = app.session.put("http://localhost:5000/auth/myaccount/kart.json", data)
             app.update_userSettings()
+            print(app.get_userSettings(), "\n",data,"\n",rep.json())
             
     def updateChosenKart(self,button):
         """Met à jour le nom du kart choisi."""

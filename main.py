@@ -30,17 +30,18 @@ class MenuApp(App):
     def __init__(self, **kwargs):
         """L'application kivy qui gère toute l'interface graphique"""
         super().__init__(**kwargs)
+        print("App launched !!")
         self.game_instance = None
         self.session = requests.Session()
-        self.session.post("http://localhost:5000/auth/login/kart", data={"username": "Noe", "password": "flipper"})
+        self.session.post("http://localhost:5000/auth/login/kart", data={"username": "4444", "password": "4444"})
         self.update_userSettings()
-        try:
-            with open('client/cookies.txt', 'rb') as f:
-                self.session.cookies.update(pickle.load(f))
-        except FileNotFoundError:
-            info("No cookies found")
-        except EOFError:
-            info("Cookies empty")
+        # try:
+        #     with open('client/cookies.txt', 'rb') as f:
+        #         self.session.cookies.update(pickle.load(f))
+        # except FileNotFoundError:
+        #     info("No cookies found")
+        # except EOFError:
+        #     info("Cookies empty")
         
 
     def build(self):
@@ -60,11 +61,13 @@ class MenuApp(App):
             if self.manager.has_screen("Kart_Simulator"):
                 screen = self.manager.get_screen("Kart_Simulator")
                 self.manager.remove_widget(screen)
+            print("Game created !!")
             self.game_instance = KS_screen(world=world, POV=POV)
         elif not self.isWorldChosen(world):
             self.errorLabel.text+="Choose a world before playing !\n"
             Clock.schedule_once(self.popErrorScreen, 2)
-        
+    def print_test(self):
+        print("fonctionne")
     def start_ks(self):
         """Affichage de la partie"""
         self.manager.push("Kart_Simulator")
@@ -86,6 +89,7 @@ class MenuApp(App):
         if self.game_instance:
             self.game_instance.quit()
             self.game_instance = None
+            print("Game cleared !!")
             
     def ButtonSound(self):
         """Crée le son produit par un bouton si l'utilisateur n'a pas disactivé les effets sonores"""
@@ -121,7 +125,7 @@ class MenuApp(App):
         
     def is_loggedId(self):
         """Retourne vrai si un utilisateur est connecté à son compte."""
-        return False
+        return True
 
 
 

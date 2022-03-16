@@ -28,16 +28,17 @@
         pos_hint: {'x': .4 , 'y': .5 }
         text:"Resume"
         on_release: app.game_instance.resumeGame(), app.ButtonSound()
+        # on_release: app.print_test()
     Button:
         size_hint:.2,.1
-        pos_hint: {'x': .4 , 'y': .3 }
+        pos_hint: {'x': .4 , 'y': .4 }
         text:"Settings"
         on_release: app.manager.push("SettingsMenu"), app.ButtonSound()    
     Button:
         size_hint:.2,.1
-        pos_hint: {'x': .4 , 'y': .4 }
+        pos_hint: {'x': .4 , 'y': .3 }
         text:"Quit game"
-        on_release: app.manager.pop(), app.ButtonSound()
+        on_release: app.manager.popAll(), app.ButtonSound()
     
 
 

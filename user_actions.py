@@ -45,7 +45,7 @@ def on_keyboard_down(self, keyboard, keycode, text, modifiers):
             self.play = False
             self.parentScreen.pauseMode()
         else:
-            self.parentScreen.resumeGame(self.parentScreen.pauseMenu.chosen_music)
+            self.parentScreen.resumeGame()
             self.play = True
             
     if keycode[1] == "x":
