@@ -8,10 +8,13 @@ from socketio import Client, ClientNamespace
 
 
 class MultiplayerGame(ClientNamespace):
-    def __init__(self, namespace, create, join):
+    def __init__(self, namespace, create, join, username):
         super().__init__(namespace)
         self.create = create
         self.join = join
+        self.file = username + ".log"
+        with open(self.file, "w") as f:
+            f.write("")
 
     def created(self, error: "None | str" = None):
         if error:
@@ -65,7 +68,9 @@ class MultiplayerGame(ClientNamespace):
         click.echo(f"game_jsons: {gameJSONs}")
 
     def on_objects_update(self, outputs):
-        click.echo(f"objects_update: {outputs}")
+        # click.echo(f"objects_update: {outputs}")
+        with open(self.file, "a") as f:
+            f.write(str(outputs) + "\n")
 
     def on_disconnect(self):
         click.echo("Connection lost!")
@@ -98,12 +103,8 @@ def main(username, password, create, join):
 
     sio = Client(http_session=session)
     # sio = Client(http_session = session, logger=True, engineio_logger=True)
-    sio.register_namespace(MultiplayerGame("/kartmultiplayer", create, join))
-    try:
-        sio.connect("http://localhost:5000", namespaces="/kartmultiplayer")
-    except BaseException as e:
-        click.echo(e)
-        sys.exit()
+    sio.register_namespace(MultiplayerGame("/kartmultiplayer", create, join, username))
+    sio.connect("http://localhost:5000", namespaces="/kartmultiplayer")
 
 
 if __name__ == "__main__":
