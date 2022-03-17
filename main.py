@@ -1,12 +1,13 @@
-# import sentry_sdk
-# sentry_sdk.init(
-#     "https://fe63c5db7e2a4112b551a318061e751a@o1107229.ingest.sentry.io/6263977",
+import sentry_sdk
 
-#     # Set traces_sample_rate to 1.0 to capture 100%
-#     # of transactions for performance monitoring.
-#     # We recommend adjusting this value in production.
-#     traces_sample_rate=1.0
-# )
+sentry_sdk.init(
+    "https://fe63c5db7e2a4112b551a318061e751a@o1107229.ingest.sentry.io/6263977",
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    # We recommend adjusting this value in production.
+    traces_sample_rate=1.0,
+    release="kart-simulator@1.0.0",
+)
 
 from kivy.app import App
 from kivy.clock import Clock
@@ -29,30 +30,35 @@ from layouts import KS_screen
 ######################## App de lancement de kivy ########################
 
 
-
 class MenuApp(App):
     manager = ObjectProperty(None)
     musicName = ""
     soundEnabled = True
-    passwords = [False,False]
-    
+    passwords = [False, False]
+
     def __init__(self, **kwargs):
         """L'application kivy qui gère toute l'interface graphique"""
         super().__init__(**kwargs)
         self.game_instance = None
-        
 
     def build(self):
         """Création du manager qui gèrera les screens et de l'espace qui affichera les éventuelles erreurs"""
         Window.clearcolor = get_color_from_hex("#ffffff")
-        self.icon = 'client/Images/kart.png'
-        self.manager = MyScreenManager()        
+        self.icon = "client/Images/kart.png"
+        self.manager = MyScreenManager()
         with self.manager.screens[0].canvas:
-            self.errorLabel=Label(bold=True,underline=True,font_size=32,text="",pos=(Window.width/2-50,Window.height/2-10),color=(1,1,1,.5))
+            self.errorLabel = Label(
+                bold=True,
+                underline=True,
+                font_size=32,
+                text="",
+                pos=(Window.width / 2 - 50, Window.height / 2 - 10),
+                color=(1, 1, 1, 0.5),
+            )
         return self.manager
-    
+
     def instanciate_ks(self, world, music, POV):
-        """Création du support de la partie et de ses attributs: 
+        """Création du support de la partie et de ses attributs:
         monde et musique choisis ainsi que la taille de la fenêtre"""
         self.windowSize = Window.size
         if self.isWorldChosen(world):
@@ -64,39 +70,39 @@ class MenuApp(App):
                 self.manager.remove_widget(screen)
             self.game_instance = KS_screen(self.world, self.music, self.POV)
         elif not self.isWorldChosen(world):
-            self.errorLabel.text+="Choose a world before playing !\n"
+            self.errorLabel.text += "Choose a world before playing !\n"
             Clock.schedule_once(self.popErrorScreen, 2)
-            
+
     def start_ks(self):
         """Affichage de la partie"""
         self.manager.push("Kart_Simulator")
-        
-    def popErrorScreen(self,dt):
+
+    def popErrorScreen(self, dt):
         """Vidage du message d'erreur après un temps donné"""
         self.errorLabel.text = ""
-        
-    def changeLabelText(self,labelText):
+
+    def changeLabelText(self, labelText):
         """Mise à jour puis suppession du message d'erreur à afficher"""
-        self.errorLabel.text+=labelText+"\n"
+        self.errorLabel.text += labelText + "\n"
         Clock.schedule_once(self.popErrorScreen, 2)
-        
+
     def clear_game(self):
         """Nettoyage de la partie finie"""
         if self.game_instance:
             self.game_instance.quit()
             self.game_instance = None
-            
+
     def ButtonSound(self):
         """Crée le son produit par un bouton si l'utilisateur n'a pas disactivé les effets sonores"""
         if self.soundEnabled:
-            sound = SoundLoader.load('client/sounds/ButtonClick2.wav')
+            sound = SoundLoader.load("client/sounds/ButtonClick2.wav")
             sound.volume = 0.25
             sound.play()
 
-    def isWorldChosen(self,world):
+    def isWorldChosen(self, world):
         """Retourne vrai si un monde a été choisi"""
-        return not isinstance(world,StringProperty)
-    
+        return not isinstance(world, StringProperty)
+
     def changeSoundMode(self, widget: Button):
         """Active ou désactive les effets sonores"""
         self.soundEnabled = not self.soundEnabled
@@ -104,17 +110,14 @@ class MenuApp(App):
             widget.text = "Mute sounds"
         else:
             widget.text = "Unmute sounds"
-        
-
-
-
 
 
 from kivy.config import Config
 from kivy.core.window import Window
+
 # Window.fullscreen = 'auto'
-Config.set('kivy', 'exit_on_escape', '0')
-Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
+Config.set("kivy", "exit_on_escape", "0")
+Config.set("input", "mouse", "mouse,multitouch_on_demand")
 
 
 MenuApp().run()
