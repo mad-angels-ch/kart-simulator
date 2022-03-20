@@ -13,13 +13,6 @@
             "console": "integratedTerminal"
         },
         {
-            "name": "Python : Fichier actuel",
-            "type": "python",
-            "request": "launch",
-            "program": "${file}",
-            "console": "integratedTerminal"
-        },
-        {
             "name": "Python: player.py (333)",
             "type": "python",
             "request": "launch",
@@ -44,6 +37,13 @@
                 "--password",
                 "4444"
             ]
+        },
+        {
+            "name": "Python : Fichier actuel",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal"
         }
     ]
 }

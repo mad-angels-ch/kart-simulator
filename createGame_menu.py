@@ -19,35 +19,34 @@ from functools import partial
 
 
 from kart_simulator import MainWidget
+
 Builder.load_file("createGame_menu.kv")
+
 
 class CreateGame(FloatLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.chosen_world = StringProperty("Choose your world")
-        
+
     def changeWorldSpinnerText(self, text):
         """Change le texte affiché sur le dépliant de choix du circuit"""
         self.chosen_world = text
-        
+
     def generateWorldsList(self):
         """Génère la liste des curcuits jouables"""
         return [world[:-5] for world in listdir("client/worlds")]
-    
+
     def changeLabelText(self, message):
         """Mise à jour puis suppession du message d'erreur à afficher"""
-        self.ids.labelID.text=message
-        
+        self.ids.labelID.text = message
+
     def popErrorScreen(self):
         """Vidage du message d'erreur après un temps donné"""
         self.ids.labelID.text = ""
-        
-        
-    
-    
+
 
 class PreView(Widget):
-    def __init__(self, maxSize:Tuple[float,float] = (200,200), **kwargs):
+    def __init__(self, maxSize: Tuple[float, float] = (200, 200), **kwargs):
         """Widget créant le preview"""
         self.maxSize = maxSize
         super().__init__(**kwargs)
@@ -63,7 +62,7 @@ class PreView(Widget):
             if self.parent.parent.scale != 1:
                 self.parent.parent.scale = 1
                 # Repositionne le ScatterLayout dans lequel se situe le preview à la position (0,0) et réinitialise son facteur scale à 1
-                self.parent.parent.pos = (0,0)
+                self.parent.parent.pos = (0, 0)
             try:
                 self.dataUrl = self.dataUrl = (
                     path.join("client/worlds", world) + ".json"
@@ -72,15 +71,17 @@ class PreView(Widget):
                 with open(self.dataUrl, "r", encoding="utf8") as f:
                     self.theGame = game.Game(
                         f.read(),
-                        OutputFactory(self, max_width=self.maxSize[0], max_height=self.maxSize[1], POV="PreView"),
+                        OutputFactory(
+                            self,
+                            max_width=self.maxSize[0],
+                            max_height=self.maxSize[1],
+                            POV="PreView",
+                        ),
                     )
 
                 self.theGame.callOutput()
             except ObjectCountError as OCE:
                 self.parent.parent.parent.parent.changeLabelText(OCE.message())
-
-
-
 
 
 class UpdateWorldButton(Button):
@@ -117,7 +118,10 @@ class UpdateWorldButton(Button):
             self.text = "Update the worlds now"
         else:
             for world in worlds.json():
-                worldsInfo[world["name"]] = {"id": world["id"], "version": world["version"]}
+                worldsInfo[world["name"]] = {
+                    "id": world["id"],
+                    "version": world["version"],
+                }
             try:
                 f = open("client/worlds.json", "r")
             except FileNotFoundError:
@@ -156,10 +160,9 @@ class UpdateWorldButton(Button):
                                 ).text
                             )
                         updateWorlds_output.text += "done!\n"
-                        
+
             finally:
                 f.close()
-                
 
             with open("client/worlds.json", "w") as f:
                 json.dump(worldsInfo, f)
@@ -173,7 +176,7 @@ class UpdateWorldButton(Button):
                 sound = SoundLoader.load("client/sounds/success-sound-effect.mp3")
                 sound.volume = 0.5
                 sound.play()
-                
+
     def clearLabelText(self, label, dt):
         # print("oK")
         label.text = ""
