@@ -157,7 +157,7 @@ class PasswordScreen(FloatLayout):
 
 
 
-from player import *
+# from player import *
 
 class GameConnection(FloatLayout):
     def __init__(self, **kwargs):
@@ -175,14 +175,14 @@ class GameConnection(FloatLayout):
         error = "Error | "
         if response[pos : pos + len(error)] == error:
             self.ids.errors.text="Wrong username of password. Try again."
-        else:
-            sio = Client()
+        # else:
+            # sio = Client()
             # sio = Client(logger=True, engineio_logger=True)
-            sio.register_namespace(MultiplayerGame("/kartmultiplayer", create="Test", join=""))
-            try:
-                sio.connect("http://localhost:5000", namespaces="/kartmultiplayer")
-            except BaseException as e:
-                self.ids.errors.text=str(e)
+            # sio.register_namespace(MultiplayerGame("/kartmultiplayer", create="Test", join=""))
+            # try:
+            #     # sio.connect("http://localhost:5000", namespaces="/kartmultiplayer")
+            # except BaseException as e:
+            #     self.ids.errors.text=str(e)
     
     
     

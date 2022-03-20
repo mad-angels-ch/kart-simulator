@@ -241,11 +241,10 @@ class OutputFactory:
 
     def createKart(self, lgeKart: game_objects.Kart) -> None:
         """Dessine le kart sur le canvas du widget et l'ajout au registre"""
-        self._w.kart_ID = lgeKart.formID()
         self._karts.append(lgeKart)
         with self._w.canvas:  # Ce type d'objet doit être placé dans l'instruction 'with self.canvas:'
             Color(rgba=(1, 1, 1, 1))
-            imageName = App.get_running_app().get_userSettings()["kart"]
+            imageName = lgeKart.image()
             ioKart = io_objects.FilledQuadrilateral(
                 LGEObject=lgeKart, source=f"client/Images/karts/{imageName}.png"
             )

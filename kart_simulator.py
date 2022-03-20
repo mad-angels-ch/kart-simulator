@@ -54,7 +54,7 @@ class MainWidget(Widget):
     dict_FilledQuadrilaterals = dict()
     kart_ID = 0
 
-    def __init__(self, world=None, parentScreen=None, POV = "Third Person", **kwargs):
+    def __init__(self, world=None, parentScreen=None, POV="Third Person", **kwargs):
         """Canvas dans lequel les objets d'une partie sont dessinés"""
         super().__init__(**kwargs)
         self.world = world
@@ -84,8 +84,11 @@ class MainWidget(Widget):
                         frame_callback=self.frame_callback,
                         max_width=self.app.windowSize()[0],
                         max_height=self.app.windowSize()[1],
-                        POV = self.POV
+                        POV=self.POV,
                     ),
+                )
+                self.kart_ID = self.theGame.loadKart(
+                    "Me", App.get_running_app().get_userSettings()["kart"]
                 )
 
                 self.app.manager.add_widget(self.parentScreen)
@@ -132,17 +135,17 @@ class MainWidget(Widget):
             self.updateLapsCount(output.getFinishLine())
             self.updateTimer()
             self.checkIfGameIsOver(output.getAllKarts(), output.getFinishLine())
-            
+
     def updateTimer(self) -> None:
         """Mise à jour du timer"""
-        self.timer += 1/self.fps
-        s, mili = divmod(int(1000*self.timer), 1000)
-        min, s= divmod(s, 60)
+        self.timer += 1 / self.fps
+        s, mili = divmod(int(1000 * self.timer), 1000)
+        min, s = divmod(s, 60)
         if mili > 100:
-            self.parent.parent.parent.ids.timer_id.text = (f'{min:d}:{s:02d}:{mili:02d}')
+            self.parent.parent.parent.ids.timer_id.text = f"{min:d}:{s:02d}:{mili:02d}"
         else:
-            self.parent.parent.parent.ids.timer_id.text = (f'{min:d}:{s:02d}:0{mili:02d}')
-    
+            self.parent.parent.parent.ids.timer_id.text = f"{min:d}:{s:02d}:0{mili:02d}"
+
     def updateLapsCount(self, finishLine: FinishLine) -> None:
         """Met l'affichage du nombre de tours terminés à jour"""
         self.parent.parent.parent.ids.laps_id.text = f"{finishLine.passagesCount(self.kart_ID)}/{finishLine.numberOfLapsRequired()}"
@@ -159,6 +162,8 @@ class MainWidget(Widget):
     def checkIfGameIsOver(self, karts: List[Kart], finishLine: FinishLine) -> None:
         """Contrôle si la partie est terminée et si oui gère celle-ci"""
         if finishLine.completedAllLaps(self.kart_ID):
-            self.parentScreen.end_game(f"Completed!\n\nWell done!\n Your time: {self.parent.parent.parent.ids.timer_id.text}")
+            self.parentScreen.end_game(
+                f"Completed!\n\nWell done!\n Your time: {self.parent.parent.parent.ids.timer_id.text}"
+            )
         elif karts[0].hasBurned():
             self.parentScreen.end_game("You have burned!\n\nTry again!")
