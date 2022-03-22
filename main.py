@@ -1,6 +1,6 @@
 from kivy.logger import Logger, LOG_LEVELS
 
-Logger.setLevel(LOG_LEVELS["warning"])
+# Logger.setLevel(LOG_LEVELS["warning"])
 
 from logging import info
 from kivy.app import App
