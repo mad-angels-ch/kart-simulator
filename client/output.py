@@ -166,7 +166,9 @@ class OutputFactory:
                 )
 
         for obstacle in objects:
-            if not self._initialized or obstacle.formID() not in self._createdObject:
+            if not obstacle.lastFrame() and (
+                not self._initialized or obstacle.formID() not in self._createdObject
+            ):
                 if isinstance(obstacle, game_objects.Kart):
                     self.createKart(obstacle)
                     if not self.isInitialized() and self.POV == "First Person":
@@ -201,18 +203,24 @@ class OutputFactory:
                     raise "Unsupported color type"
 
             else:
-                # mettres les positions à jour
-                io_object = self._createdObject[obstacle.formID()]
-                if isinstance(obstacle, game_objects.Circle):
-                    io_object.updatePosition()
-                elif isinstance(obstacle, game_objects.Kart):
+                # mettres l'objet à jour
+                if obstacle.lastFrame():
+                    # l'objet va tout prochainement être supprimé, le faire maintenant pour éviter à devoir le faire plus tard
+                    io_object = self._createdObject.pop(obstacle.formID())
                     self._w.canvas.remove(io_object)
-                    self.createKart(obstacle)
-                    if self.POV == "First Person":
-                        self.updatePOVposition(obstacle)
 
-                elif isinstance(obstacle, game_objects.Polygon):
-                    io_object.updatePosition()
+                else:
+                    io_object = self._createdObject[obstacle.formID()]
+                    if isinstance(obstacle, game_objects.Circle):
+                        io_object.updatePosition()
+                    elif isinstance(obstacle, game_objects.Kart):
+                        self._w.canvas.remove(io_object)
+                        self.createKart(obstacle)
+                        if self.POV == "First Person":
+                            self.updatePOVposition(obstacle)
+
+                    elif isinstance(obstacle, game_objects.Polygon):
+                        io_object.updatePosition()
 
         self._initialized = True
 
