@@ -89,6 +89,7 @@ class UpdateWorldButton(Button):
         """Bouton qui met à jour dynamiquement la liste des mondes jouables"""
         super().__init__(**kwargs)
         self._updating = False
+        self.app = App.get_running_app()
 
     def generateUpdatedWorldsList(self, updateWorlds_output, worlds_spinner):
         """Met à jour les donnés des mondes et met l'affichage à jour"""
@@ -105,15 +106,13 @@ class UpdateWorldButton(Button):
         """Récupère les données des mondes et met à jour l'affichage"""
         updateWorlds_output.text = "\nUpdating the worlds ...\n"
         worldsInfo = {}
-        session = requests.Session()
         try:
-            worlds = session.get(
-                "https://lj44.ch/creator/kart/worldsjson",
+            worlds = self.app.session.get(
+                self.app.server + "/creator/kart/worldsjson",
                 params={"id": True, "version": True, "name": True},
-                timeout=1,
             )
         except requests.ConnectionError:
-            updateWorlds_output.text += "ERROR: The server in unreachable"
+            updateWorlds_output.text += "ERROR: The server in unreachable, please check your internet connection and try again."
             self._updating = False
             self.text = "Update the worlds now"
         else:
@@ -139,8 +138,8 @@ class UpdateWorldButton(Button):
                             updateWorlds_output.text += f"Updating world {name} ... "
                             with open(f"client/worlds/{name}.json", "w") as worldJSON:
                                 worldJSON.write(
-                                    session.get(
-                                        f"https://lj44.ch/creator/kart/worlds/{worldsInfo[name]['id']}/fabric"
+                                    self.app.session.get(
+                                        f"{self.app.server}/creator/kart/worlds/{worldsInfo[name]['id']}/fabric"
                                     ).text
                                 )
                             updateWorlds_output.text += "done!\n"
@@ -155,8 +154,8 @@ class UpdateWorldButton(Button):
                         updateWorlds_output.text += f"Downloading world {name} ... "
                         with open(f"client/worlds/{name}.json", "w") as worldJSON:
                             worldJSON.write(
-                                session.get(
-                                    f"https://lj44.ch/creator/kart/worlds/{worldsInfo[name]['id']}/fabric"
+                                self.app.session.get(
+                                    f"{self.app.server}/creator/kart/worlds/{worldsInfo[name]['id']}/fabric"
                                 ).text
                             )
                         updateWorlds_output.text += "done!\n"

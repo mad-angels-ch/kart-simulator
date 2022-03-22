@@ -1,8 +1,9 @@
+import os
 from kivy.logger import Logger, LOG_LEVELS
 
 # Logger.setLevel(LOG_LEVELS["warning"])
 
-from logging import info
+from logging import info, warning
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.core import window
@@ -28,22 +29,30 @@ import requests, pickle
 class MenuApp(App):
     manager = ObjectProperty(None)
     soundEnabled = True
+    cookiesPath = "client/cookies"
+    server = "http://localhost:5000"
+
+    _isLogged: bool = True
 
     def __init__(self, **kwargs):
         """L'application kivy qui gère toute l'interface graphique"""
         super().__init__(**kwargs)
         self.game_instance = None
-        self._isLogged = False
         self.session = requests.Session()
-        # self.session.post("http://localhost:5000/auth/login/kart", data={"username": "4444", "password": "4444"})
+        try:
+            with open(self.cookiesPath, "rb") as f:
+                self.session.cookies.update(pickle.load(f))
+        except FileNotFoundError:
+            self._isLogged = False
+        except EOFError:
+            self._isLogged = False
+            os.remove(self.cookiesPath)
+            warning("Deleted corrupted cookies")
+        except pickle.UnpicklingError:
+            self._isLogged = False
+            os.remove(self.cookiesPath)
+            warning("Deleted corrupted cookies")
         self.update_userSettings()
-        # try:
-        #     with open('client/cookies.txt', 'rb') as f:
-        #         self.session.cookies.update(pickle.load(f))
-        # except FileNotFoundError:
-        #     info("No cookies found")
-        # except EOFError:
-        #     info("Cookies empty")
 
     def build(self):
         """Création du manager qui gèrera les screens et de l'espace qui affichera les éventuelles erreurs"""
@@ -69,7 +78,6 @@ class MenuApp(App):
             if self.manager.has_screen("Kart_Simulator"):
                 screen = self.manager.get_screen("Kart_Simulator")
                 self.manager.remove_widget(screen)
-            print("Game created !!")
             self.game_instance = KS_screen(world=world, POV=POV)
         elif not self.isWorldChosen(world):
             self.errorLabel.text += "Choose a world before playing !\n"
@@ -120,14 +128,26 @@ class MenuApp(App):
         """Retourne le dictionnaire contenant les information relatives aux paramètres du joueur connecté."""
         return self.userSettings
 
-    def update_userSettings(self):
-        """Met à jour les information relatives aux paramètres du joueur connecté."""
-        if self.is_logged():
-            self.userSettings = self.session.get(
-                "http://localhost:5000/auth/myaccount/kart.json"
-            ).json()
-            return self.userSettings
+    def set_userSettings(self, userSetting: dict) -> None:
+        """Enregistre les settings et tente de les syncroniser"""
+        try:
+            self.userSettings = self.session.put(
+                self.server + "/auth/myaccount/kart.json", userSetting
+            )
+        except requests.ConnectionError:
+            self.userSettings = userSetting
         else:
+            if self.userSettings.get("error") == 401:
+                # échec car le joueur n'est pas connecté
+                self.userSettings = userSetting
+
+    def update_userSettings(self) -> None:
+        """Met à jour les information relatives aux paramètres du joueur connecté."""
+        try:
+            self.userSettings = self.session.get(
+                self.server + "/auth/myaccount/kart.json"
+            ).json()
+        except requests.ConnectionError:
             self.userSettings = {
                 "kart": "Green_kart",
                 "music": "No Music",
@@ -135,8 +155,19 @@ class MenuApp(App):
                 "username": "Anonyme user",
                 "volume": 1,
             }
+            info("Client offline")
+        else:
+            if self.userSettings.get("error") == 401:
+                self._isLogged = False
+                self.userSettings = {
+                    "kart": "Green_kart",
+                    "music": "No Music",
+                    "pov": "Third Person",
+                    "username": "Anonyme user",
+                    "volume": 1,
+                }
 
-    def is_logged(self):
+    def is_logged(self) -> bool:
         """Retourne vrai si un utilisateur est connecté à son compte."""
         return self._isLogged
 
