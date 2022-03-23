@@ -9,4 +9,5 @@
             on_press: app.manager.push("CreateOrJoin")
         Button:
             text: "Singleplayer"
-            on_press: app.manager.push("CreateSPGame")
+            on_press: 
+                app.manager.push("CreateSPGame"), app.ButtonSound()

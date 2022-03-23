@@ -23,7 +23,7 @@
             background_color: (1.0, 0.0, 0.0, .75)
             on_press: 
                 if app._isLogged: app.manager.push("Playingmode")
-                else: root.logInQuestion()
+                else: root.logInQuestion(root.yesPlay,root.noPlay), app.ButtonSound()
                         
 
         Button:
@@ -38,7 +38,7 @@
             text: "Settings"
             on_press: 
                 if app._isLogged: app.manager.push("SettingsMenu"), app.ButtonSound()
-                else: root.logInQuestion() ,app.ButtonSound()
+                else: root.logInQuestion(root.yesSettings,root.noSettings), app.ButtonSound()
         
         Button:
             text: "Credits"
