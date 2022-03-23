@@ -2,7 +2,6 @@ from typing import List
 from kivy.graphics import Ellipse, Color
 from kivy.uix.widget import Widget
 from kivy.utils import get_color_from_hex
-from game.events.Event import Object
 from client import io_objects
 import lib
 from kivy.properties import ListProperty

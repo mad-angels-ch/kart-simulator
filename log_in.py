@@ -1,3 +1,4 @@
+import pickle, requests
 from kivy.uix.floatlayout import FloatLayout
 from kivy.app import App
 from kivy.lang import Builder
@@ -12,11 +13,18 @@ class LogIn(FloatLayout):
         self.app = App.get_running_app()
 
     def log_in(self):
-        data = {"username" : self.ids.username.text, "password" : self.ids.password.text}
-        response = self.app.session.post("http://localhost:5000/auth/login/kart", data=data)
-        if response.json().get("error",0):
-            self.ids.errorLabel.text = response.json()['error']
+        data = {"username": self.ids.username.text, "password": self.ids.password.text}
+        try:
+            response = self.app.session.post(
+                self.app.server + "/auth/login/kart", data=data
+            )
+        except requests.ConnectionError:
+            self.ids.errorLabel.text = "Couldn't reach the server. Please check your internet connection and try again."
         else:
-            self.app._isLogged = True
-            self.app.manager.pop()
-
+            if response.json().get("error", 0):
+                self.ids.errorLabel.text = response.json()["error"]
+            else:
+                with open(self.app.cookiesPath, "wb") as f:
+                    pickle.dump(self.app.session.cookies, f)
+                self.app._isLogged = True
+                self.app.manager.pop()

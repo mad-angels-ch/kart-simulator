@@ -10,3 +10,4 @@ kart_simulator.egg-info
 venv**
 client/worlds**
 data.json
+client/cookies

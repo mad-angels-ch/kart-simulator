@@ -1,35 +1,61 @@
-from logging import error
-import sys
-from typing import Tuple
-import requests, pickle
-
+from typing import Callable, Dict, List, Tuple
 from socketio import Client, ClientNamespace
+from requests import Session
+
+from game import Game, OnCollisionT
+from game.objects import Object
+import lib
 
 
 class MultiplayerGame(ClientNamespace):
+    _game: Game
+    _sio: Client
+
+    def __init__(
+        self,
+        session: Session,
+        server: str,
+        name: str,
+        output: Callable[[List[Object]], None],
+        onCollision: OnCollisionT = lambda o, p: None,
+        worldVersion_id: "int | None" = None,
+    ):
+        super().__init__("/kartmultiplayer")
+        self._name = name
+        self._worldVersion_id = worldVersion_id
+        self._game = Game("", output, onCollision)
+        self._sio = Client(http_session=session)
+        self._sio.register_namespace(self)
+        self._sio.connect(server, namespaces="/kartmultiplayer")
+
+    def fatalError(self, error: "None | str" = None) -> None:
+        """Gestion des erreurs de connection à la partie ou de création de partie"""
+        if error:
+            print(error)
+            self.disconnect()
+
+    def start(self) -> None:
+        self.emit("start")
+
     def on_connect(self):
-        print("Connected!")
-        self.emit(
-            "create",
-            ("test", 56),
-            callback=lambda error=None: print(error),
-        )
+        if self._worldVersion_id == None:
+            self.emit("join", self._name, callback=self.fatalError)
 
-    def on_game_jsons(self, gameJSONs: Tuple[int]):
-        print("game_jsons:", gameJSONs)
-        if not started:
-            self.emit("start")
+        else:
+            self.emit(
+                "create", (self._name, self._worldVersion_id), callback=self.fatalError
+            )
 
-    def on_objects_update(self, outputs):
-        print("objects_update:", outputs)
+    def on_game_data(self, data: dict):
+        """Evènement appelé à chaques nouvelles factories partagées par le serveur.
+        Recréé la factories locale en fonction des informations reçues."""
+        self._game.minimalImport(data)
 
-    def on_disconnect(self):
-        print("Disconnected!")
-
-
-if __name__ == "__main__":
-    started = False
-    sio = Client()
-    sio.register_namespace(MultiplayerGame("/kartmultiplayer"))
-
-    sio.connect("http://localhost:5000", namespaces="/kartmultiplayer")
+    def on_objects_update(self, outputs: Dict[int, Tuple[float, float, float]]):
+        """Evènement appelé à chaques nouvelles positions d'objets reçu.
+        Met la liste des objets à jour en fonction de celles-ci."""
+        for formID, newPos in outputs.items():
+            obj = self._game.objectByFormID(formID)
+            obj.set_center(lib.Point(newPos))
+            obj.set_angle(newPos[2])
+        self._game.callOutput()

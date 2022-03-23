@@ -19,35 +19,34 @@ from functools import partial
 
 
 from kart_simulator import MainWidget
+
 Builder.load_file("createGame_menu.kv")
+
 
 class CreateGame(FloatLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.chosen_world = StringProperty("Choose your world")
-        
+
     def changeWorldSpinnerText(self, text):
         """Change le texte affiché sur le dépliant de choix du circuit"""
         self.chosen_world = text
-        
+
     def generateWorldsList(self):
         """Génère la liste des curcuits jouables"""
         return [world[:-5] for world in listdir("client/worlds")]
-    
+
     def changeLabelText(self, message):
         """Mise à jour puis suppession du message d'erreur à afficher"""
-        self.ids.labelID.text=message
-        
+        self.ids.labelID.text = message
+
     def popErrorScreen(self):
         """Vidage du message d'erreur après un temps donné"""
         self.ids.labelID.text = ""
-        
-        
-    
-    
+
 
 class PreView(Widget):
-    def __init__(self, maxSize:Tuple[float,float] = (200,200), **kwargs):
+    def __init__(self, maxSize: Tuple[float, float] = (200, 200), **kwargs):
         """Widget créant le preview"""
         self.maxSize = maxSize
         super().__init__(**kwargs)
@@ -63,7 +62,7 @@ class PreView(Widget):
             if self.parent.parent.scale != 1:
                 self.parent.parent.scale = 1
                 # Repositionne le ScatterLayout dans lequel se situe le preview à la position (0,0) et réinitialise son facteur scale à 1
-                self.parent.parent.pos = (0,0)
+                self.parent.parent.pos = (0, 0)
             try:
                 self.dataUrl = self.dataUrl = (
                     path.join("client/worlds", world) + ".json"
@@ -72,7 +71,12 @@ class PreView(Widget):
                 with open(self.dataUrl, "r", encoding="utf8") as f:
                     self.theGame = game.Game(
                         f.read(),
-                        OutputFactory(self, max_width=self.maxSize[0], max_height=self.maxSize[1], POV="PreView"),
+                        OutputFactory(
+                            self,
+                            max_width=self.maxSize[0],
+                            max_height=self.maxSize[1],
+                            POV="PreView",
+                        ),
                     )
 
                 self.theGame.callOutput()
@@ -80,14 +84,12 @@ class PreView(Widget):
                 self.parent.parent.parent.parent.changeLabelText(OCE.message())
 
 
-
-
-
 class UpdateWorldButton(Button):
     def __init__(self, **kwargs):
         """Bouton qui met à jour dynamiquement la liste des mondes jouables"""
         super().__init__(**kwargs)
         self._updating = False
+        self.app = App.get_running_app()
 
     def generateUpdatedWorldsList(self, updateWorlds_output, worlds_spinner):
         """Met à jour les donnés des mondes et met l'affichage à jour"""
@@ -104,20 +106,21 @@ class UpdateWorldButton(Button):
         """Récupère les données des mondes et met à jour l'affichage"""
         updateWorlds_output.text = "\nUpdating the worlds ...\n"
         worldsInfo = {}
-        session = requests.Session()
         try:
-            worlds = session.get(
-                "https://lj44.ch/creator/kart/worldsjson",
+            worlds = self.app.session.get(
+                self.app.server + "/creator/kart/worldsjson",
                 params={"id": True, "version": True, "name": True},
-                timeout=1,
             )
         except requests.ConnectionError:
-            updateWorlds_output.text += "ERROR: The server in unreachable"
+            updateWorlds_output.text += "ERROR: The server in unreachable, please check your internet connection and try again."
             self._updating = False
             self.text = "Update the worlds now"
         else:
             for world in worlds.json():
-                worldsInfo[world["name"]] = {"id": world["id"], "version": world["version"]}
+                worldsInfo[world["name"]] = {
+                    "id": world["id"],
+                    "version": world["version"],
+                }
             try:
                 f = open("client/worlds.json", "r")
             except FileNotFoundError:
@@ -135,8 +138,8 @@ class UpdateWorldButton(Button):
                             updateWorlds_output.text += f"Updating world {name} ... "
                             with open(f"client/worlds/{name}.json", "w") as worldJSON:
                                 worldJSON.write(
-                                    session.get(
-                                        f"https://lj44.ch/creator/kart/worlds/{worldsInfo[name]['id']}/fabric"
+                                    self.app.session.get(
+                                        f"{self.app.server}/creator/kart/worlds/{worldsInfo[name]['id']}/fabric"
                                     ).text
                                 )
                             updateWorlds_output.text += "done!\n"
@@ -151,20 +154,19 @@ class UpdateWorldButton(Button):
                         updateWorlds_output.text += f"Downloading world {name} ... "
                         with open(f"client/worlds/{name}.json", "w") as worldJSON:
                             worldJSON.write(
-                                session.get(
-                                    f"https://lj44.ch/creator/kart/worlds/{worldsInfo[name]['id']}/fabric"
+                                self.app.session.get(
+                                    f"{self.app.server}/creator/kart/worlds/{worldsInfo[name]['id']}/fabric"
                                 ).text
                             )
                         updateWorlds_output.text += "done!\n"
-                        
+
             finally:
                 f.close()
-                
 
             with open("client/worlds.json", "w") as f:
                 json.dump(worldsInfo, f)
 
-            worlds_spinner.values = [world[:-5] for world in listdir("client/worlds")]
+            worlds_spinner.value = [world[:-5] for world in listdir("client/worlds")]
             updateWorlds_output.text += "All worlds are up to date!"
             self._updating = False
             Clock.schedule_once(partial(self.clearLabelText, updateWorlds_output), 4)
@@ -173,7 +175,7 @@ class UpdateWorldButton(Button):
                 sound = SoundLoader.load("client/sounds/success-sound-effect.mp3")
                 sound.volume = 0.5
                 sound.play()
-                
+
     def clearLabelText(self, label, dt):
         # print("oK")
         label.text = ""
