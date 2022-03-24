@@ -4,6 +4,7 @@ from requests import Session
 
 from game import Game, OnCollisionT
 from game.objects import Object
+from game.events import Event, KartMoveEvent, KartTurnEvent
 import lib
 
 
@@ -28,14 +29,21 @@ class MultiplayerGame(ClientNamespace):
         self._sio.register_namespace(self)
         self._sio.connect(server, namespaces="/kartmultiplayer")
 
+    def error(self, error: "None | str" = None) -> None:
+        """Gestion des erreurs non fatales"""
+
     def fatalError(self, error: "None | str" = None) -> None:
-        """Gestion des erreurs de connexion à la partie ou de création de partie"""
+        """Gestion des erreurs fatales"""
         if error:
             print(error)
             self.disconnect()
 
     def start(self) -> None:
         self.emit("start")
+
+    def newEvent(self, event: Event) -> None:
+        """Fonction permettant la transmition d'inputs du joueur au server"""
+        self.emit("", (event.__class__.__name__, event.toTuple()))
 
     def on_connect(self):
         if self._worldVersion_id == None:
