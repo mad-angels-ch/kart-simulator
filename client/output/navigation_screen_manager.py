@@ -26,4 +26,5 @@ class NavigationScreenManager(ScreenManager):
             self.current = screen_name
 
 class MyScreenManager(NavigationScreenManager):
+    """Manager qui gère les entrées et sorties des screens"""
     pass

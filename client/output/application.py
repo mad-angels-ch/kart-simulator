@@ -8,13 +8,13 @@ from kivy.uix.button import Button
 from kivy.uix.widget import Widget
 from kivy.utils import get_color_from_hex, rgba
 from kivy.core.window import Window
-from kart_simulator import MainWidget
+from .kart_simulator import MainWidget
 from kivy.core.audio import SoundLoader
 from kivy.graphics import Rectangle, Color
 from kivy.uix.label import Label
 from kivy.uix.image import Image
-from navigation_screen_manager import MyScreenManager
-from InGameScreen import KS_screen
+from . import MyScreenManager
+from .screens.InGameScreen import KS_screen
 import os
 
 import requests, pickle
@@ -56,15 +56,15 @@ class MenuApp(App):
         Window.clearcolor = get_color_from_hex("#ffffff")
         self.icon = "client/Images/kart.png"
         self.manager = MyScreenManager()
-        with self.manager.screens[0].canvas:
-            self.errorLabel = Label(
-                bold=True,
-                underline=True,
-                font_size=32,
-                text="",
-                pos=(Window.width / 2 - 50, Window.height / 2 - 10),
-                color=(1, 1, 1, 0.5),
-            )
+        # with self.manager.screens[0].canvas:
+        #     self.errorLabel = Label(
+        #         bold=True,
+        #         underline=True,
+        #         font_size=32,
+        #         text="",
+        #         pos=(Window.width / 2 - 50, Window.height / 2 - 10),
+        #         color=(1, 1, 1, 0.5),
+        #     )
         return self.manager
 
     def instanciate_ks(self, world, POV):
@@ -87,14 +87,14 @@ class MenuApp(App):
     def windowSize(self):
         return Window.size
 
-    def popErrorScreen(self, dt):
-        """Vidage du message d'erreur après un temps donné"""
-        self.errorLabel.text = ""
+    # def popErrorScreen(self, dt):
+    #     """Vidage du message d'erreur après un temps donné"""
+    #     self.errorLabel.text = ""
 
-    def changeLabelText(self, labelText):
-        """Mise à jour puis suppession du message d'erreur à afficher"""
-        self.errorLabel.text += labelText + "\n"
-        Clock.schedule_once(self.popErrorScreen, 2)
+    # def changeLabelText(self, labelText):
+    #     """Mise à jour puis suppession du message d'erreur à afficher"""
+    #     self.errorLabel.text += labelText + "\n"
+    #     Clock.schedule_once(self.popErrorScreen, 2)
 
     def clear_game(self):
         """Nettoyage de la partie finie"""

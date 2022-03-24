@@ -3,7 +3,7 @@ from kivy.app import App
 from kivy.lang import Builder
 
 
-Builder.load_file("settings.kv")
+Builder.load_file("client/output/screens/settings.kv")
 
 
 class UserSettings(FloatLayout):

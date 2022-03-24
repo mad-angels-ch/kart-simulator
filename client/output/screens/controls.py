@@ -1,7 +1,7 @@
 from kivy.lang import Builder
 from kivy.uix.floatlayout import FloatLayout
 
-Builder.load_file("controls.kv")
+Builder.load_file("client/output/screens/controls.kv")
 
 
 class Controls(FloatLayout):

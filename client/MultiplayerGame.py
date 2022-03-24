@@ -29,7 +29,7 @@ class MultiplayerGame(ClientNamespace):
         self._sio.connect(server, namespaces="/kartmultiplayer")
 
     def fatalError(self, error: "None | str" = None) -> None:
-        """Gestion des erreurs de connection à la partie ou de création de partie"""
+        """Gestion des erreurs de connexion à la partie ou de création de partie"""
         if error:
             print(error)
             self.disconnect()
@@ -47,12 +47,12 @@ class MultiplayerGame(ClientNamespace):
             )
 
     def on_game_data(self, data: dict):
-        """Evènement appelé à chaques nouvelles factories partagées par le serveur.
-        Recréé la factories locale en fonction des informations reçues."""
+        """Evènement appelé à chaque nouvelle factory partagée par le serveur.
+        Recréé la factory locale en fonction des informations reçues."""
         self._game.minimalImport(data)
 
     def on_objects_update(self, outputs: Dict[int, Tuple[float, float, float]]):
-        """Evènement appelé à chaques nouvelles positions d'objets reçu.
+        """Evènement appelé à chaque nouvelle position d'objets reçus.
         Met la liste des objets à jour en fonction de celles-ci."""
         for formID, newPos in outputs.items():
             obj = self._game.objectByFormID(formID)

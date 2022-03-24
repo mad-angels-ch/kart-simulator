@@ -1,7 +1,7 @@
 from kivy.uix.boxlayout import BoxLayout
 from kivy.lang import Builder
 
-Builder.load_file("credits.kv")
+Builder.load_file("client/output/screens/rules.kv")
 
-class Credits(BoxLayout):
+class Rules(BoxLayout):
     pass

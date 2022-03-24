@@ -30,16 +30,16 @@ from kivy.uix.widget import Widget
 from kivy.graphics import Rectangle, Color
 from kivy.properties import Clock
 from kivy.properties import StringProperty
-from client.output import OutputFactory
+from .outputFactory import OutputFactory
 from game.objects import Circle, Object
 from lib import Point
 
 
-Builder.load_file("layouts.kv")
+# Builder.load_file("layouts.kv")
 
 
 class MainWidget(Widget):
-    from user_actions import (
+    from client.output.user_actions import (
         keyboard_closed,
         on_keyboard_down,
         # on_touch_up,

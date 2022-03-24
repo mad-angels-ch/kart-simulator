@@ -1,9 +1,9 @@
 from kivy.uix.floatlayout import FloatLayout
 from kivy.lang import Builder
-from layouts import LogInQuestion
+from .layouts import LogInQuestion
 from kivy.app import App
 
-Builder.load_file("playingMode_menu.kv")
+Builder.load_file("client/output/screens/playingMode_menu.kv")
 
 class PlayingMode(FloatLayout):
     

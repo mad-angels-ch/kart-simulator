@@ -1,4 +1,4 @@
-from application import MenuApp
+from client.output.application import MenuApp
 from kivy.config import Config
 from kivy.core.window import Window
 

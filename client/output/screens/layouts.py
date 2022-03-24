@@ -5,7 +5,7 @@ from kivy.clock import Clock
 from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.gridlayout import GridLayout
 import requests, json, os, threading
-from kart_simulator import game, path, Rectangle, Color
+# from client.output.kart_simulator import game, path, Rectangle, Color
 from os import path, listdir, write
 from posixpath import abspath
 from re import S
@@ -37,13 +37,13 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.widget import Widget
 from kivy.utils import rgba
 from game.objects.ObjectFactory import ObjectCountError
-from kart_simulator import MainWidget
+# from kart_simulator import MainWidget
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import StringProperty, ObjectProperty
 from kivy.core.audio import SoundLoader
 from kivy.uix.dropdown import DropDown
-from action_bar import BoxLayoutWithActionBar
+from client.output.action_bar import BoxLayoutWithActionBar
 from game.objects.fill.Hex import Hex
 from game.objects.fill.Pattern import Pattern
 from kivy.uix.image import Image
@@ -54,108 +54,10 @@ import pickle
 #################### Gestion des différents screens ###################
 
 
-class NavigationScreenManager(ScreenManager):
-    """Classe parente du manager qui gère les entrées et sorties des screens"""
-
-    screen_stack = []
-
-    def push(self, screen_name):
-        """Entrée d'un nouveau screen"""
-        if screen_name not in self.screen_stack:
-            self.screen_stack.append(self.current)
-            self.transition.direction = "left"
-            self.current = screen_name
-
-    def pop(self):
-        """Sortie du dernier screen"""
-        if len(self.screen_stack) > 0:
-            screen_name = self.screen_stack[-1]
-            del self.screen_stack[-1]
-            self.transition.direction = "right"
-            self.current = screen_name
-
-
-class MyScreenManager(NavigationScreenManager):
-    """Manager qui gère les entrées et sorties des screens"""
-    pass
-
-
-
-
-
-
-class MainMenu2(FloatLayout):
-    def __init__(self, **kwargs):
-        """Menu principal du jeu"""
-        super().__init__(**kwargs)
-        self.chosen_world = StringProperty("Choose your world")
-        self.chosen_music = StringProperty("Choose your music")
-        self.chosen_POV = StringProperty("Choose your Point Of View")
-
-    def changeWorldSpinnerText(self, text):
-        """Change le texte affiché sur le dépliant de choix du circuit"""
-        self.chosen_world = text
-
-    def changeMusicSpinnerText(self, text):
-        """Change le texte affiché sur le dépliant de choix de la musique"""
-        self.chosen_music = text
-        
-    def changePOVSpinnerText(self, text):
-        """Change le texte affiché sur le dépliant de choix du point de vue"""
-        self.chosen_POV = text
-
-    def generateWorldsList(self):
-        """Génère la liste des curcuits jouables"""
-        return [world[:-5] for world in listdir("client/worlds")]
-
-    def generateMusicsList(self):
-        """Génère la liste des musiques jouables"""
-        music_list = list(music[:-4] for music in listdir("client/sounds/music"))
-        music_list.append("No music")
-        return music_list
-
-
-class UpdateWorlds(FloatLayout):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-    def on_text_validate(self, widget):
-        if widget.text == "Vive le flipper":
-            App.get_running_app().manager.push("EG1")
 
 
 
 ##########################################################################
-
-
-class PasswordScreen(FloatLayout):
-    def __init__(self, nbr=0, **kw):
-        self.nbr = nbr
-        self.app = App.get_running_app()
-        super().__init__(**kw)
-
-    def on_text_validate(self, widget):
-        self.app.passwords[self.nbr - 1] = False
-        if self.nbr == 1:
-            self.app.passwords[self.nbr] = False
-            if widget.text == "Noe est le plus beau...":
-                self.app.passwords[self.nbr - 1] = True
-            self.app.manager.push("EG2")
-
-        elif self.nbr == 2:
-            if widget.text == "...mais Lorin le suit de près":
-                self.app.passwords[self.nbr - 1] = True
-            for i in range(3):
-                self.app.manager.pop()
-        widget.text = "Type the secret password:"
-        if self.app.passwords[0] and self.app.passwords[1]:
-            self.app.instanciate_ks(world="client/easteregg.json", music="No music", POV="Thrid Person")
-
-
-
-
-
-
 
 # from player import *
 

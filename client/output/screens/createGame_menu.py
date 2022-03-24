@@ -18,13 +18,14 @@ from kivy.core.audio import SoundLoader
 from functools import partial
 
 
-from kart_simulator import MainWidget
+from client.output.kart_simulator import MainWidget
 
-Builder.load_file("createGame_menu.kv")
+Builder.load_file("client/output/screens/createGame_menu.kv")
 
 
 class CreateGame(FloatLayout):
     def __init__(self, **kwargs):
+        print("initialized")
         super().__init__(**kwargs)
         self.chosen_world = StringProperty("Choose your world")
 

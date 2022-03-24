@@ -4,7 +4,7 @@ from kivy.app import App
 from kivy.lang import Builder
 
 
-Builder.load_file("log_in.kv")
+Builder.load_file("client/output/screens/log_in.kv")
 
 
 class LogIn(FloatLayout):

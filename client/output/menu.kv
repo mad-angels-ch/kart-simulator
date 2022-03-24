@@ -1,19 +1,19 @@
-#:import navigation_screen_manager navigation_screen_manager
-#:import layouts layouts
-#:import action_bar action_bar
+#:import navigation_screen_manager client.output.navigation_screen_manager
+# :import layouts client.output.screens.layouts
+# :import action_bar client.output.screens.action_bar
 #:import webbrowser webbrowser
-#:import mainMenu1 mainMenu1
-#:import playingMode_menu playingMode_menu
-#:import create_or_join create_or_join
-#:import join_game_menu join_game_menu
-#:import createGame_menu createGame_menu
-#:import rules rules
-#:import credits credits
-#:import log_in log_in
-#:import kart_settings kart_settings
-#:import settings settings
-#:import music_settings music_settings
-#:import controls controls
+#:import mainMenu1 client.output.screens.mainMenu1
+#:import playingMode_menu client.output.screens.playingMode_menu
+#:import create_or_join client.output.screens.create_or_join
+#:import join_game_menu client.output.screens.join_game_menu
+#:import createGame_menu client.output.screens.createGame_menu
+#:import rules client.output.screens.rules
+#:import credits client.output.screens.credits
+#:import log_in client.output.screens.log_in
+#:import kart_settings client.output.screens.kart_settings
+#:import settings client.output.screens.settings
+#:import music_settings client.output.screens.music_settings
+#:import controls client.output.screens.controls
 # Création de l'interface de tous les screens
 
 
@@ -99,21 +99,8 @@
         name: "Controls"
         BoxLayoutWithActionBar:
             title: "Controls of the game"
-            Controls:
-    Screen:
-        name: "UpdateWorlds"
-        BoxLayoutWithActionBar:
-            title: "Update The Worlds"
-            UpdateWorlds:    
-    Screen:
-        name: "EG1"
-        PasswordScreen:
-            nbr:1
+            Controls: 
 
-    Screen:
-        name: "EG2"
-        PasswordScreen:
-            nbr:2
     Screen:
         name: "Credits"
         BoxLayoutWithActionBar:

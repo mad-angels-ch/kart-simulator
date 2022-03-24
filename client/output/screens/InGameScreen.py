@@ -1,13 +1,13 @@
 from kivy.animation import Animation
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.screenmanager import Screen
-from kart_simulator import MainWidget
+from client.output.kart_simulator import MainWidget
 from kivy.app import App
 from kivy.uix.label import Label
 from kivy.properties import Clock
 from kivy.lang import Builder
 
-Builder.load_file("InGameScreen.kv")
+Builder.load_file("client/output/screens/InGameScreen.kv")
 
 class EndGameMode(FloatLayout):
     """Menu de fin de partie"""

@@ -4,10 +4,10 @@ from kivy.app import App
 from kivy.uix.button import Button
 from kivy.lang import Builder
 from kivy.uix.label import Label
-from layouts import LogInQuestion
+from .layouts import LogInQuestion
 
 
-Builder.load_file("mainMenu1.kv")
+Builder.load_file("client/output/screens/mainMenu1.kv")
 
 class MainMenu1(FloatLayout):
     def __init__(self, **kwargs):
