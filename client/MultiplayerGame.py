@@ -6,7 +6,7 @@ from game import Game, OnCollisionT
 from game.objects import Object
 from game.events import Event, KartMoveEvent, KartTurnEvent
 import lib
-
+from kivy.uix.label import Label
 
 class MultiplayerGame(ClientNamespace):
     _game: Game
@@ -20,14 +20,19 @@ class MultiplayerGame(ClientNamespace):
         output: Callable[[List[Object]], None],
         onCollision: OnCollisionT = lambda o, p: None,
         worldVersion_id: "int | None" = None,
+        errorLabel: "Label |None" = None,
     ):
         super().__init__("/kartmultiplayer")
         self._name = name
         self._worldVersion_id = worldVersion_id
+        self._errorLabel = errorLabel
         self._game = Game("", output, onCollision)
         self._sio = Client(http_session=session)
-        self._sio.register_namespace(self)
-        self._sio.connect(server, namespaces="/kartmultiplayer")
+        try:
+            self._sio.register_namespace(self)
+            self._sio.connect(server, namespaces="/kartmultiplayer")
+        except:
+            self.fatalError(error="Couldn't reach the server. Please check your internet connection and try again.")
 
     def error(self, error: "None | str" = None) -> None:
         """Gestion des erreurs non fatales"""
@@ -35,6 +40,7 @@ class MultiplayerGame(ClientNamespace):
     def fatalError(self, error: "None | str" = None) -> None:
         """Gestion des erreurs fatales"""
         if error:
+            self._errorLabel.text = "Fatal error...\n"+error
             print(error)
             self.disconnect()
 

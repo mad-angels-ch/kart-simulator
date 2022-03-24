@@ -29,11 +29,10 @@
     Screen:
         name: "CreateMPGame"
         BoxLayoutWithActionBar:
-            title: "Create/Join A Game"
+            title: "Create A Game"
             CreateGame:
                 FloatLayout:
                     TextInput:
-                        id:gameName
                         font_size: 12
                         pos_hint: {"x":.499,"y":.91}
                         size_hint: .25,.045
@@ -43,7 +42,11 @@
                         pos_hint: {"x":.25,"y":.88}
                         size_hint: .25,.1
                         text: "Name of the game:"
-
+    Screen:
+        name:"JoinMPGame"
+        BoxLayoutWithActionBar:
+            title: "Join A Game"
+            JoinGame:
     Screen:
         name:"CreateOrJoin"
         BoxLayoutWithActionBar:

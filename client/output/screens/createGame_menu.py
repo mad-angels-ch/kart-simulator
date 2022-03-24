@@ -16,18 +16,18 @@ from kivy.clock import Clock
 import requests, json, os, threading
 from kivy.core.audio import SoundLoader
 from functools import partial
-
-
+from client.MultiplayerGame import MultiplayerGame
 from client.output.kart_simulator import MainWidget
+import json
 
 Builder.load_file("client/output/screens/createGame_menu.kv")
 
 
 class CreateGame(FloatLayout):
     def __init__(self, **kwargs):
-        print("initialized")
         super().__init__(**kwargs)
         self.chosen_world = StringProperty("Choose your world")
+        self.app = App.get_running_app()
 
     def changeWorldSpinnerText(self, text):
         """Change le texte affiché sur le dépliant de choix du circuit"""
@@ -44,7 +44,15 @@ class CreateGame(FloatLayout):
     def popErrorScreen(self):
         """Vidage du message d'erreur après un temps donné"""
         self.ids.labelID.text = ""
-
+        
+    def create(self):
+        with open("client/worlds.json", "r", encoding="utf8") as f:         #Lecture et transformation du ficher worlds.json pour y accéder sous la forme d'un dictionnaire
+            world_id = json.loads(f.read())[self.chosen_world]["id"]
+            name = self.children[0].children[1].text   #Récupération  du texte pour le nom à partir d'un "TextInput" ajouté dans "MyScreenManager"
+        MultiplayerGame(session=self.app.session, server=self.app.server, name=name, output=None, onCollision=self.on_Collision, worldVersion_id=world_id, errorLabel=self.ids['labelID'])
+    
+    def on_Collision(self):
+        pass
 
 class PreView(Widget):
     def __init__(self, maxSize: Tuple[float, float] = (200, 200), **kwargs):

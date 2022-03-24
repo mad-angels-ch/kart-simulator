@@ -9,24 +9,9 @@
                 pos: self.pos
                 size: self.size
 
-        # Label:
-        #     bold: True
-        #     text: "Kart Simulator"
-        #     font_size: 50
-        #     color: 1,0,0,1
-        #     pos_hint: {'x':0,'y':.85}
-        #     size_hint: 1,.15
-        #     canvas.before:
-        #         Color:
-        #             rgba: 0, 0, 0, .75
-        #         Rectangle:
-        #             pos: self.pos
-        #             size: self.size
-
         BoxLayout:
             orientation: "horizontal"
             size_hint: 1,.1
-            
             Spinner:
                 id: worlds_spinner_id
                 size_hint: .25,1
@@ -46,7 +31,7 @@
                 text: "Play"
                 background_color: (1.0, 0.0, 0.0, .75)
                 # on_press: app.instanciate_ks(root.chosen_world, root.chosen_music, root.chosen_POV), app.ButtonSound()
-                on_press: app.instanciate_ks(root.chosen_world,"Third Person")
+                on_press: root.create(), app.ButtonSound()
 
         ScatterLayout:
             do_translation: False

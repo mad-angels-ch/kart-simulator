@@ -1,6 +1,11 @@
     
 <JoinGame>:
     Label:
+        pos_hint: {'center_x':.5,'center_y':.8}
+        size_hint: .2, .05
+        text: ""
+        id:ErrorLabel
+    Label:
         pos_hint: {'x':.35,'y':.5}
         size_hint: .2, .05
         text: '[b][color=000000]Game Name: [/color][\b]'
@@ -13,4 +18,4 @@
         pos_hint: {'x':.5,'y':.4}
         size_hint: .2, .1
         text: "Join game"
-        # on_press: app.ButtonSound(), root.join()
+        on_press: root.join(), app.ButtonSound()
