@@ -28,3 +28,4 @@ class LogIn(FloatLayout):
                     pickle.dump(self.app.session.cookies, f)
                 self.app._isLogged = True
                 self.app.manager.pop()
+        self.app.update_userSettings()

@@ -52,7 +52,7 @@ class CreateGame(FloatLayout):
                 self.children[0].children[1].text
             )  # Récupération  du texte pour le nom à partir d'un "TextInput" ajouté dans "MyScreenManager"
         except:
-            self.app.instanciate_ks(...)
+            self.app.instanciate_ks(world=self.chosen_world, POV = "Third Person")
         with open(
             "client/worlds.json", "r", encoding="utf8"
         ) as f:  # Lecture et transformation du ficher worlds.json pour y accéder sous la forme d'un dictionnaire

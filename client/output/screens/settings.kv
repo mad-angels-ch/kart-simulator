@@ -18,3 +18,10 @@
         Button:
             text: "My Music"
             on_press: app.manager.push("Music_Settings"), app.ButtonSound()
+
+        Button:
+            text: "Log In / Log Out"
+            on_press: 
+                app.ButtonSound(),
+                if app.is_logged(): root.logOut()
+                else: app.manager.push("LogIn")

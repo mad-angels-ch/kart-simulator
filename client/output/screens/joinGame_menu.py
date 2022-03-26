@@ -4,7 +4,7 @@ from kivy.lang import Builder
 from client.MultiplayerGame import MultiplayerGame
 from kivy.app import App
 
-Builder.load_file("client/output/screens/join_game_menu.kv")
+Builder.load_file("client/output/screens/joinGame_menu.kv")
 
 class JoinGame(FloatLayout):
     def __init__(self, **kwargs):

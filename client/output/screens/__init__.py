@@ -2,7 +2,7 @@ from .controls import Controls
 from .create_or_join import CreateOrJoin
 from .createGame_menu import CreateGame, UpdateWorldButton, PreView
 from .credits import Credits
-from .join_game_menu import JoinGame
+from .joinGame_menu import JoinGame
 from .log_in import LogIn
 from .InGameScreen import EndGameMode, PauseMode, KS_screen
 from .kart_settings import KartSettings
