@@ -29,31 +29,60 @@ class CreateGame(FloatLayout):
         self.chosen_world = StringProperty("Choose your world")
         self.app = App.get_running_app()
 
-    def changeWorldSpinnerText(self, text):
+    def changeWorldSpinnerText(self, text) -> None:
         """Change le texte affiché sur le dépliant de choix du circuit"""
         self.chosen_world = text
 
-    def generateWorldsList(self):
+    def generateWorldsList(self) -> list:
         """Génère la liste des curcuits jouables"""
         return [world[:-5] for world in listdir("client/worlds")]
 
-    def changeLabelText(self, message):
+    def changeLabelText(self, message) -> None:
         """Mise à jour puis suppession du message d'erreur à afficher"""
         self.ids.labelID.text = message
 
-    def popErrorScreen(self):
+    def popErrorScreen(self) -> None:
         """Vidage du message d'erreur après un temps donné"""
         self.ids.labelID.text = ""
-        
-    def create(self):
-        with open("client/worlds.json", "r", encoding="utf8") as f:         #Lecture et transformation du ficher worlds.json pour y accéder sous la forme d'un dictionnaire
-            world_id = json.loads(f.read())[self.chosen_world]["id"]
-            name = self.children[0].children[1].text   #Récupération  du texte pour le nom à partir d'un "TextInput" ajouté dans "MyScreenManager"
-        MultiplayerGame(session=self.app.session, server=self.app.server, name=name, output=None, onCollision=self.on_Collision, worldVersion_id=world_id, errorLabel=self.ids['labelID'])
-    
-    def on_Collision(self):
+
+    def create(self) -> None:
+        """Crée la partie multijoueur."""
+        try:
+            name = (
+                self.children[0].children[1].text
+            )  # Récupération  du texte pour le nom à partir d'un "TextInput" ajouté dans "MyScreenManager"
+        except:
+            self.app.instanciate_ks(...)
+        with open(
+            "client/worlds.json", "r", encoding="utf8"
+        ) as f:  # Lecture et transformation du ficher worlds.json pour y accéder sous la forme d'un dictionnaire
+            world_id = json.loads(f.read())[self.chosen_world]["version"]
+            name = (
+                self.children[0].children[1].text
+            )  # Récupération  du texte pour le nom à partir d'un "TextInput" ajouté dans "MyScreenManager"
+        MultiplayerGame(
+            session=self.app.session,
+            server=self.app.server,
+            name=name,
+            output=OutputFactory(
+                self,
+                frame_callback=self.frame_callback,
+                max_width=self.app.windowSize()[0],
+                max_height=self.app.windowSize()[1],
+                POV="Third Person",
+            ),
+            onCollision=self.on_Collision,
+            worldVersion_id=world_id,
+            errorLabel=self.ids["labelID"],
+        )
+
+    def on_Collision(self) -> None:
         pass
 
+    def frame_callback(self) -> None:
+        pass
+        
+        
 class PreView(Widget):
     def __init__(self, maxSize: Tuple[float, float] = (200, 200), **kwargs):
         """Widget créant le preview"""
