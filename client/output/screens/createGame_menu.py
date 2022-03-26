@@ -56,10 +56,7 @@ class CreateGame(FloatLayout):
         with open(
             "client/worlds.json", "r", encoding="utf8"
         ) as f:  # Lecture et transformation du ficher worlds.json pour y accéder sous la forme d'un dictionnaire
-            world_id = json.loads(f.read())[self.chosen_world]["version"]
-            name = (
-                self.children[0].children[1].text
-            )  # Récupération  du texte pour le nom à partir d'un "TextInput" ajouté dans "MyScreenManager"
+            worldVersion_id = json.loads(f.read())[self.chosen_world]["version_id"]
         MultiplayerGame(
             session=self.app.session,
             server=self.app.server,
@@ -72,7 +69,7 @@ class CreateGame(FloatLayout):
                 POV="Third Person",
             ),
             onCollision=self.on_Collision,
-            worldVersion_id=world_id,
+            worldVersion_id=worldVersion_id,
             errorLabel=self.ids["labelID"],
         )
 
@@ -83,6 +80,16 @@ class CreateGame(FloatLayout):
         pass
         
         
+            output=None,
+            onCollision=self.on_Collision,
+            worldVersion_id=worldVersion_id,
+            errorLabel=self.ids["labelID"],
+        )
+
+    def on_Collision(self):
+        pass
+
+
 class PreView(Widget):
     def __init__(self, maxSize: Tuple[float, float] = (200, 200), **kwargs):
         """Widget créant le preview"""
@@ -147,32 +154,32 @@ class UpdateWorldButton(Button):
         try:
             worlds = self.app.session.get(
                 self.app.server + "/creator/kart/worldsjson",
-                params={"id": True, "version": True, "name": True},
-            )
+                params={"id": True, "worldVersion_id": True, "name": True},
+            ).json()
         except requests.ConnectionError:
             updateWorlds_output.text += "ERROR: The server in unreachable, please check your internet connection and try again."
             self._updating = False
             self.text = "Update the worlds now"
         else:
-            for world in worlds.json():
+            for world in worlds:
                 worldsInfo[world["name"]] = {
                     "id": world["id"],
-                    "version": world["version"],
+                    "version_id": world["worldVersion_id"],
                 }
             try:
-                f = open("client/worlds.json", "r")
+                f = open("client/worlds.json", "r", encoding="utf8")
             except FileNotFoundError:
-                f = open("client/worlds.json", "w")
+                f = open("client/worlds.json", "w", encoding="utf8")
                 f.write("{}")
                 f.close()
-                f = open("client/worlds.json", "r")
+                f = open("client/worlds.json", "r", encoding="utf8")
 
             try:
                 savedWorld = json.load(f)
                 # mise à jour des mondes déjà téléchargés
                 for name, data in savedWorld.items():
                     if name in worldsInfo:
-                        if data["version"] != worldsInfo[name]["version"]:
+                        if data.get("version_id", -1) != worldsInfo[name]["version_id"]:
                             updateWorlds_output.text += f"Updating world {name} ... "
                             with open(f"client/worlds/{name}.json", "w") as worldJSON:
                                 worldJSON.write(
@@ -181,7 +188,7 @@ class UpdateWorldButton(Button):
                                     ).text
                                 )
                             updateWorlds_output.text += "done!\n"
-                            data["version"] = worldsInfo[name]["version"]
+                            data["version_id"] = worldsInfo[name]["version_id"]
                     else:
                         updateWorlds_output.text += f"Deleting world {name} ... "
                         os.remove(f"client/worlds/{name}.json")
