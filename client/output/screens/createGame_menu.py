@@ -78,13 +78,6 @@ class CreateGame(FloatLayout):
 
     def frame_callback(self) -> None:
         pass
-        
-        
-            output=None,
-            onCollision=self.on_Collision,
-            worldVersion_id=worldVersion_id,
-            errorLabel=self.ids["labelID"],
-        )
 
     def on_Collision(self):
         pass
