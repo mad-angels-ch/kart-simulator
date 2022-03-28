@@ -4,7 +4,7 @@ from logging import warning
 from kivy.clock import Clock
 from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.gridlayout import GridLayout
-import requests, json, os, threading
+import requests, json, os
 # from client.output.kart_simulator import game, path, Rectangle, Color
 from os import path, listdir, write
 from posixpath import abspath
@@ -124,17 +124,19 @@ from functools import partial
 from kivy.uix.popup import Popup
 
 
-class LogInQuestion(Popup):
+class CustomPopup(Popup):
     """Classe qui demande à l'utilisateur s'il veut se connecter à son compte ou non, puis se détruit."""
-    def __init__(self, yes, no, **kwargs):
-        super().__init__(title="You are not logged in.",**kwargs)
+    def __init__(self, title="", text="", func1=None, func1_name="", func2=None, func2_name="", **kwargs):
+        super().__init__(title=title,**kwargs)
         self.pos_hint = {"center_x":.5, "center_y": .7}
         self.size_hint = (.5,.2)
         box1 = BoxLayout(orientation='vertical')
         app = App.get_running_app()
-        box1.add_widget(Label(text = "Do you want to log in ?"))
+        box1.add_widget(Label(text = text))
         box2 = BoxLayout(orientation = "horizontal")
         box1.add_widget(box2)
-        box2.add_widget(Button(text = "Yes", on_press = yes))
-        box2.add_widget(Button(text = "No", on_press = no))
+        if func1:
+            box2.add_widget(Button(text = func1_name, on_press = func1))
+        if func2:
+            box2.add_widget(Button(text = func2_name, on_press = func2))
         self.content = box1

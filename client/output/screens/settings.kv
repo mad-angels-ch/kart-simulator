@@ -13,15 +13,19 @@
         orientation: 'vertical'
         Button:
             text: "My kart"
-            on_press: app.manager.push("Kart_Settings"), app.ButtonSound()
+            on_press: 
+                if app.is_logged(): app.manager.push("Kart_Settings"), app.ButtonSound()
+                else: root.SettingsPopup()
 
         Button:
             text: "My Music"
-            on_press: app.manager.push("Music_Settings"), app.ButtonSound()
+            on_press: 
+                if app.is_logged: app.manager.push("Music_Settings"), app.ButtonSound()
+                else: root.SettingsPopup()
 
         Button:
             text: "Log In / Log Out"
             on_press: 
                 app.ButtonSound(),
-                if app.is_logged(): root.logOut()
+                if app.is_logged(): app.logOut()
                 else: app.manager.push("LogIn")

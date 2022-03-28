@@ -187,7 +187,15 @@ class MenuApp(App):
                     "username": "Anonyme user",
                     "volume": 1,
                 }
-
+                
+    def logOut(self) -> None:
+        """Déconnecte le joueur connecté."""
+        self.session.get(self.server + "/auth/logout")
+        self.update_userSettings()
+        self._isLogged = False
+        with open(self.cookiesPath, "wb") as f:
+            pickle.dump(self.session.cookies, f)
+        
     def is_logged(self) -> bool:
         """Retourne vrai si un utilisateur est connecté à son compte."""
         return self._isLogged

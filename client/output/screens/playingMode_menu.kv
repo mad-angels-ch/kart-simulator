@@ -6,8 +6,11 @@
 
         Button:
             text: "Multiplayer"
-            on_press: app.manager.push("CreateOrJoin")
+            on_press: 
+                if app.is_logged(): app.manager.push("CreateOrJoin")
+                else: root.ModePopup()
+                    
         Button:
             text: "Singleplayer"
-            on_press: 
+            on_press:
                 app.manager.push("CreateSPGame"), app.ButtonSound()

@@ -20,6 +20,7 @@ class NavigationScreenManager(ScreenManager):
             self.current = screen_name
     
     def popAll(self):
+        if self.current_screen.name != "MainMenu":
             screen_name = self.screen_stack[0]
             del self.screen_stack[0:]
             self.transition.direction = "right"
