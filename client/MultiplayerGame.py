@@ -88,11 +88,11 @@ class MultiplayerGame(ClientNamespace):
         """Evènement appelé à chaque nouvelle position d'objets reçus.
         Met la liste des objets à jour en fonction de celles-ci."""
         for formID, newPos in outputs.items():
-            # obj = self._game.objectByFormID(formID)
-            print(formID)
-            # obj.set_center(lib.Point(newPos))
-            # obj.set_angle(newPos[2])
-        # self._game.callOutput()
+            obj = self._game.objectByFormID(formID)
+            # print(formID)
+            obj.set_center(lib.Point(newPos))
+            obj.set_angle(newPos[2])
+        self._game.callOutput()
         
     def frame_callback(self, output: OutputFactory, objects: List[Object]) -> None:
         pass
