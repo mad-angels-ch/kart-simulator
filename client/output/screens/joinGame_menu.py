@@ -3,6 +3,8 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.lang import Builder
 from client.MultiplayerGame import MultiplayerGame
 from kivy.app import App
+from kivy.clock import Clock
+
 
 Builder.load_file("client/output/screens/joinGame_menu.kv")
 
@@ -12,7 +14,16 @@ class JoinGame(FloatLayout):
         self.app = App.get_running_app()
         
     def join(self):
-        MultiplayerGame(session=self.app.session, server=self.app.server, name=self.ids.gameName, output=None, onCollision=self.on_Collision, errorLabel=self.ids.ErrorLabel)
+        self.app.instanciate_MultiKS(name=self.ids.gameName, worldVersion_id=None, on_collision=self.on_Collision, changeLabelText=self.changeLabelText)
+        
+    def changeLabelText(self, message) -> None:
+        """Mise à jour puis suppession du message d'erreur à afficher"""
+        self.ids.labelID.text = message
+        Clock.schedule_once(self.clearLabelText, 4)
+
+    def clearLabelText(self, dt) -> None:
+        """Vidage du message d'erreur après un temps <dt> donné"""
+        self.ids.labelID.text = ""  
         
     def on_Collision(self):
         pass

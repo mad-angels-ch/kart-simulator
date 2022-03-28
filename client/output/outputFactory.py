@@ -66,7 +66,11 @@ class OutputFactory:
     def isInitialized(self) -> bool:
         """Retourne vrai si initialisé."""
         return self._initialized
-
+    
+    def set_frameCallback(self, frame_collback) -> None:
+        """Etabli une nouvelle fonction à appeler à chaque frame."""
+        self._frameCallback = frame_collback
+        
     def getAllKarts(self) -> List[game_objects.Kart]:
         """NE PAS MODIFIER\n
         Retourne la liste de tous les karts du jeu"""
@@ -252,6 +256,7 @@ class OutputFactory:
         self._karts.append(lgeKart)
         with self._w.canvas:  # Ce type d'objet doit être placé dans l'instruction 'with self.canvas:'
             Color(rgba=(1, 1, 1, 1))
+            
             imageName = lgeKart.image()
             ioKart = io_objects.FilledQuadrilateral(
                 LGEObject=lgeKart, source=f"client/Images/karts/{imageName}.png"

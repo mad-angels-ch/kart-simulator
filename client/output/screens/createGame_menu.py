@@ -17,7 +17,7 @@ import requests, json, os, threading
 from kivy.core.audio import SoundLoader
 from functools import partial
 from client.MultiplayerGame import MultiplayerGame
-from client.output.kart_simulator import MainWidget
+from client.output.kart_simulator import SingleplayerGame
 import json
 
 Builder.load_file("client/output/screens/createGame_menu.kv")
@@ -40,38 +40,45 @@ class CreateGame(FloatLayout):
     def changeLabelText(self, message) -> None:
         """Mise à jour puis suppession du message d'erreur à afficher"""
         self.ids.labelID.text = message
+        Clock.schedule_once(self.clearLabelText, 4)
 
-    def popErrorScreen(self) -> None:
-        """Vidage du message d'erreur après un temps donné"""
-        self.ids.labelID.text = ""
+    def clearLabelText(self, dt) -> None:
+        """Vidage du message d'erreur après un temps <dt> donné"""
+        self.ids.labelID.text = ""  
 
     def create(self) -> None:
         """Crée la partie multijoueur."""
-        try:
-            name = (
-                self.children[0].children[1].text
-            )  # Récupération  du texte pour le nom à partir d'un "TextInput" ajouté dans "MyScreenManager"
-        except:
-            self.app.instanciate_ks(world=self.chosen_world, POV = "Third Person")
         with open(
             "client/worlds.json", "r", encoding="utf8"
         ) as f:  # Lecture et transformation du ficher worlds.json pour y accéder sous la forme d'un dictionnaire
-            worldVersion_id = json.loads(f.read())[self.chosen_world]["version_id"]
-        MultiplayerGame(
-            session=self.app.session,
-            server=self.app.server,
-            name=name,
-            output=OutputFactory(
-                self,
-                frame_callback=self.frame_callback,
-                max_width=self.app.windowSize()[0],
-                max_height=self.app.windowSize()[1],
-                POV="Third Person",
-            ),
-            onCollision=self.on_Collision,
-            worldVersion_id=worldVersion_id,
-            errorLabel=self.ids["labelID"],
-        )
+            worlds = json.loads(f.read())
+        if self.chosen_world in worlds:
+            try:
+                name = (
+                    self.children[0].children[1].text
+                )  # Récupération  du texte pour le nom à partir d'un "TextInput" ajouté dans "MyScreenManager"
+            except:
+                self.app.instanciate_SoloKS(world=self.chosen_world, on_collision=self.on_Collision, changeLabelText=self.changeLabelText)
+            else:
+                worldVersion_id = worlds[self.chosen_world]["version_id"]
+                self.app.instanciate_MultiKS(name=name, worldVersion_id=worldVersion_id, on_collision=self.on_Collision, changeLabelText=self.changeLabelText)
+                # MultiplayerGame(
+                #     session=self.app.session,
+                #     server=self.app.server,
+                #     name=name,
+                #     output=OutputFactory(
+                #         self,
+                #         frame_callback=self.frame_callback,
+                #         max_width=self.app.windowSize()[0],
+                #         max_height=self.app.windowSize()[1],
+                #         POV="Third Person",
+                #     ),
+                #     onCollision=self.on_Collision,
+                #     worldVersion_id=worldVersion_id,
+                #     errorLabel=self.ids["labelID"],
+                # )
+        else:
+            self.changeLabelText(message="Please choose a world before playing!")
 
     def on_Collision(self) -> None:
         pass
@@ -91,8 +98,8 @@ class PreView(Widget):
 
     def changePreView(self, world):
         """Change le mode de preview pour afficher le nouveau circuit"""
-        # Se comporte comme MainWidget, mais n'instancie qu'une seule frame
-        self.parent.parent.parent.parent.popErrorScreen()
+        # Se comporte comme SingleplayerGame, mais n'instancie qu'une seule frame
+        # self.parent.parent.parent.parent.clearLabelText()
         if not isinstance(world, StringProperty):
             self.canvas.before.clear()
             self.canvas.clear()
@@ -107,7 +114,7 @@ class PreView(Widget):
                 )
                 app = App.get_running_app()
                 with open(self.dataUrl, "r", encoding="utf8") as f:
-                    self.theGame = game.Game(
+                    self._game = game.Game(
                         f.read(),
                         OutputFactory(
                             self,
@@ -117,7 +124,7 @@ class PreView(Widget):
                         ),
                     )
 
-                self.theGame.callOutput()
+                self._game.callOutput()
             except ObjectCountError as OCE:
                 self.parent.parent.parent.parent.changeLabelText(OCE.message())
 
@@ -215,5 +222,4 @@ class UpdateWorldButton(Button):
                 sound.play()
 
     def clearLabelText(self, label, dt):
-        # print("oK")
         label.text = ""

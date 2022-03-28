@@ -1,7 +1,6 @@
 import game.events
-from kivy.lang import Builder
 
-# Liens utilisateur-programme à travers le clavier, relié à la class MainWidget lors de l'instanciation d'un partie
+# Liens utilisateur-programme à travers le clavier, relié à la class SingleplayerGame lors de l'instanciation d'un partie
 
 
 def keyboard_closed(self):
@@ -30,12 +29,7 @@ def on_keyboard_down(self, keyboard, keycode, text, modifiers):
             self.eventsList.append(game.events.KartMoveEvent(-1, self.kart_ID))
 
     if keycode[1] == "escape":
-        if self.play:
-            self.play = False
-            self.parentScreen.pauseMode()
-        else:
-            self.parentScreen.resumeGame()
-            self.play = True
+        self.change_gameState()
 
     if keycode[1] == "x":
         if self.kart_ID:

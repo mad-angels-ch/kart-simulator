@@ -1,4 +1,6 @@
+from functools import partial
 from logging import info, warning
+from black import out
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.core import window
@@ -8,7 +10,10 @@ from kivy.uix.button import Button
 from kivy.uix.widget import Widget
 from kivy.utils import get_color_from_hex, rgba
 from kivy.core.window import Window
-from .kart_simulator import MainWidget
+
+from client.MultiplayerGame import MultiplayerGame
+from client.output.outputFactory import OutputFactory
+from .kart_simulator import SingleplayerGame
 from kivy.core.audio import SoundLoader
 from kivy.graphics import Rectangle, Color
 from kivy.uix.label import Label
@@ -56,18 +61,36 @@ class MenuApp(App):
         Window.clearcolor = get_color_from_hex("#ffffff")
         self.icon = "client/Images/kart.png"
         self.manager = MyScreenManager()
-        # with self.manager.screens[0].canvas:
-        #     self.errorLabel = Label(
-        #         bold=True,
-        #         underline=True,
-        #         font_size=32,
-        #         text="",
-        #         pos=(Window.width / 2 - 50, Window.height / 2 - 10),
-        #         color=(1, 1, 1, 0.5),
-        #     )
         return self.manager
 
-    def instanciate_ks(self, world, POV):
+    def instanciate_SoloKS(self, world, on_collision, changeLabelText):
+        """Création de tout ce qui est nécessaire à une partie en solo"""
+        if self.manager.has_screen("Kart_Simulator"):
+            screen = self.manager.get_screen("Kart_Simulator")
+            self.manager.remove_widget(screen)
+        self.game_instance = KS_screen()         # Création du Screen qui acquillera le canvas où sera affichée la partie
+        
+        output=OutputFactory(widget=self.game_instance.widget, max_width=self.windowSize()[0], max_height=self.windowSize()[1], POV="Third Person")     # Crée la Factory qui gèrera tous les outputs
+        self.game = SingleplayerGame(world=world, output=output, onCollision=on_collision, changeLabelText=changeLabelText, parentScreen = self.game_instance)  # Création de la partie
+        if self.game._game:
+            self.game._game.callOutput()        # Appel d'une instance de l'output afin d'afficher le circuit derrière l'animation
+            self.game_instance.startingAnimation(start_theGame=self.game.start_theGame)
+            
+            
+    def instanciate_MultiKS(self, name, worldVersion_id, on_collision, changeLabelText):
+        """Création de tout ce qui est nécessaire à une partie en multijoueur"""
+        if self.manager.has_screen("Kart_Simulator"):
+            screen = self.manager.get_screen("Kart_Simulator")
+            self.manager.remove_widget(screen)
+        self.game_instance = KS_screen()
+        
+        output=OutputFactory(widget=self.game_instance.widget, max_width=self.windowSize()[0], max_height=self.windowSize()[1], POV="Third Person")
+        self.game = MultiplayerGame(session=self.session, server=self.server, name=name, output=output, onCollision=on_collision, worldVersion_id=worldVersion_id, changeLabelText=changeLabelText, parrentScreen=self.game_instance)
+        # self.game._game.callOutput()       # Appel d'une instance de l'output afin d'afficher le circuit derrière l'animation
+        # self.game_instance.startingAnimation(start_theGame=self.game.start_theGame)
+        
+        
+    def instanciate_ks(self, world, POV, errorLabel):
         """Création du support de la partie et de ses attributs:
         monde choisi ainsi que la taille de la fenêtre"""
 
@@ -77,24 +100,25 @@ class MenuApp(App):
                 self.manager.remove_widget(screen)
             self.game_instance = KS_screen(world=world, POV=POV)
         elif not self.isWorldChosen(world):
-            self.errorLabel.text += "Choose a world before playing !\n"
-            Clock.schedule_once(self.popErrorScreen, 2)
+            errorLabel.text += "Choose a world before playing !\n"
+            Clock.schedule_once(partial(self.clearLabelText, errorLabel), 2)
 
     def start_ks(self):
         """Affichage de la partie"""
+        self.manager.add_widget(self.game_instance)
         self.manager.push("Kart_Simulator")
 
     def windowSize(self):
         return Window.size
 
-    # def popErrorScreen(self, dt):
-    #     """Vidage du message d'erreur après un temps donné"""
-    #     self.errorLabel.text = ""
+    def clearLabelText(self, label, dt):
+        """Vidage du message d'erreur après un temps donné"""
+        label.text = ""
 
     # def changeLabelText(self, labelText):
     #     """Mise à jour puis suppession du message d'erreur à afficher"""
     #     self.errorLabel.text += labelText + "\n"
-    #     Clock.schedule_once(self.popErrorScreen, 2)
+    #     Clock.schedule_once(self.clearLabelText, 2)
 
     def clear_game(self):
         """Nettoyage de la partie finie"""
@@ -125,18 +149,18 @@ class MenuApp(App):
         """Retourne le dictionnaire contenant les information relatives aux paramètres du joueur connecté."""
         return self.userSettings
 
-    def set_userSettings(self, userSetting: dict) -> None:
+    def set_userSettings(self, userSettings: dict) -> None:
         """Enregistre les settings et tente de les syncroniser"""
         try:
             self.userSettings = self.session.put(
-                self.server + "/auth/myaccount/kart.json", userSetting
-            )
+                self.server + "/auth/myaccount/kart.json", userSettings
+            ).json()
         except requests.ConnectionError:
-            self.userSettings = userSetting
+            self.userSettings = userSettings
         else:
             if self.userSettings.get("error") == 401:
                 # échec car le joueur n'est pas connecté
-                self.userSettings = userSetting
+                self.userSettings = userSettings
 
     def update_userSettings(self) -> None:
         """Met à jour les information relatives aux paramètres du joueur connecté."""

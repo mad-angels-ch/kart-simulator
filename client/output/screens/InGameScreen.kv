@@ -17,7 +17,7 @@
         size_hint:.2,.1
         pos_hint: {'x':.4, 'y': .45}
         text:"Quit game"
-        on_release: app.manager.pop(),app.clear_game(), app.ButtonSound()
+        on_release: app.manager.popAll(), app.clear_game(), app.ButtonSound()
 
 
 
@@ -27,7 +27,7 @@
         size_hint:.2,.1
         pos_hint: {'x': .4 , 'y': .5 }
         text:"Resume"
-        on_release: app.game_instance.resumeGame(), app.ButtonSound()
+        on_release: app.game.change_gameState(), app.ButtonSound()
     Button:
         size_hint:.2,.1
         pos_hint: {'x': .4 , 'y': .4 }
@@ -58,11 +58,6 @@
         id: animationLayout
         pos: 0,0
         size: app.windowSize()
-        # canvas.before:
-        #     Color: 
-        #         rgba: 0,0,0,1
-        #     Rectangle:
-        #         size: self.size[0]/2,self.size[1]/2
 
     
     GridLayout:

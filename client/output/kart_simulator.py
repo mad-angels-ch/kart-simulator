@@ -38,8 +38,8 @@ from lib import Point
 # Builder.load_file("layouts.kv")
 
 
-class MainWidget(Widget):
-    from client.output.user_actions import (
+class SingleplayerGame:
+    from client.output.solo_user_actions import (
         keyboard_closed,
         on_keyboard_down,
         # on_touch_up,
@@ -47,22 +47,15 @@ class MainWidget(Widget):
         # on_touch_down,
     )
 
-    dict_polygons = dict()
-    dict_circles = dict()
-    dict_gates = dict()
-    dict_finishLines = dict()
-    dict_FilledQuadrilaterals = dict()
     kart_ID = 0
 
-    def __init__(self, world=None, parentScreen=None, POV="Third Person", **kwargs):
-        """Canvas dans lequel les objets d'une partie sont dessinés"""
+    def __init__(self, world, output, onCollision, changeLabelText, parentScreen, **kwargs):
+        """Canvas dans lequel les objets d'une partie en solo sont dessinés"""
         super().__init__(**kwargs)
         self.world = world
-        self.POV = POV
         self.parentScreen = parentScreen
-        if isinstance(self.world, StringProperty):
-            self.world = "2triangles"
-
+        self.output = output
+        self.output.set_frameCallback(self.frame_callback)
         ##################### Création de la partie #####################
         if self.world != "client/easteregg.json":
             dataUrl = path.join("client/worlds", self.world) + ".json"
@@ -73,49 +66,47 @@ class MainWidget(Widget):
         self.eventsList = list()
         # Récupération de l'app principale
         self.app = App.get_running_app()
-        # A condition que ObjectFactory n'ai pas renvoyé d'erreur lorsde la création des objets physiques
+        # A condition que ObjectFactory n'ait pas renvoyé d'erreur lorsde la création des objets physiques
         with open(dataUrl, "r", encoding="utf8") as f:
             try:
                 # Création de la partie
-                self.theGame = game.Game(
+                self._game = game.Game(
                     f.read(),
-                    OutputFactory(
-                        self,
-                        frame_callback=self.frame_callback,
-                        max_width=self.app.windowSize()[0],
-                        max_height=self.app.windowSize()[1],
-                        POV=self.POV,
-                    ),
+                    self.output,
                 )
-                self.kart_ID = self.theGame.loadKart(
-                    "Me", App.get_running_app().get_userSettings()["kart"]
+                self.kart_ID = self._game.loadKart(
+                    "Me",self.app.get_userSettings()["kart"]
                 )
 
-                self.app.manager.add_widget(self.parentScreen)
                 self.app.start_ks()
                 #################################################################
                 self.fps = 60
 
             except ObjectCountError as OCE:
-                self.theGame = None
-                self.app.changeLabelText(OCE.message())
+                self._game = None
+                changeLabelText(OCE.message())         # Affichage de l'erreur obtenue
+
 
     def nextFrame(self, elapsedTime: float) -> None:
-        self.theGame.nextFrame(elapsedTime, self.eventsList)
+        self._game.nextFrame(elapsedTime, self.eventsList)
         self.eventsList.clear()
 
-    def clear(self) -> None:
-        """Nettoyage du canvas de jeu et arrêt de la pendule"""
-        self.canvas.clear()
-        if self.play:
-            self.my_clock.unschedule(self.nextFrame)
+    def finish_game(self) -> None:
+        """Arrêt de la pendule"""
+        self.my_clock.unschedule(self.nextFrame)
+        self.play = False
 
     def change_gameState(self) -> None:
         """Change l'état du jeu: pause ou jeu"""
         if self.play:
-            self.parent.parent.pauseMode()
+            self.play = False
+            self.my_clock.unschedule(self.nextFrame)
+            self.parentScreen.pauseMode()
         else:
-            self.parent.parent.resumeGame()
+            self.play = True
+            self.my_clock.schedule_interval(self.nextFrame, 1 / self.fps)
+            self.parentScreen.resumeGame()
+            
 
     def start_theGame(self) -> None:
         """Instantation du clavier, des commandes liées et de la pendule"""
@@ -127,7 +118,8 @@ class MainWidget(Widget):
         self.my_clock.schedule_interval(self.nextFrame, 1 / self.fps)
 
         self.play = True
-
+        
+        
     def frame_callback(self, output: OutputFactory, objects: List[Object]) -> None:
         """Fonction appellée à chaque frame par output"""
         if output.isInitialized() and not self.isEasterEgg:
@@ -142,13 +134,13 @@ class MainWidget(Widget):
         s, mili = divmod(int(1000 * self.timer), 1000)
         min, s = divmod(s, 60)
         if mili > 100:
-            self.parent.parent.parent.ids.timer_id.text = f"{min:d}:{s:02d}:{mili:02d}"
+            self.parentScreen.ids.timer_id.text = f"{min:d}:{s:02d}:{mili:02d}"
         else:
-            self.parent.parent.parent.ids.timer_id.text = f"{min:d}:{s:02d}:0{mili:02d}"
+            self.parentScreen.ids.timer_id.text = f"{min:d}:{s:02d}:0{mili:02d}"
 
     def updateLapsCount(self, finishLine: FinishLine) -> None:
         """Met l'affichage du nombre de tours terminés à jour"""
-        self.parent.parent.parent.ids.laps_id.text = f"{finishLine.passagesCount(self.kart_ID)}/{finishLine.numberOfLapsRequired()}"
+        self.parentScreen.ids.laps_id.text = f"{finishLine.passagesCount(self.kart_ID)}/{finishLine.numberOfLapsRequired()}"
 
     def updateGatesCount(self, gatesList: List[Gate]) -> None:
         """Met l'affiche du nombre de portillons (du tour) franchis à jour"""
@@ -157,13 +149,13 @@ class MainWidget(Widget):
             sum([gate.passagesCount(self.kart_ID) for gate in gatesList])
             % numberOfGates
         )
-        self.parent.parent.parent.ids.gates_id.text = f"{gatesPassed}/{numberOfGates}"
+        self.parentScreen.ids.gates_id.text = f"{gatesPassed}/{numberOfGates}"
 
     def checkIfGameIsOver(self, karts: List[Kart], finishLine: FinishLine) -> None:
         """Contrôle si la partie est terminée et si oui gère celle-ci"""
         if finishLine.completedAllLaps(self.kart_ID):
             self.parentScreen.end_game(
-                f"Completed!\n\nWell done!\n Your time: {self.parent.parent.parent.ids.timer_id.text}"
+                f"Completed!\n\nWell done!\n Your time: {self.parentScreen.ids.timer_id.text}"
             )
         elif karts[0].hasBurned():
             self.parentScreen.end_game("You have burned!\n\nTry again!")
