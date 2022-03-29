@@ -83,8 +83,9 @@ class MultiplayerGame(ClientNamespace):
         """Evènement appelé à chaque nouvelle factory partagée par le serveur.
         Recréé la factory locale en fonction des informations reçues."""
         self._game.minimalImport(data)
+        self._game.callOutput()
 
-    def on_objects_update(self, outputs: Dict[int, Tuple[float, float, float]]):
+    def _on_objects_update(self, outputs: Dict[int, Tuple[float, float, float]]):
         """Evènement appelé à chaque nouvelle position d'objets reçus.
         Met la liste des objets à jour en fonction de celles-ci."""
         for formID, newPos in outputs.items():
