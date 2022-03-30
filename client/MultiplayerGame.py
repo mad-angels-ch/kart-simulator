@@ -17,7 +17,7 @@ from kivy.clock import Clock
 class MultiplayerGame(ClientNamespace):
     _game: Game
     _sio: Client
-    _charged: bool = False
+    _changed: bool = False
 
     def __init__(
         self,
@@ -80,20 +80,26 @@ class MultiplayerGame(ClientNamespace):
             self.emit(
                 "create", (self._name, self._worldVersion_id), callback=self.fatalError
             )
+            self._worldVersion_id = None
 
     def on_game_data(self, data: dict):
         """Evènement appelé à chaque nouvelle factory partagée par le serveur.
         Recréé la factory locale en fonction des informations reçues."""
         self._game.minimalImport(data)
-        self._charged = True
+        self._changed = True
         self.callOutput()
 
     def on_objects_update(self, outputs: Dict[int, Tuple[float, float, float]]):
         """Evènement appelé à chaque nouvelle position d'objets reçus.
         Met la liste des objets à jour en fonction de celles-ci."""
         for formID, newPos in outputs.items():
-            obj = self._game.objectByFormID(formID)
-            # print(formID)
+            formID = int(formID)
+            try:
+                obj = self._game.objectByFormID(formID)
+            except KeyError:
+                # print("l'objet n'existe pas!")
+                continue
+            print("l'objet existe!")
             obj.set_center(lib.Point(newPos))
             obj.set_angle(newPos[2])
         self.callOutput()
@@ -102,5 +108,5 @@ class MultiplayerGame(ClientNamespace):
         pass
 
     def callOutput(self) -> None:
-        if self._charged:
+        if self._changed:
             Clock.schedule_once(lambda _ : self._game.callOutput(), 0)
