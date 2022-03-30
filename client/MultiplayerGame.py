@@ -80,6 +80,7 @@ class MultiplayerGame(ClientNamespace):
             self.emit(
                 "create", (self._name, self._worldVersion_id), callback=self.fatalError
             )
+            self._worldVersion_id = None
 
     def on_game_data(self, data: dict):
         """Evènement appelé à chaque nouvelle factory partagée par le serveur.
@@ -92,8 +93,11 @@ class MultiplayerGame(ClientNamespace):
         """Evènement appelé à chaque nouvelle position d'objets reçus.
         Met la liste des objets à jour en fonction de celles-ci."""
         for formID, newPos in outputs.items():
-            obj = self._game.objectByFormID(formID)
-            # print(formID)
+            formID = int(formID)
+            try:
+                obj = self._game.objectByFormID(formID)
+            except KeyError:
+                continue
             obj.set_center(lib.Point(newPos))
             obj.set_angle(newPos[2])
         self.callOutput()
