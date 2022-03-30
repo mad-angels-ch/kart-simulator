@@ -12,10 +12,12 @@ from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen
 from kivy.app import App
 from kivy.uix.button import Button
+from kivy.clock import Clock
 
 class MultiplayerGame(ClientNamespace):
     _game: Game
     _sio: Client
+    _charged: bool = False
 
     def __init__(
         self,
@@ -83,9 +85,10 @@ class MultiplayerGame(ClientNamespace):
         """Evènement appelé à chaque nouvelle factory partagée par le serveur.
         Recréé la factory locale en fonction des informations reçues."""
         self._game.minimalImport(data)
-        self._game.callOutput()
+        self._charged = True
+        self.callOutput()
 
-    def _on_objects_update(self, outputs: Dict[int, Tuple[float, float, float]]):
+    def on_objects_update(self, outputs: Dict[int, Tuple[float, float, float]]):
         """Evènement appelé à chaque nouvelle position d'objets reçus.
         Met la liste des objets à jour en fonction de celles-ci."""
         for formID, newPos in outputs.items():
@@ -93,7 +96,11 @@ class MultiplayerGame(ClientNamespace):
             # print(formID)
             obj.set_center(lib.Point(newPos))
             obj.set_angle(newPos[2])
-        self._game.callOutput()
+        self.callOutput()
         
     def frame_callback(self, output: OutputFactory, objects: List[Object]) -> None:
         pass
+
+    def callOutput(self) -> None:
+        if self._charged:
+            Clock.schedule_once(lambda _ : self._game.callOutput(), 0)
