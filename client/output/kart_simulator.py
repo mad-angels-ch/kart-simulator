@@ -54,8 +54,8 @@ class SingleplayerGame:
         super().__init__(**kwargs)
         self.world = world
         self.parentScreen = parentScreen
-        self.output = output
-        self.output.set_frameCallback(self.frame_callback)
+        self._output = output
+        self._output.set_frameCallback(self.frame_callback)
         ##################### Création de la partie #####################
         if self.world != "client/easteregg.json":
             dataUrl = path.join("client/worlds", self.world) + ".json"
@@ -72,7 +72,7 @@ class SingleplayerGame:
                 # Création de la partie
                 self._game = game.Game(
                     f.read(),
-                    self.output,
+                    self._output,
                 )
                 self.kart_ID = self._game.loadKart(
                     "Me",self.app.get_userSettings()["kart"]
@@ -106,7 +106,8 @@ class SingleplayerGame:
             self.play = True
             self.my_clock.schedule_interval(self.nextFrame, 1 / self.fps)
             self.parentScreen.resumeGame()
-            
+            self._game.unloadKart(placeHolder=self.kart_ID)
+            Clock.schedule_once(lambda a:self._game.loadKart(placeHolder=self.kart_ID, username="", img=self.app.get_userSettings()["kart"]),2/self.fps)
 
     def start_theGame(self) -> None:
         """Instantation du clavier, des commandes liées et de la pendule"""

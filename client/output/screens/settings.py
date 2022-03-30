@@ -27,3 +27,9 @@ class UserSettings(FloatLayout):
         """Appelé si l'utilisateur clique sur 'No' sur le popup."""
         self.remove_widget(self.popup)
         App.get_running_app().manager.popAll()
+        
+    def updatePOVSettings(self, newPOV):
+        data = self.app.get_userSettings()
+        data["pov"] = newPOV
+        self.app.set_userSettings(data)
+        

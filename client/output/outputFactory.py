@@ -210,8 +210,12 @@ class OutputFactory:
                 # mettres l'objet à jour
                 if obstacle.lastFrame():
                     # l'objet va tout prochainement être supprimé, le faire maintenant pour éviter à devoir le faire plus tard
-                    io_object = self._createdObject.pop(obstacle.formID())
-                    self._w.canvas.remove(io_object)
+                    try:            
+                        io_object = self._createdObject.pop(obstacle.formID())
+                    except:
+                        continue        # Au cas où l'objet a dégà été supprimer de la liste, plus rien besoin de faire
+                    else:
+                        self._w.canvas.remove(io_object)
 
                 else:
                     io_object = self._createdObject[obstacle.formID()]

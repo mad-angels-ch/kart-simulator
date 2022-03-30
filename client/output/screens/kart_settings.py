@@ -50,7 +50,7 @@ class KartSettings(GridLayout):
             app = App.get_running_app()
             data = app.get_userSettings()
             data["kart"] = self._chosenKart
-            app.set_userSettings(data)
+            app.set_userSettings(data)  
 
     def updateChosenKart(self, button):
         """Met à jour le nom du kart choisi."""

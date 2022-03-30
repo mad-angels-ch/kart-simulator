@@ -1,6 +1,5 @@
 from functools import partial
 from logging import info, warning
-from black import out
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.core import window
@@ -70,7 +69,7 @@ class MenuApp(App):
             self.manager.remove_widget(screen)
         self.game_instance = KS_screen()         # Création du Screen qui acquillera le canvas où sera affichée la partie
         
-        output=OutputFactory(widget=self.game_instance.widget, max_width=self.windowSize()[0], max_height=self.windowSize()[1], POV="Third Person")     # Crée la Factory qui gèrera tous les outputs
+        output=OutputFactory(widget=self.game_instance.widget, max_width=self.windowSize()[0], max_height=self.windowSize()[1], POV=self.get_userSettings()["pov"])     # Crée la Factory qui gèrera tous les outputs
         self.game = SingleplayerGame(world=world, output=output, onCollision=on_collision, changeLabelText=changeLabelText, parentScreen = self.game_instance)  # Création de la partie
         if self.game._game:
             self.game._game.callOutput()        # Appel d'une instance de l'output afin d'afficher le circuit derrière l'animation
@@ -84,24 +83,11 @@ class MenuApp(App):
             self.manager.remove_widget(screen)
         self.game_instance = KS_screen()
         
-        output=OutputFactory(widget=self.game_instance.widget, max_width=self.windowSize()[0], max_height=self.windowSize()[1], POV="Third Person")
+        output=OutputFactory(widget=self.game_instance.widget, max_width=self.windowSize()[0], max_height=self.windowSize()[1], POV=self.get_userSettings()["pov"])
         self.game = MultiplayerGame(session=self.session, server=self.server, name=name, output=output, onCollision=on_collision, worldVersion_id=worldVersion_id, changeLabelText=changeLabelText, parrentScreen=self.game_instance)
         # self.game._game.callOutput()       # Appel d'une instance de l'output afin d'afficher le circuit derrière l'animation
         # self.game_instance.startingAnimation(start_theGame=self.game.start_theGame)
         
-        
-    def instanciate_ks(self, world, POV, errorLabel):
-        """Création du support de la partie et de ses attributs:
-        monde choisi ainsi que la taille de la fenêtre"""
-
-        if self.isWorldChosen(world):
-            if self.manager.has_screen("Kart_Simulator"):
-                screen = self.manager.get_screen("Kart_Simulator")
-                self.manager.remove_widget(screen)
-            self.game_instance = KS_screen(world=world, POV=POV)
-        elif not self.isWorldChosen(world):
-            errorLabel.text += "Choose a world before playing !\n"
-            Clock.schedule_once(partial(self.clearLabelText, errorLabel), 2)
 
     def start_ks(self):
         """Affichage de la partie"""
@@ -160,7 +146,7 @@ class MenuApp(App):
         else:
             if self.userSettings.get("error") == 401:
                 # échec car le joueur n'est pas connecté
-                self.userSettings = userSettings
+                self.userSettings = userSettings        #Enregistrement des changements pas global, mais dans l'instance de l'app lancée.
 
     def update_userSettings(self) -> None:
         """Met à jour les information relatives aux paramètres du joueur connecté."""
