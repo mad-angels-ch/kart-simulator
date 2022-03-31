@@ -14,6 +14,8 @@ from kivy.uix.screenmanager import Screen
 from kivy.app import App
 from kivy.uix.button import Button
 from kivy.clock import Clock
+from kivy.core.window import Window
+
 
 class MultiplayerGame(ClientNamespace):
     _game: Game
@@ -40,16 +42,29 @@ class MultiplayerGame(ClientNamespace):
         self._game = Game("", output, onCollision)
         self._sio = Client(http_session=session)
         self.app = App.get_running_app()
+        self._keyboard = Window.request_keyboard(self.keyboard_closed, self)
+        self._keyboard.bind(on_key_down=self.keyboard_down)
+        self._keyboard.bind(on_key_up=self.keyboard_up)
         try:
             self._sio.register_namespace(self)
             self._sio.connect(server, namespaces="/kartmultiplayer")
         except:
-            self.fatalError(error="Couldn't reach the server. Please check your internet connection and try again.")
+            self.fatalError(
+                error="Couldn't reach the server. Please check your internet connection and try again."
+            )
         else:
             self.app.start_ks()
             self.start_button = Button(text="start The game!", size_hint=(0.25, 0.1))
             self.start_button.bind(on_press=self.animation)
             self.parrentScreen.ids.noActionBar.add_widget(self.start_button)
+
+    from .output.multi_user_actions import (
+        keyboard_closed,
+        keyboard_down,
+        keyboard_up,
+        touch_up,
+        touch_down,
+    )
 
     def error(self, error: "None | str" = None) -> None:
         """Gestion des erreurs non fatales"""
@@ -57,7 +72,7 @@ class MultiplayerGame(ClientNamespace):
     def fatalError(self, error: "None | str" = None) -> None:
         """Gestion des erreurs fatales"""
         if error:
-            self._changeLabelText("Fatal error...\n"+error)
+            self._changeLabelText("Fatal error...\n" + error)
             print(error)
             self.disconnect()
 
@@ -68,18 +83,17 @@ class MultiplayerGame(ClientNamespace):
             if click.confirm("Do you want to try again?"):
                 self.emit("join", self._name, callback=self.joiningError)
 
-
     def animation(self, button):
-        self.parrentScreen.startingAnimation(start_theGame = self.start)
+        self.parrentScreen.startingAnimation(start_theGame=self.start)
         self.parrentScreen.ids.noActionBar.remove_widget(self.start_button)
-        
+
     def start(self) -> None:
         self.emit("start")
 
     def newEvent(self, event: Event) -> None:
         """Fonction permettant la transmition d'inputs du joueur au server"""
         print("New event")
-        self.emit("", (event.__class__.__name__, event.toTuple()))
+        self.emit("event", (event.__class__.__name__, event.toTuple()))
 
     def on_connect(self):
         if self._worldVersion_id == None:
@@ -87,7 +101,9 @@ class MultiplayerGame(ClientNamespace):
 
         else:
             self.emit(
-                "create", (self._name, self._worldVersion_id), callback=self.joiningError
+                "create",
+                (self._name, self._worldVersion_id),
+                callback=self.joiningError,
             )
             self._worldVersion_id = None
 
@@ -110,10 +126,10 @@ class MultiplayerGame(ClientNamespace):
             obj.set_center(lib.Point(newPos))
             obj.set_angle(newPos[2])
         self.callOutput()
-        
+
     def frame_callback(self, output: OutputFactory, objects: List[Object]) -> None:
         pass
 
     def callOutput(self) -> None:
         if self._charged:
-            Clock.schedule_once(lambda _ : self._game.callOutput(), 0)
+            Clock.schedule_once(lambda _: self._game.callOutput(), 0)

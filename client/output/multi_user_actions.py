@@ -4,12 +4,12 @@ import game.events
 
 
 def keyboard_closed(self):
-    self._keyboard.unbind(on_key_down=self.on_keyboard_down)
-    self._keyboard.unbind(on_key_up=self.on_keyboard_up)
+    self._keyboard.unbind(key_down=self.keyboard_down)
+    self._keyboard.unbind(key_up=self.keyboard_up)
     self._keyboard = None
 
 
-def on_keyboard_down(self, keyboard, keycode, text, modifiers):
+def keyboard_down(self, keyboard, keycode, text, modifiers):
     if keycode[1] in ["left", "a"]:
         self.newEvent(game.events.KartTurnEvent(1, -1))
 
@@ -31,7 +31,7 @@ def on_keyboard_down(self, keyboard, keycode, text, modifiers):
     return True
 
 
-def on_keyboard_up(self, keyboard, keycode):
+def keyboard_up(self, keyboard, keycode):
     if keycode[1] in ["left", "a"]:
         self.newEvent(game.events.KartTurnEvent(0, -1))
 
@@ -45,9 +45,9 @@ def on_keyboard_up(self, keyboard, keycode):
         self.newEvent(game.events.KartMoveEvent(0, -1))
 
 
-def on_touch_down(self, touch):
+def touch_down(self, touch):
     pass
 
 
-def on_touch_up(self, touch):
+def touch_up(self, touch):
     pass
