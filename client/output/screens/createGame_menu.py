@@ -62,21 +62,6 @@ class CreateGame(FloatLayout):
             else:
                 worldVersion_id = worlds[self.chosen_world]["version_id"]
                 self.app.instanciate_MultiKS(name=name, worldVersion_id=worldVersion_id, on_collision=self.on_Collision, changeLabelText=self.changeLabelText)
-                # MultiplayerGame(
-                #     session=self.app.session,
-                #     server=self.app.server,
-                #     name=name,
-                #     output=OutputFactory(
-                #         self,
-                #         frame_callback=self.frame_callback,
-                #         max_width=self.app.windowSize()[0],
-                #         max_height=self.app.windowSize()[1],
-                #         POV="Third Person",
-                #     ),
-                #     onCollision=self.on_Collision,
-                #     worldVersion_id=worldVersion_id,
-                #     errorLabel=self.ids["labelID"],
-                # )
         else:
             self.changeLabelText(message="Please choose a world before playing!")
 

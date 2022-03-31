@@ -85,7 +85,12 @@ class SingleplayerGame:
             except ObjectCountError as OCE:
                 self._game = None
                 changeLabelText(OCE.message())         # Affichage de l'erreur obtenue
+        self.y = 0      # Pour une raison inconnue, lors du redimensionnement d'une fenêtre (qui n'arrive normalement pas car le jeu est par défaut en plein écran), kivy essaie de retrouver la "hauteur" "self.y" de cette classe alors qu'elle n'est en rien liée à l'application graphique... n'ayant pas réussi à régler le problème autrement, nous avons créé la méthode to_window() et l'attribut "y" qui règlent le problème.
 
+
+    def to_window(self,a,b):
+        #c.f. commentaire de self.y ci-dessus
+        return self.app.windowSize()
 
     def nextFrame(self, elapsedTime: float) -> None:
         self._game.nextFrame(elapsedTime, self.eventsList)

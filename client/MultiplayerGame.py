@@ -2,13 +2,13 @@ from typing import Callable, Dict, List, Tuple, AnyStr
 import click
 from socketio import Client, ClientNamespace
 from requests import Session
-from client.output import kart_simulator
-from client.output.outputFactory import OutputFactory
 
 from game import Game, OnCollisionT
 from game.objects import Object
 from game.events import Event, KartMoveEvent, KartTurnEvent
 import lib
+from client.output.outputFactory import OutputFactory
+
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen
 from kivy.app import App
@@ -42,9 +42,6 @@ class MultiplayerGame(ClientNamespace):
         self._game = Game("", output, onCollision)
         self._sio = Client(http_session=session)
         self.app = App.get_running_app()
-        self._keyboard = Window.request_keyboard(self.keyboard_closed, self)
-        self._keyboard.bind(on_key_down=self.keyboard_down)
-        self._keyboard.bind(on_key_up=self.keyboard_up)
         try:
             self._sio.register_namespace(self)
             self._sio.connect(server, namespaces="/kartmultiplayer")
@@ -54,10 +51,9 @@ class MultiplayerGame(ClientNamespace):
             )
         else:
             self.app.start_ks()
-            self.start_button = Button(text="start The game!", size_hint=(0.25, 0.1))
-            self.start_button.bind(on_press=self.animation)
-            self.parrentScreen.ids.noActionBar.add_widget(self.start_button)
-
+            
+        self.y = 0      # Pour une raison inconnue, lors du redimensionnement d'une fenêtre (qui n'arrive normalement pas car le jeu est par défaut en plein écran), kivy essaie de retrouver la "hauteur" "self.y" de cette classe alors qu'elle n'est en rien liée à l'application graphique... n'ayant pas réussi à régler le problème autrement, nous avons créé la méthode to_window() et l'attribut "y" qui règlent le problème.
+        
     from .output.multi_user_actions import (
         keyboard_closed,
         keyboard_down,
@@ -65,7 +61,11 @@ class MultiplayerGame(ClientNamespace):
         touch_up,
         touch_down,
     )
-
+    
+    def to_window(self,a,b):
+        #c.f. commentaire de self.y ci-dessus
+        return self.app.windowSize()
+    
     def error(self, error: "None | str" = None) -> None:
         """Gestion des erreurs non fatales"""
 
@@ -88,6 +88,9 @@ class MultiplayerGame(ClientNamespace):
         self.parrentScreen.ids.noActionBar.remove_widget(self.start_button)
 
     def start(self) -> None:
+        self._keyboard = Window.request_keyboard(self.keyboard_closed, self)
+        self._keyboard.bind(on_key_down=self.keyboard_down)
+        self._keyboard.bind(on_key_up=self.keyboard_up)
         self.emit("start")
 
     def newEvent(self, event: Event) -> None:
@@ -100,11 +103,15 @@ class MultiplayerGame(ClientNamespace):
             self.emit("join", self._name, callback=self.joiningError)
 
         else:
+            self.start_button = Button(text="start The game!", size_hint=(0.25, 0.1))       # Création du bouton qui permet de démarrer la partie
+            self.start_button.bind(on_press=self.animation)
+            self.parrentScreen.ids.noActionBar.add_widget(self.start_button)
+            
             self.emit(
                 "create",
                 (self._name, self._worldVersion_id),
                 callback=self.joiningError,
-            )
+            )                                                                               # Informe le serveur de la création d'une partie
             self._worldVersion_id = None
 
     def on_game_data(self, data: dict):

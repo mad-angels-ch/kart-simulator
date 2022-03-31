@@ -14,7 +14,7 @@ class JoinGame(FloatLayout):
         self.app = App.get_running_app()
         
     def join(self):
-        self.app.instanciate_MultiKS(name=self.ids.gameName, worldVersion_id=None, on_collision=self.on_Collision, changeLabelText=self.changeLabelText)
+        self.app.instanciate_MultiKS(name=self.ids.gameName.text, worldVersion_id=None, on_collision=self.on_Collision, changeLabelText=self.changeLabelText)
         
     def changeLabelText(self, message) -> None:
         """Mise à jour puis suppession du message d'erreur à afficher"""
