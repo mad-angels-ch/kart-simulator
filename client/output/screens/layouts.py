@@ -5,7 +5,6 @@ from kivy.clock import Clock
 from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.gridlayout import GridLayout
 import requests, json, os
-# from client.output.kart_simulator import game, path, Rectangle, Color
 from os import path, listdir, write
 from posixpath import abspath
 from re import S
@@ -37,7 +36,6 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.widget import Widget
 from kivy.utils import rgba
 from game.objects.ObjectFactory import ObjectCountError
-# from kart_simulator import MainWidget
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import StringProperty, ObjectProperty
