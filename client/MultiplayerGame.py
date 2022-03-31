@@ -1,4 +1,5 @@
 from typing import Callable, Dict, List, Tuple, AnyStr
+import click
 from socketio import Client, ClientNamespace
 from requests import Session
 from client.output import kart_simulator
@@ -60,6 +61,13 @@ class MultiplayerGame(ClientNamespace):
             print(error)
             self.disconnect()
 
+    def joiningError(self, error: "None | str" = None) -> None:
+        """Gestion des erreur d'entrées en parties"""
+        if error:
+            print(error)
+            if click.confirm("Do you want to try again?"):
+                self.emit("join", self._name, callback=self.joiningError)
+
 
     def animation(self, button):
         self.parrentScreen.startingAnimation(start_theGame = self.start)
@@ -70,15 +78,16 @@ class MultiplayerGame(ClientNamespace):
 
     def newEvent(self, event: Event) -> None:
         """Fonction permettant la transmition d'inputs du joueur au server"""
+        print("New event")
         self.emit("", (event.__class__.__name__, event.toTuple()))
 
     def on_connect(self):
         if self._worldVersion_id == None:
-            self.emit("join", self._name, callback=self.fatalError)
+            self.emit("join", self._name, callback=self.joiningError)
 
         else:
             self.emit(
-                "create", (self._name, self._worldVersion_id), callback=self.fatalError
+                "create", (self._name, self._worldVersion_id), callback=self.joiningError
             )
             self._worldVersion_id = None
 
