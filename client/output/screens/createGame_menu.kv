@@ -15,7 +15,7 @@
             Spinner:
                 id: worlds_spinner_id
                 size_hint: .25,1
-                text: "Chose your world !"
+                text: "Choose your world !"
                 values: root.generateWorldsList()
                 on_text:
                     root.changeWorldSpinnerText(worlds_spinner_id.text), app.ButtonSound(), preView_ID.changePreView(root.chosen_world)

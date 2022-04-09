@@ -103,7 +103,7 @@ class MultiplayerGame(ClientNamespace):
             self.emit("join", self._name, callback=self.joiningError)
 
         else:
-            self.start_button = Button(text="start The game!", size_hint=(0.25, 0.1))       # Création du bouton qui permet de démarrer la partie
+            self.start_button = Button(text="Start the game!", size_hint=(0.25, 0.1))       # Création du bouton qui permet de démarrer la partie
             self.start_button.bind(on_press=self.animation)
             self.parrentScreen.ids.noActionBar.add_widget(self.start_button)
             

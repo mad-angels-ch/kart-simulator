@@ -31,7 +31,7 @@ class MenuApp(App):
     manager = ObjectProperty(None)
     soundEnabled = True
     cookiesPath = "client/cookies"
-    server = "http://localhost:5000"
+    server = "https://lj44.ch"
 
     _isLogged: bool = True
 
