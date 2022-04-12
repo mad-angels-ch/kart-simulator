@@ -87,6 +87,7 @@ class MultiplayerGame(ClientNamespace):
 
     def start(self) -> None:
         self.emit("start")
+        self.parrentScreen.ids.noActionBar.remove_widget(self.start_button)
 
     def newEvent(self, event: Event) -> None:
         """Fonction permettant la transmition d'inputs du joueur au server"""
@@ -119,9 +120,6 @@ class MultiplayerGame(ClientNamespace):
     def on_countdown(self):
         self.executeInMainKivyThread(
             self.parrentScreen.startingAnimation, start_theGame=lambda: None
-        )
-        self.executeInMainKivyThread(
-            self.parrentScreen.ids.noActionBar.remove_widget, self.start_button
         )
         self._keyboard = Window.request_keyboard(self.keyboard_closed, self)
         self._keyboard.bind(on_key_down=self.keyboard_down)
