@@ -85,14 +85,7 @@ class MultiplayerGame(ClientNamespace):
             if click.confirm("Do you want to try again?"):
                 self.emit("join", self._name, callback=self.joiningError)
 
-    def animation(self, button):
-        self.parrentScreen.startingAnimation(start_theGame=self.start)
-        self.parrentScreen.ids.noActionBar.remove_widget(self.start_button)
-
     def start(self) -> None:
-        self._keyboard = Window.request_keyboard(self.keyboard_closed, self)
-        self._keyboard.bind(on_key_down=self.keyboard_down)
-        self._keyboard.bind(on_key_up=self.keyboard_up)
         self.emit("start")
 
     def newEvent(self, event: Event) -> None:
@@ -106,7 +99,7 @@ class MultiplayerGame(ClientNamespace):
         self.start_button = Button(
             text="start The game!", size_hint=(0.25, 0.1)
         )  # Création du bouton qui permet de démarrer la partie
-        self.start_button.bind(on_press=self.animation)
+        self.start_button.bind(on_press=lambda _: self.start())
         self.parrentScreen.ids.noActionBar.add_widget(self.start_button)
 
     def on_connect(self):
@@ -114,7 +107,7 @@ class MultiplayerGame(ClientNamespace):
             self.emit("join", self._name, callback=self.joiningError)
 
         else:
-            Clock.schedule_once(lambda _: self.createStartButton(), 0)
+            self.executeInMainKivyThread(self.createStartButton)
 
             self.emit(
                 "create",
@@ -122,6 +115,17 @@ class MultiplayerGame(ClientNamespace):
                 callback=self.joiningError,
             )  # Informe le serveur de la création d'une partie
             self._worldVersion_id = None
+
+    def on_countdown(self):
+        self.executeInMainKivyThread(
+            self.parrentScreen.startingAnimation, start_theGame=lambda: None
+        )
+        self.executeInMainKivyThread(
+            self.parrentScreen.ids.noActionBar.remove_widget, self.start_button
+        )
+        self._keyboard = Window.request_keyboard(self.keyboard_closed, self)
+        self._keyboard.bind(on_key_down=self.keyboard_down)
+        self._keyboard.bind(on_key_up=self.keyboard_up)
 
     def on_game_data(self, data: dict):
         """Evènement appelé à chaque nouvelle factory partagée par le serveur.
@@ -146,9 +150,12 @@ class MultiplayerGame(ClientNamespace):
     def on_disconnect(self) -> None:
         print("Connection perdue")
 
+    def executeInMainKivyThread(self, function, *args, **kwargs) -> None:
+        Clock.schedule_once(lambda _: function(*args, **kwargs), 0)
+
     def frame_callback(self, output: OutputFactory, objects: List[Object]) -> None:
         pass
 
     def callOutput(self) -> None:
         if self._charged:
-            Clock.schedule_once(lambda _: self._game.callOutput(), 0)
+            self.executeInMainKivyThread(self._game.callOutput)
