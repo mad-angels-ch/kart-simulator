@@ -31,7 +31,8 @@ class MenuApp(App):
     manager = ObjectProperty(None)
     soundEnabled = True
     cookiesPath = "client/cookies"
-    server = "http://localhost:5000"
+    # server = "https://lj44.ch"
+    server = "http://localhost:5044"
 
     _isLogged: bool = True
 
@@ -152,7 +153,8 @@ class MenuApp(App):
         """Met à jour les information relatives aux paramètres du joueur connecté."""
         try:
             self.userSettings = self.session.get(
-                self.server + "/auth/myaccount/kart.json"
+                self.server + "/auth/myaccount/kart.json",
+                timeout=1
             ).json()
         except requests.ConnectionError:
             self.userSettings = {
