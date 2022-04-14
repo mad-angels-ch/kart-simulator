@@ -86,7 +86,7 @@ class MenuApp(App):
         self.game_instance = KS_screen()
         
         output=OutputFactory(widget=self.game_instance.widget, max_width=self.windowSize()[0], max_height=self.windowSize()[1], POV=self.get_userSettings()["pov"])
-        self.game = MultiplayerGame(session=self.session, server=self.server, name=name, output=output, onCollision=on_collision, worldVersion_id=worldVersion_id, changeLabelText=changeLabelText, parrentScreen=self.game_instance)
+        self.game = MultiplayerGame(session=self.session, server=self.server, name=name, output=output, onCollision=on_collision, worldVersion_id=worldVersion_id, changeLabelText=changeLabelText, parentScreen=self.game_instance)
         # self.game._game.callOutput()       # Appel d'une instance de l'output afin d'afficher le circuit derrière l'animation
         # self.game_instance.startingAnimation(start_theGame=self.game.start_theGame)
         

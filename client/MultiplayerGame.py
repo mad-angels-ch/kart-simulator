@@ -30,12 +30,13 @@ class MultiplayerGame(ClientNamespace):
         name: str,
         output: Callable[[List[Object]], None],
         changeLabelText: Callable[[AnyStr], None],
-        parrentScreen: Screen,
+        parentScreen: Screen,
         onCollision: OnCollisionT = lambda o, p: None,
         worldVersion_id: "int | None" = None,
     ):
         super().__init__("/kartmultiplayer")
-        self.parrentScreen = parrentScreen
+        self.play = False
+        self.parentScreen = parentScreen
         self._name = name
         self._worldVersion_id = worldVersion_id
         self._changeLabelText = changeLabelText
@@ -52,6 +53,8 @@ class MultiplayerGame(ClientNamespace):
             )
         else:
             self.app.start_ks()
+            self.play = True
+
 
         self.y = 0  # Pour une raison inconnue, lors du redimensionnement d'une fenêtre (qui n'arrive normalement pas car le jeu est par défaut en plein écran), kivy essaie de retrouver la "hauteur" "self.y" de cette classe alors qu'elle n'est en rien liée à l'application graphique... n'ayant pas réussi à régler le problème autrement, nous avons créé la méthode to_window() et l'attribut "y" qui règlent le problème.
 
@@ -67,6 +70,21 @@ class MultiplayerGame(ClientNamespace):
         # c.f. commentaire de self.y ci-dessus
         return self.app.windowSize()
 
+    def change_gameState(self) -> None:
+        """Change l'état du jeu: pause ou jeu"""
+        if self.play:
+            self.play = False
+            self.parentScreen.pauseMode()
+        else:
+            self.play = True
+            self.parentScreen.resumeGame()
+            for kart in self._game.kartPlaceholders():
+                if kart.username() == self.app.get_userSettings()["username"]:
+                    kart.set_image(self.app.get_userSettings()["kart"])
+            else:
+                kart
+
+    
     def error(self, error: "None | str" = None) -> None:
         """Gestion des erreurs non fatales"""
         print(error)
@@ -87,7 +105,7 @@ class MultiplayerGame(ClientNamespace):
 
     def start(self) -> None:
         self.emit("start")
-        self.parrentScreen.ids.noActionBar.remove_widget(self.start_button)
+        self.parentScreen.ids.noActionBar.remove_widget(self.start_button)
 
     def newEvent(self, event: Event) -> None:
         """Fonction permettant la transmition d'inputs du joueur au server"""
@@ -101,7 +119,7 @@ class MultiplayerGame(ClientNamespace):
             text="start The game!", size_hint=(0.25, 0.1)
         )  # Création du bouton qui permet de démarrer la partie
         self.start_button.bind(on_press=lambda _: self.start())
-        self.parrentScreen.ids.noActionBar.add_widget(self.start_button)
+        self.parentScreen.ids.noActionBar.add_widget(self.start_button)
 
     def on_connect(self):
         if self._worldVersion_id == None:
@@ -119,7 +137,7 @@ class MultiplayerGame(ClientNamespace):
 
     def on_countdown(self):
         self.executeInMainKivyThread(
-            self.parrentScreen.startingAnimation, start_theGame=lambda: None
+            self.parentScreen.startingAnimation, start_theGame=lambda: None
         )
         self._keyboard = Window.request_keyboard(self.keyboard_closed, self)
         self._keyboard.bind(on_key_down=self.keyboard_down)
