@@ -1,7 +1,9 @@
+import json
 from os import path
 from posixpath import abspath
 from re import S
 from sys import hexversion
+from threading import Thread
 import time
 import os.path
 from typing import Dict, List
@@ -12,6 +14,7 @@ from kivy.uix.button import Button
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.label import Label
 from kivy.uix.relativelayout import RelativeLayout
+import requests
 from game.objects.FinishLine import FinishLine
 from game.objects.ObjectFactory import ObjectCountError
 from game.objects.fill.Hex import Hex
@@ -49,7 +52,9 @@ class SingleplayerGame:
 
     kart_ID = 0
 
-    def __init__(self, world, output, onCollision, changeLabelText, parentScreen, **kwargs):
+    def __init__(
+        self, world, output, onCollision, changeLabelText, parentScreen, **kwargs
+    ):
         """Canvas dans lequel les objets d'une partie en solo sont dessinés"""
         super().__init__(**kwargs)
         self.world = world
@@ -58,6 +63,9 @@ class SingleplayerGame:
         self._output.set_frameCallback(self.frame_callback)
         ##################### Création de la partie #####################
         if self.world != "client/easteregg.json":
+            with open("client/worlds.json", "r", encoding="utf8") as f:
+                worlds = json.load(f)
+                self.worldVersion_id = worlds[self.world]["version_id"]
             dataUrl = path.join("client/worlds", self.world) + ".json"
             self.isEasterEgg = False
         else:
@@ -75,7 +83,7 @@ class SingleplayerGame:
                     self._output,
                 )
                 self.kart_ID = self._game.loadKart(
-                    "Me",self.app.get_userSettings()["kart"]
+                    "Me", self.app.get_userSettings()["kart"]
                 )
 
                 self.app.start_ks()
@@ -84,12 +92,11 @@ class SingleplayerGame:
 
             except ObjectCountError as OCE:
                 self._game = None
-                changeLabelText(OCE.message())         # Affichage de l'erreur obtenue
-        self.y = 0      # Pour une raison inconnue, lors du redimensionnement d'une fenêtre (qui n'arrive normalement pas car le jeu est par défaut en plein écran), kivy essaie de retrouver la "hauteur" "self.y" de cette classe alors qu'elle n'est en rien liée à l'application graphique... n'ayant pas réussi à régler le problème autrement, nous avons créé la méthode to_window() et l'attribut "y" qui règlent le problème.
+                changeLabelText(OCE.message())  # Affichage de l'erreur obtenue
+        self.y = 0  # Pour une raison inconnue, lors du redimensionnement d'une fenêtre (qui n'arrive normalement pas car le jeu est par défaut en plein écran), kivy essaie de retrouver la "hauteur" "self.y" de cette classe alors qu'elle n'est en rien liée à l'application graphique... n'ayant pas réussi à régler le problème autrement, nous avons créé la méthode to_window() et l'attribut "y" qui règlent le problème.
 
-
-    def to_window(self,a,b):
-        #c.f. commentaire de self.y ci-dessus
+    def to_window(self, a, b):
+        # c.f. commentaire de self.y ci-dessus
         return self.app.windowSize()
 
     def nextFrame(self, elapsedTime: float) -> None:
@@ -112,7 +119,14 @@ class SingleplayerGame:
             self.my_clock.schedule_interval(self.nextFrame, 1 / self.fps)
             self.parentScreen.resumeGame()
             self._game.unloadKart(placeHolder=self.kart_ID)
-            Clock.schedule_once(lambda a:self._game.loadKart(placeHolder=self.kart_ID, username="", img=self.app.get_userSettings()["kart"]),2/self.fps)
+            Clock.schedule_once(
+                lambda a: self._game.loadKart(
+                    placeHolder=self.kart_ID,
+                    username="",
+                    img=self.app.get_userSettings()["kart"],
+                ),
+                2 / self.fps,
+            )
 
     def start_theGame(self) -> None:
         """Instantation du clavier, des commandes liées et de la pendule"""
@@ -124,8 +138,7 @@ class SingleplayerGame:
         self.my_clock.schedule_interval(self.nextFrame, 1 / self.fps)
 
         self.play = True
-        
-        
+
     def frame_callback(self, output: OutputFactory, objects: List[Object]) -> None:
         """Fonction appellée à chaque frame par output"""
         if output.isInitialized() and not self.isEasterEgg:
@@ -163,5 +176,31 @@ class SingleplayerGame:
             self.parentScreen.end_game(
                 f"Completed!\n\nWell done!\n Your time: {self.parentScreen.ids.timer_id.text}"
             )
+            if not self.isEasterEgg:
+                Thread(
+                    target=self.app.session.post,
+                    args=(
+                        self.app.server + "/games/kart/savesologame",
+                        {
+                            "worldVersion_id": self.worldVersion_id,
+                            "duration": self.timer,
+                            "movements": "",
+                            "burned": False,
+                        },
+                    ),
+                ).start()
         elif karts[0].hasBurned():
             self.parentScreen.end_game("You have burned!\n\nTry again!")
+            if not self.isEasterEgg:
+                Thread(
+                    target=self.app.session.post,
+                    args=(
+                        self.app.server + "/games/kart/savesologame",
+                        {
+                            "worldVersion_id": self.worldVersion_id,
+                            "duration": self.timer,
+                            "movements": "",
+                            "burned": True,
+                        },
+                    ),
+                ).start()
