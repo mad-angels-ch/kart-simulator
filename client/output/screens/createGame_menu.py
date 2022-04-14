@@ -40,7 +40,7 @@ class CreateGame(FloatLayout):
     def changeLabelText(self, message) -> None:
         """Mise à jour puis suppession du message d'erreur à afficher"""
         self.ids.labelID.text = message
-        Clock.schedule_once(self.clearLabelText, 4)
+        Clock.schedule_once(self.clearLabelText, 5)
 
     def clearLabelText(self, dt) -> None:
         """Vidage du message d'erreur après un temps <dt> donné"""
