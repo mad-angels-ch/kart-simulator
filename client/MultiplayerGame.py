@@ -113,6 +113,8 @@ class MultiplayerGame(ClientNamespace):
             self.emit("event", (event.__class__.__name__, event.toTuple()))
         except BadNamespaceError:
             self.error("Couldn't transmit the event to the server")
+        except BaseException as e:
+            raise e
 
     def createStartButton(self) -> None:
         self.start_button = Button(
