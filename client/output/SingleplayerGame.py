@@ -185,7 +185,7 @@ class SingleplayerGame:
                             "worldVersion_id": self.worldVersion_id,
                             "duration": self.timer,
                             "movements": "",
-                            "burned": False,
+                            "burned": 0,
                         },
                     ),
                 ).start()
@@ -200,7 +200,7 @@ class SingleplayerGame:
                             "worldVersion_id": self.worldVersion_id,
                             "duration": self.timer,
                             "movements": "",
-                            "burned": True,
+                            "burned": 1,
                         },
                     ),
                 ).start()
