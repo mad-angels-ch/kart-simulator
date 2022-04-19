@@ -191,6 +191,8 @@ class SingleplayerGame:
     def save(self) -> None:
         """Sauvegarde la partie sur lj44.ch"""
         if not self.isEasterEgg:
+            if self.completed_time == None:
+                self.completed_time = self.timer
             Thread(
                 target=self.app.session.post,
                 args=(
