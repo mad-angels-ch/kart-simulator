@@ -21,7 +21,6 @@ from kivy.core.window import Window
 class MultiplayerGame(ClientNamespace):
     _game: Game
     _sio: Client
-    _charged: bool = False
 
     _lastEvent: "Event | None" = None
 
@@ -57,8 +56,7 @@ class MultiplayerGame(ClientNamespace):
             self.app.start_ks()
             self.play = True
 
-
-        self.y = 0 
+        self.y = 0
         # Pour une raison inconnue, lors du redimensionnement d'une fenêtre (qui n'arrive normalement pas car le jeu est par défaut en plein écran),
         # kivy essaie de retrouver la "hauteur" "self.y" de cette classe alors qu'elle n'est en rien liée à l'application graphique...
         # N'ayant pas réussi à régler le problème autrement, nous avons créé la méthode to_window() et l'attribut "y" qui règlent le problème.
@@ -89,7 +87,6 @@ class MultiplayerGame(ClientNamespace):
             else:
                 kart
 
-    
     def error(self, error: "None | str" = None) -> None:
         """Gestion des erreurs non fatales"""
         print(error)
@@ -155,9 +152,7 @@ class MultiplayerGame(ClientNamespace):
     def on_game_data(self, data: dict):
         """Evènement appelé à chaque nouvelle factory partagée par le serveur.
         Recréé la factory locale en fonction des informations reçues."""
-        self._game.minimalImport(data)
-        self._charged = True
-        self.callOutput()
+        self.executeInMainKivyThread(self._game.minimalImport, data)
 
     def on_objects_update(self, outputs: Dict[int, Tuple[float, float, float]]):
         """Evènement appelé à chaque nouvelle position d'objets reçus.
@@ -182,5 +177,4 @@ class MultiplayerGame(ClientNamespace):
         pass
 
     def callOutput(self) -> None:
-        if self._charged:
-            self.executeInMainKivyThread(self._game.callOutput)
+        self.executeInMainKivyThread(self._game.callOutput)
