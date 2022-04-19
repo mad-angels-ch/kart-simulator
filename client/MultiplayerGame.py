@@ -23,6 +23,8 @@ class MultiplayerGame(ClientNamespace):
     _sio: Client
     _charged: bool = False
 
+    _lastEvent: "Event | None" = None
+
     def __init__(
         self,
         session: Session,
@@ -112,12 +114,14 @@ class MultiplayerGame(ClientNamespace):
 
     def newEvent(self, event: Event) -> None:
         """Fonction permettant la transmition d'inputs du joueur au server"""
-        try:
-            self.emit("event", (event.__class__.__name__, event.toTuple()))
-        except BadNamespaceError:
-            self.error("Couldn't transmit the event to the server")
-        except BaseException as e:
-            raise e
+        if event != self._lastEvent:
+            self._lastEvent = event
+            try:
+                self.emit("event", (event.__class__.__name__, event.toTuple()))
+            except BadNamespaceError:
+                self.error("Couldn't transmit the event to the server")
+            except BaseException as e:
+                raise e
 
     def createStartButton(self) -> None:
         self.start_button = Button(

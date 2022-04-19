@@ -10,40 +10,8 @@
             "request": "launch",
             "program": "main.py",
             "cwd": "${workspaceFolder}",
-            "console": "integratedTerminal"
-        },
-        {
-            "name": "Python: player.py (333)",
-            "type": "python",
-            "request": "launch",
-            "program": "player.py",
             "console": "integratedTerminal",
-            "args": [
-                "--username",
-                "333",
-                "--password",
-                "333"
-            ]
-        },
-        {
-            "name": "Python: player.py (4444)",
-            "type": "python",
-            "request": "launch",
-            "program": "player.py",
-            "console": "integratedTerminal",
-            "args": [
-                "--username",
-                "4444",
-                "--password",
-                "4444"
-            ]
-        },
-        {
-            "name": "Python : Fichier actuel",
-            "type": "python",
-            "request": "launch",
-            "program": "${file}",
-            "console": "integratedTerminal"
+            "justMyCode": true
         }
     ]
 }
