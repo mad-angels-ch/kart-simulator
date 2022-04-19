@@ -51,6 +51,9 @@ class SingleplayerGame:
     )
 
     kart_ID = 0
+    completed_time = None
+    burned = False
+    completed = False
 
     def __init__(
         self, world, output, onCollision, changeLabelText, parentScreen, **kwargs
@@ -172,35 +175,33 @@ class SingleplayerGame:
 
     def checkIfGameIsOver(self, karts: List[Kart], finishLine: FinishLine) -> None:
         """Contrôle si la partie est terminée et si oui gère celle-ci"""
-        if finishLine.completedAllLaps(self.kart_ID):
-            self.parentScreen.end_game(
-                f"Completed!\n\nWell done!\n Your time: {self.parentScreen.ids.timer_id.text}"
-            )
-            if not self.isEasterEgg:
-                Thread(
-                    target=self.app.session.post,
-                    args=(
-                        self.app.server + "/games/kart/savesologame",
-                        {
-                            "worldVersion_id": self.worldVersion_id,
-                            "duration": self.timer,
-                            "movements": "",
-                            "burned": 0,
-                        },
-                    ),
-                ).start()
-        elif karts[0].hasBurned():
-            self.parentScreen.end_game("You have burned!\n\nTry again!")
-            if not self.isEasterEgg:
-                Thread(
-                    target=self.app.session.post,
-                    args=(
-                        self.app.server + "/games/kart/savesologame",
-                        {
-                            "worldVersion_id": self.worldVersion_id,
-                            "duration": self.timer,
-                            "movements": "",
-                            "burned": 1,
-                        },
-                    ),
-                ).start()
+        if not self.completed:
+            if finishLine.completedAllLaps(self.kart_ID):
+                self.completed_time = self.timer
+                self.completed = True
+                self.parentScreen.end_game(
+                    f"Completed!\n\nWell done!\n Your time: {self.parentScreen.ids.timer_id.text}"
+                )
+
+            elif karts[0].hasBurned() and not self.burned:
+                self.parentScreen.end_game("You have burned!\n\nTry again!")
+                self.completed_time = self.timer
+                self.burned = True
+
+    def save(self) -> None:
+        """Sauvegarde la partie sur lj44.ch"""
+        if not self.isEasterEgg:
+            Thread(
+                target=self.app.session.post,
+                args=(
+                    self.app.server + "/games/kart/savesologame",
+                    {
+                        "worldVersion_id": self.worldVersion_id,
+                        "duration": self.timer,
+                        "movements": "",
+                        "finishTime": self.completed_time,
+                        "burned": self.burned,
+                        "completed": self.completed,
+                    },
+                ),
+            ).start()
