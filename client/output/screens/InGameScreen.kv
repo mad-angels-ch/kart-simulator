@@ -37,7 +37,7 @@
         size_hint:.2,.1
         pos_hint: {'x': .4 , 'y': .3 }
         text:"Quit game"
-        on_release: app.manager.popAll(), app.ButtonSound()
+        on_release: app.game.disconnect(), app.manager.popAll(), app.ButtonSound()
     
 
 
