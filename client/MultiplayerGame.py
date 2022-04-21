@@ -153,6 +153,7 @@ class MultiplayerGame(ClientNamespace):
         """Evènement appelé à chaque nouvelle factory partagée par le serveur.
         Recréé la factory locale en fonction des informations reçues."""
         self.executeInMainKivyThread(self._game.minimalImport, data)
+        self.executeInMainKivyThread(self.get_myKartID)
 
     def on_objects_update(self, outputs: Dict[int, Tuple[float, float, float]]):
         """Evènement appelé à chaque nouvelle position d'objets reçus.
@@ -178,3 +179,10 @@ class MultiplayerGame(ClientNamespace):
 
     def callOutput(self) -> None:
         self.executeInMainKivyThread(self._game.callOutput)
+
+    def get_myKartID(self) -> int:
+        for kart in self._game.kartPlaceholders():
+            if kart.username() == self.app.get_userSettings()["username"]:
+                self.myKart = (
+                    kart.formID()
+                )  # Récupère l'ID du kart associé au joueur connecté.

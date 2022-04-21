@@ -11,38 +11,38 @@ def keyboard_closed(self):
 
 def keyboard_down(self, keyboard, keycode, text, modifiers):
     if keycode[1] in ["left", "a"]:
-        self.newEvent(game.events.KartTurnEvent(1, -1))
+        self.newEvent(game.events.KartTurnEvent(1, self.myKart))
 
     if keycode[1] in ["right", "d"]:
-        self.newEvent(game.events.KartTurnEvent(-1, -1))
+        self.newEvent(game.events.KartTurnEvent(-1, self.myKart))
 
     if keycode[1] in ["up", "w"]:
-        self.newEvent(game.events.KartMoveEvent(1, -1))
+        self.newEvent(game.events.KartMoveEvent(1, self.myKart))
 
     if keycode[1] in ["down", "s"]:
-        self.newEvent(game.events.KartMoveEvent(-1, -1))
+        self.newEvent(game.events.KartMoveEvent(-1, self.myKart))
 
     if keycode[1] == "escape":
         self.change_gameState()
 
     if keycode[1] == "x":
-        self.newEvent(game.events.FireBallEvent(-1))
+        self.newEvent(game.events.FireBallEvent(self.myKart))
 
     return True
 
 
 def keyboard_up(self, keyboard, keycode):
     if keycode[1] in ["left", "a"]:
-        self.newEvent(game.events.KartTurnEvent(0, -1))
+        self.newEvent(game.events.KartTurnEvent(0, self.myKart))
 
     if keycode[1] in ["right", "d"]:
-        self.newEvent(game.events.KartTurnEvent(0, -1))
+        self.newEvent(game.events.KartTurnEvent(0, self.myKart))
 
     if keycode[1] in ["up", "w"]:
-        self.newEvent(game.events.KartMoveEvent(0, -1))
+        self.newEvent(game.events.KartMoveEvent(0, self.myKart))
 
     if keycode[1] in ["down", "s"]:
-        self.newEvent(game.events.KartMoveEvent(0, -1))
+        self.newEvent(game.events.KartMoveEvent(0, self.myKart))
 
 
 def touch_down(self, touch):
