@@ -7,6 +7,7 @@ from requests import Session
 from game import Game, OnCollisionT
 from game.objects import Object
 from game.events import Event, KartMoveEvent, KartTurnEvent
+from game.objects.Kart import Kart
 import lib
 from client.output.outputFactory import OutputFactory
 
@@ -21,7 +22,7 @@ from kivy.core.window import Window
 class MultiplayerGame(ClientNamespace):
     _game: Game
     _sio: Client
-
+    _myKart: "Kart | None" = None
     _lastEvent: "Event | None" = None
 
     def __init__(
@@ -81,11 +82,8 @@ class MultiplayerGame(ClientNamespace):
         else:
             self.play = True
             self.parentScreen.resumeGame()
-            for kart in self._game.kartPlaceholders():
-                if kart.username() == self.app.get_userSettings()["username"]:
-                    kart.set_image(self.app.get_userSettings()["kart"])
-            else:
-                kart
+            if self._myKart:
+                self._myKart.set_image(self.app.get_userSettings()["kart"])
 
     def error(self, error: "None | str" = None) -> None:
         """Gestion des erreurs non fatales"""
@@ -128,6 +126,9 @@ class MultiplayerGame(ClientNamespace):
         self.parentScreen.ids.noActionBar.add_widget(self.start_button)
 
     def on_connect(self):
+        self._keyboard = Window.request_keyboard(self.keyboard_closed, self)
+        self._keyboard.bind(on_key_down=self.keyboard_down)
+        self._keyboard.bind(on_key_up=self.keyboard_up)
         if self._worldVersion_id == None:
             self.emit("join", self._name, callback=self.joiningError)
 
@@ -145,15 +146,12 @@ class MultiplayerGame(ClientNamespace):
         self.executeInMainKivyThread(
             self.parentScreen.startingAnimation, start_theGame=lambda: None
         )
-        self._keyboard = Window.request_keyboard(self.keyboard_closed, self)
-        self._keyboard.bind(on_key_down=self.keyboard_down)
-        self._keyboard.bind(on_key_up=self.keyboard_up)
 
     def on_game_data(self, data: dict):
         """Evènement appelé à chaque nouvelle factory partagée par le serveur.
         Recréé la factory locale en fonction des informations reçues."""
         self.executeInMainKivyThread(self._game.minimalImport, data)
-        self.executeInMainKivyThread(self.get_myKartID)
+        self.executeInMainKivyThread(self.get_myKart)
 
     def on_objects_update(self, outputs: Dict[int, Tuple[float, float, float]]):
         """Evènement appelé à chaque nouvelle position d'objets reçus.
@@ -180,9 +178,9 @@ class MultiplayerGame(ClientNamespace):
     def callOutput(self) -> None:
         self.executeInMainKivyThread(self._game.callOutput)
 
-    def get_myKartID(self) -> int:
+    def get_myKart(self) -> int:
         for kart in self._game.kartPlaceholders():
             if kart.username() == self.app.get_userSettings()["username"]:
-                self.myKart = (
-                    kart.formID()
-                )  # Récupère l'ID du kart associé au joueur connecté.
+                self._myKart = (
+                    kart
+                )  # Récupère le kart associé au joueur connecté.
