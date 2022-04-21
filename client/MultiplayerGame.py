@@ -1,6 +1,7 @@
 from typing import Callable, Dict, List, Tuple, AnyStr
 import click
 from socketio import Client, ClientNamespace
+from socketio.exceptions import BadNamespaceError
 from requests import Session
 
 from game import Game, OnCollisionT
@@ -20,7 +21,8 @@ from kivy.core.window import Window
 class MultiplayerGame(ClientNamespace):
     _game: Game
     _sio: Client
-    _charged: bool = False
+
+    _lastEvent: "Event | None" = None
 
     def __init__(
         self,
@@ -29,12 +31,13 @@ class MultiplayerGame(ClientNamespace):
         name: str,
         output: Callable[[List[Object]], None],
         changeLabelText: Callable[[AnyStr], None],
-        parrentScreen: Screen,
+        parentScreen: Screen,
         onCollision: OnCollisionT = lambda o, p: None,
         worldVersion_id: "int | None" = None,
     ):
         super().__init__("/kartmultiplayer")
-        self.parrentScreen = parrentScreen
+        self.play = False
+        self.parentScreen = parentScreen
         self._name = name
         self._worldVersion_id = worldVersion_id
         self._changeLabelText = changeLabelText
@@ -51,9 +54,13 @@ class MultiplayerGame(ClientNamespace):
             )
         else:
             self.app.start_ks()
-            
-        self.y = 0      # Pour une raison inconnue, lors du redimensionnement d'une fenêtre (qui n'arrive normalement pas car le jeu est par défaut en plein écran), kivy essaie de retrouver la "hauteur" "self.y" de cette classe alors qu'elle n'est en rien liée à l'application graphique... n'ayant pas réussi à régler le problème autrement, nous avons créé la méthode to_window() et l'attribut "y" qui règlent le problème.
-        
+            self.play = True
+
+        self.y = 0
+        # Pour une raison inconnue, lors du redimensionnement d'une fenêtre (qui n'arrive normalement pas car le jeu est par défaut en plein écran),
+        # kivy essaie de retrouver la "hauteur" "self.y" de cette classe alors qu'elle n'est en rien liée à l'application graphique...
+        # N'ayant pas réussi à régler le problème autrement, nous avons créé la méthode to_window() et l'attribut "y" qui règlent le problème.
+
     from .output.multi_user_actions import (
         keyboard_closed,
         keyboard_down,
@@ -61,13 +68,28 @@ class MultiplayerGame(ClientNamespace):
         touch_up,
         touch_down,
     )
-    
-    def to_window(self,a,b):
-        #c.f. commentaire de self.y ci-dessus
+
+    def to_window(self, a, b):
+        # c.f. commentaire de self.y ci-dessus
         return self.app.windowSize()
-    
+
+    def change_gameState(self) -> None:
+        """Change l'état du jeu: pause ou jeu"""
+        if self.play:
+            self.play = False
+            self.parentScreen.pauseMode()
+        else:
+            self.play = True
+            self.parentScreen.resumeGame()
+            for kart in self._game.kartPlaceholders():
+                if kart.username() == self.app.get_userSettings()["username"]:
+                    kart.set_image(self.app.get_userSettings()["kart"])
+            else:
+                kart
+
     def error(self, error: "None | str" = None) -> None:
         """Gestion des erreurs non fatales"""
+        print(error)
 
     def fatalError(self, error: "None | str" = None) -> None:
         """Gestion des erreurs fatales"""
@@ -83,43 +105,54 @@ class MultiplayerGame(ClientNamespace):
             if click.confirm("Do you want to try again?"):
                 self.emit("join", self._name, callback=self.joiningError)
 
-    def animation(self, button):
-        self.parrentScreen.startingAnimation(start_theGame=self.start)
-        self.parrentScreen.ids.noActionBar.remove_widget(self.start_button)
-
     def start(self) -> None:
-        self._keyboard = Window.request_keyboard(self.keyboard_closed, self)
-        self._keyboard.bind(on_key_down=self.keyboard_down)
-        self._keyboard.bind(on_key_up=self.keyboard_up)
         self.emit("start")
+        self.parentScreen.ids.noActionBar.remove_widget(self.start_button)
 
     def newEvent(self, event: Event) -> None:
         """Fonction permettant la transmition d'inputs du joueur au server"""
-        print("New event")
-        self.emit("event", (event.__class__.__name__, event.toTuple()))
+        if event != self._lastEvent:
+            self._lastEvent = event
+            try:
+                self.emit("event", (event.__class__.__name__, event.toTuple()))
+            except BadNamespaceError:
+                self.error("Couldn't transmit the event to the server")
+            except BaseException as e:
+                raise e
+
+    def createStartButton(self) -> None:
+        self.start_button = Button(
+            text="start The game!", size_hint=(0.25, 0.1)
+        )  # Création du bouton qui permet de démarrer la partie
+        self.start_button.bind(on_press=lambda _: self.start())
+        self.parentScreen.ids.noActionBar.add_widget(self.start_button)
 
     def on_connect(self):
         if self._worldVersion_id == None:
             self.emit("join", self._name, callback=self.joiningError)
 
         else:
-            self.start_button = Button(text="Start the game!", size_hint=(0.25, 0.1))       # Création du bouton qui permet de démarrer la partie
-            self.start_button.bind(on_press=self.animation)
-            self.parrentScreen.ids.noActionBar.add_widget(self.start_button)
-            
+            self.executeInMainKivyThread(self.createStartButton)
+
             self.emit(
                 "create",
                 (self._name, self._worldVersion_id),
                 callback=self.joiningError,
-            )                                                                               # Informe le serveur de la création d'une partie
+            )  # Informe le serveur de la création d'une partie
             self._worldVersion_id = None
+
+    def on_countdown(self):
+        self.executeInMainKivyThread(
+            self.parentScreen.startingAnimation, start_theGame=lambda: None
+        )
+        self._keyboard = Window.request_keyboard(self.keyboard_closed, self)
+        self._keyboard.bind(on_key_down=self.keyboard_down)
+        self._keyboard.bind(on_key_up=self.keyboard_up)
 
     def on_game_data(self, data: dict):
         """Evènement appelé à chaque nouvelle factory partagée par le serveur.
         Recréé la factory locale en fonction des informations reçues."""
-        self._game.minimalImport(data)
-        self._charged = True
-        self.callOutput()
+        self.executeInMainKivyThread(self._game.minimalImport, data)
 
     def on_objects_update(self, outputs: Dict[int, Tuple[float, float, float]]):
         """Evènement appelé à chaque nouvelle position d'objets reçus.
@@ -134,9 +167,14 @@ class MultiplayerGame(ClientNamespace):
             obj.set_angle(newPos[2])
         self.callOutput()
 
+    def on_disconnect(self) -> None:
+        print("Connection perdue")
+
+    def executeInMainKivyThread(self, function, *args, **kwargs) -> None:
+        Clock.schedule_once(lambda _: function(*args, **kwargs), 0)
+
     def frame_callback(self, output: OutputFactory, objects: List[Object]) -> None:
         pass
 
     def callOutput(self) -> None:
-        if self._charged:
-            Clock.schedule_once(lambda _: self._game.callOutput(), 0)
+        self.executeInMainKivyThread(self._game.callOutput)

@@ -26,12 +26,13 @@ import requests, pickle
 ######################## App de lancement de kivy ########################
 
 
-
 class MenuApp(App):
     manager = ObjectProperty(None)
     soundEnabled = True
     cookiesPath = "client/cookies"
     server = "https://lj44.ch"
+    # server = "https://test.lj44.ch"
+    # server = "http://localhost:5044"
 
     _isLogged: bool = True
 
@@ -67,27 +68,52 @@ class MenuApp(App):
         if self.manager.has_screen("Kart_Simulator"):
             screen = self.manager.get_screen("Kart_Simulator")
             self.manager.remove_widget(screen)
-        self.game_instance = KS_screen()         # Création du Screen qui acquillera le canvas où sera affichée la partie
-        
-        output=OutputFactory(widget=self.game_instance.widget, max_width=self.windowSize()[0], max_height=self.windowSize()[1], POV=self.get_userSettings()["pov"])     # Crée la Factory qui gèrera tous les outputs
-        self.game = SingleplayerGame(world=world, output=output, onCollision=on_collision, changeLabelText=changeLabelText, parentScreen = self.game_instance)  # Création de la partie
+        self.game_instance = (
+            KS_screen()
+        )  # Création du Screen qui acquillera le canvas où sera affichée la partie
+
+        output = OutputFactory(
+            widget=self.game_instance.widget,
+            max_width=self.windowSize()[0],
+            max_height=self.windowSize()[1],
+            POV=self.get_userSettings()["pov"],
+        )  # Crée la Factory qui gèrera tous les outputs
+        self.game = SingleplayerGame(
+            world=world,
+            output=output,
+            onCollision=on_collision,
+            changeLabelText=changeLabelText,
+            parentScreen=self.game_instance,
+        )  # Création de la partie
         if self.game._game:
-            self.game._game.callOutput()        # Appel d'une instance de l'output afin d'afficher le circuit derrière l'animation
+            self.game._game.callOutput()  # Appel d'une instance de l'output afin d'afficher le circuit derrière l'animation
             self.game_instance.startingAnimation(start_theGame=self.game.start_theGame)
-            
-            
+
     def instanciate_MultiKS(self, name, worldVersion_id, on_collision, changeLabelText):
         """Création de tout ce qui est nécessaire à une partie en multijoueur"""
         if self.manager.has_screen("Kart_Simulator"):
             screen = self.manager.get_screen("Kart_Simulator")
             self.manager.remove_widget(screen)
         self.game_instance = KS_screen()
-        
-        output=OutputFactory(widget=self.game_instance.widget, max_width=self.windowSize()[0], max_height=self.windowSize()[1], POV=self.get_userSettings()["pov"])
-        self.game = MultiplayerGame(session=self.session, server=self.server, name=name, output=output, onCollision=on_collision, worldVersion_id=worldVersion_id, changeLabelText=changeLabelText, parrentScreen=self.game_instance)
+
+        output = OutputFactory(
+            widget=self.game_instance.widget,
+            max_width=self.windowSize()[0],
+            max_height=self.windowSize()[1],
+            POV=self.get_userSettings()["pov"],
+        )
+        self.game = MultiplayerGame(
+            session=self.session,
+            server=self.server,
+            name=name,
+            output=output,
+            onCollision=on_collision,
+            worldVersion_id=worldVersion_id,
+            changeLabelText=changeLabelText,
+            parentScreen=self.game_instance,
+        )
         # self.game._game.callOutput()       # Appel d'une instance de l'output afin d'afficher le circuit derrière l'animation
         # self.game_instance.startingAnimation(start_theGame=self.game.start_theGame)
-        
 
     def start_ks(self):
         """Affichage de la partie"""
@@ -109,6 +135,8 @@ class MenuApp(App):
     def clear_game(self):
         """Nettoyage de la partie finie"""
         if self.game_instance:
+            if isinstance(self.game, SingleplayerGame):
+                self.game.save()
             self.game_instance.quit()
             self.game_instance = None
 
@@ -146,13 +174,13 @@ class MenuApp(App):
         else:
             if self.userSettings.get("error") == 401:
                 # échec car le joueur n'est pas connecté
-                self.userSettings = userSettings        #Enregistrement des changements pas global, mais dans l'instance de l'app lancée.
+                self.userSettings = userSettings  # Enregistrement des changements pas global, mais dans l'instance de l'app lancée.
 
     def update_userSettings(self) -> None:
         """Met à jour les information relatives aux paramètres du joueur connecté."""
         try:
             self.userSettings = self.session.get(
-                self.server + "/auth/myaccount/kart.json"
+                self.server + "/auth/myaccount/kart.json", timeout=1
             ).json()
         except requests.ConnectionError:
             self.userSettings = {
@@ -173,7 +201,7 @@ class MenuApp(App):
                     "username": "Anonyme user",
                     "volume": 1,
                 }
-                
+
     def logOut(self) -> None:
         """Déconnecte le joueur connecté."""
         self.session.get(self.server + "/auth/logout")
@@ -181,7 +209,7 @@ class MenuApp(App):
         self._isLogged = False
         with open(self.cookiesPath, "wb") as f:
             pickle.dump(self.session.cookies, f)
-        
+
     def is_logged(self) -> bool:
         """Retourne vrai si un utilisateur est connecté à son compte."""
         return self._isLogged

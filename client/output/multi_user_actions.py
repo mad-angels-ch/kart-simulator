@@ -1,11 +1,11 @@
 import game.events
 
-# Liens utilisateur-programme à travers le clavier, relié à la class SingleplayerGame lors de l'instanciation d'un partie
+# Liens utilisateur-programme à travers le clavier, reliés à la classe MultiplayerGame lors de l'instanciation d'une partie
 
 
 def keyboard_closed(self):
-    self._keyboard.unbind(key_down=self.keyboard_down)
-    self._keyboard.unbind(key_up=self.keyboard_up)
+    self._keyboard.unbind(on_key_down=self.keyboard_down)
+    self._keyboard.unbind(on_key_up=self.keyboard_up)
     self._keyboard = None
 
 

@@ -66,11 +66,11 @@ class OutputFactory:
     def isInitialized(self) -> bool:
         """Retourne vrai si initialisé."""
         return self._initialized
-    
+
     def set_frameCallback(self, frame_collback) -> None:
         """Etabli une nouvelle fonction à appeler à chaque frame."""
         self._frameCallback = frame_collback
-        
+
     def getAllKarts(self) -> List[game_objects.Kart]:
         """NE PAS MODIFIER\n
         Retourne la liste de tous les karts du jeu"""
@@ -210,10 +210,10 @@ class OutputFactory:
                 # mettres l'objet à jour
                 if obstacle.lastFrame():
                     # l'objet va tout prochainement être supprimé, le faire maintenant pour éviter à devoir le faire plus tard
-                    try:            
+                    try:
                         io_object = self._createdObject.pop(obstacle.formID())
                     except:
-                        continue        # Au cas où l'objet a dégà été supprimer de la liste, plus rien besoin de faire
+                        continue  # Au cas où l'objet a dégà été supprimer de la liste, plus rien besoin de faire
                     else:
                         self._w.canvas.remove(io_object)
 
@@ -230,6 +230,7 @@ class OutputFactory:
                     elif isinstance(obstacle, game_objects.Polygon):
                         io_object.updatePosition()
 
+        # print(len(self._createdObject))
         self._initialized = True
 
     def createCircle(self, lgeCircle: game_objects.Circle) -> None:
@@ -260,7 +261,7 @@ class OutputFactory:
         self._karts.append(lgeKart)
         with self._w.canvas:  # Ce type d'objet doit être placé dans l'instruction 'with self.canvas:'
             Color(rgba=(1, 1, 1, 1))
-            
+
             imageName = lgeKart.image()
             ioKart = io_objects.FilledQuadrilateral(
                 LGEObject=lgeKart, source=f"client/Images/karts/{imageName}.png"

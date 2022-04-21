@@ -1,6 +1,6 @@
 import game.events
 
-# Liens utilisateur-programme à travers le clavier, relié à la class SingleplayerGame lors de l'instanciation d'un partie
+# Liens utilisateur-programme à travers le clavier, reliés à la classe SingleplayerGame lors de l'instanciation d'une partie
 
 
 def keyboard_closed(self):
