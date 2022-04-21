@@ -33,7 +33,7 @@ from kivy.uix.widget import Widget
 from kivy.graphics import Rectangle, Color
 from kivy.properties import Clock
 from kivy.properties import StringProperty
-from .outputFactory import OutputFactory
+from .output.outputFactory import OutputFactory
 from game.objects import Circle, Object
 from lib import Point
 

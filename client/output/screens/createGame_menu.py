@@ -17,7 +17,7 @@ import requests, json, os, threading
 from kivy.core.audio import SoundLoader
 from functools import partial
 from client.MultiplayerGame import MultiplayerGame
-from client.output.SingleplayerGame import SingleplayerGame
+from client.SingleplayerGame import SingleplayerGame
 import json
 
 Builder.load_file("client/output/screens/createGame_menu.kv")

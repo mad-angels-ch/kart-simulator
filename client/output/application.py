@@ -12,7 +12,7 @@ from kivy.core.window import Window
 
 from client.MultiplayerGame import MultiplayerGame
 from client.output.outputFactory import OutputFactory
-from .SingleplayerGame import SingleplayerGame
+from ..SingleplayerGame import SingleplayerGame
 from kivy.core.audio import SoundLoader
 from kivy.graphics import Rectangle, Color
 from kivy.uix.label import Label

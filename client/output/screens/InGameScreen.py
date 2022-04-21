@@ -4,7 +4,7 @@ from typing import List
 from kivy.animation import Animation
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.screenmanager import Screen
-from client.output.SingleplayerGame import SingleplayerGame
+from client.SingleplayerGame import SingleplayerGame
 from kivy.app import App
 from kivy.uix.label import Label
 from kivy.properties import Clock
