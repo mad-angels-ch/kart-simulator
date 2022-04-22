@@ -3,9 +3,10 @@ import click
 from socketio import Client, ClientNamespace
 from socketio.exceptions import BadNamespaceError
 from requests import Session
+from client.output.screens.InGameScreen import KS_screen, WaitingRoom
 
 from game import Game, OnCollisionT
-from game.objects import Object
+from game.objects import FinishLine, Gate, Object
 from game.events import Event, KartMoveEvent, KartTurnEvent
 from game.objects.Kart import Kart
 import lib
@@ -30,9 +31,9 @@ class MultiplayerGame(ClientNamespace):
         session: Session,
         server: str,
         name: str,
-        output: Callable[[List[Object]], None],
+        output: OutputFactory,
         changeLabelText: Callable[[AnyStr], None],
-        parentScreen: Screen,
+        parentScreen: KS_screen,
         onCollision: OnCollisionT = lambda o, p: None,
         worldVersion_id: "int | None" = None,
     ):
@@ -44,6 +45,7 @@ class MultiplayerGame(ClientNamespace):
         self._changeLabelText = changeLabelText
         output.set_frameCallback(self.frame_callback)
         self._game = Game("", output, onCollision)
+        self._output = output
         self._sio = Client(http_session=session)
         self.app = App.get_running_app()
         try:
@@ -55,6 +57,8 @@ class MultiplayerGame(ClientNamespace):
             )
         else:
             self.app.start_ks()
+            self.waitingScreen = WaitingRoom()
+            self.parentScreen.add_widget(self.waitingScreen)
             self.play = True
 
         self.y = 0
@@ -82,8 +86,8 @@ class MultiplayerGame(ClientNamespace):
         else:
             self.play = True
             self.parentScreen.resumeGame()
-            if self._myKart:
-                self._myKart.set_image(self.app.get_userSettings()["kart"])
+            if self.myKart():
+                self.myKart().set_image(self.app.get_userSettings()["kart"])
 
     def error(self, error: "None | str" = None) -> None:
         """Gestion des erreurs non fatales"""
@@ -105,7 +109,7 @@ class MultiplayerGame(ClientNamespace):
 
     def start(self) -> None:
         self.emit("start")
-        self.parentScreen.ids.noActionBar.remove_widget(self.start_button)
+        self.waitingScreen.remove_widget(self.start_button)
 
     def newEvent(self, event: Event) -> None:
         """Fonction permettant la transmition d'inputs du joueur au server"""
@@ -120,10 +124,10 @@ class MultiplayerGame(ClientNamespace):
 
     def createStartButton(self) -> None:
         self.start_button = Button(
-            text="start The game!", size_hint=(0.25, 0.1)
+            text="start The game!", size_hint=(0.25, 0.1), pos_hint={'center_x': .5, 'y': .1}
         )  # Création du bouton qui permet de démarrer la partie
         self.start_button.bind(on_press=lambda _: self.start())
-        self.parentScreen.ids.noActionBar.add_widget(self.start_button)
+        self.waitingScreen.add_widget(self.start_button)
 
     def on_connect(self):
         self._keyboard = Window.request_keyboard(self.keyboard_closed, self)
@@ -131,10 +135,8 @@ class MultiplayerGame(ClientNamespace):
         self._keyboard.bind(on_key_up=self.keyboard_up)
         if self._worldVersion_id == None:
             self.emit("join", self._name, callback=self.joiningError)
-
         else:
             self.executeInMainKivyThread(self.createStartButton)
-
             self.emit(
                 "create",
                 (self._name, self._worldVersion_id),
@@ -146,6 +148,7 @@ class MultiplayerGame(ClientNamespace):
         self.executeInMainKivyThread(
             self.parentScreen.startingAnimation, start_theGame=lambda: None
         )
+        self.parentScreen.remove_widget(self.waitingScreen)
 
     def on_game_data(self, data: dict):
         """Evènement appelé à chaque nouvelle factory partagée par le serveur.
@@ -165,7 +168,17 @@ class MultiplayerGame(ClientNamespace):
             obj.set_center(lib.Point(newPos))
             obj.set_angle(newPos[2])
         self.callOutput()
-
+        self.parentScreen.updateGatesCount(self._output.getAllGates(), self.myKart().formID())
+        self.parentScreen.updateLapsCount(self._output.getFinishLine(), self.myKart().formID())
+        self.parentScreen.updateTimer(0)
+        # self.parentScreen.checkIfGameIsOver(self._output.getAllKarts(), self._output.getFinishLine(), self.myKart().formID())
+        
+    def on_new_connection(self, player: str) -> None:
+        self.waitingScreen.add_player(player)
+        
+    def on_new_disconnection(self, player: str) -> None:
+        self.waitingScreen.remove_player(player)
+        
     def on_disconnect(self) -> None:
         print("Connection perdue")
 
@@ -178,9 +191,28 @@ class MultiplayerGame(ClientNamespace):
     def callOutput(self) -> None:
         self.executeInMainKivyThread(self._game.callOutput)
 
+    def myKart(self) -> Kart:
+        """Retourne le kart associé au joueur connecté. """
+        return self._myKart
+    
     def get_myKart(self) -> int:
         for kart in self._game.kartPlaceholders():
             if kart.username() == self.app.get_userSettings()["username"]:
                 self._myKart = (
                     kart
                 )  # Récupère le kart associé au joueur connecté.
+                
+    def checkIfGameIsOver(self, karts: List[Kart], finishLine: FinishLine) -> None:
+        """Contrôle si la partie est terminée et si oui gère celle-ci"""
+        # if not self.completed:
+        #     if finishLine.completedAllLaps(self.kart_ID):
+        #         self.completed_time = self.timer
+        #         self.completed = True
+        #         self.parentScreen.end_game(
+        #             f"Completed!\n\nWell done!\n Your time: {self.parentScreen.ids.timer_id.text}"
+        #         )
+
+        #     elif karts[0].hasBurned() and not self.burned:
+        #         self.parentScreen.end_game("You have burned!\n\nTry again!")
+        #         self.completed_time = self.timer
+        #         self.burned = True
