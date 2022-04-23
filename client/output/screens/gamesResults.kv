@@ -1,0 +1,39 @@
+<Results>:
+    BoxLayout:
+        orientation: 'vertical'
+        pos_hint: {'center_x':.5 , 'y':.75 }
+        size_hint: .7, .15
+        BoxLayout:
+            orientation: 'horizontal'
+            ToggleButton:
+                id: my_games
+                text: "My games"
+                state: "down"
+                group: "resluts"
+            ToggleButton:
+                text: "Best games"
+                group: "resluts"
+
+        BoxLayout:
+            orientation: 'horizontal'
+            TextInput:
+                id: worldVersion_id
+                hint_text: "Version ID"
+            Spinner:
+                id: world
+                text: "Worlds"
+                values: root.generateWorldsList()
+            TextInput:
+                id: maxGames
+                hint_text: "Max. games"
+            TextInput:
+                id: maxPlayers
+                hint_text: "Max. players"
+            TextInput:
+                id: minPlayers
+                hint_text: "Min. players"
+        Button:
+            text: "Search games"
+            on_press: root.search_games()
+        
+        
