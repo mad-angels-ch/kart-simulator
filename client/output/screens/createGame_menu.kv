@@ -18,7 +18,7 @@
                 text: "Choose your world !"
                 values: root.generateWorldsList()
                 on_text:
-                    root.changeWorldSpinnerText(worlds_spinner_id.text), app.ButtonSound(), preView_ID.changePreView(root.chosen_world)
+                    app.ButtonSound(), preView_ID.changePreView(worlds_spinner_id.text)
 
             UpdateWorldButton:
                 size_hint: .5,.5

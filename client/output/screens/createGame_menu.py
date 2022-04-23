@@ -26,12 +26,8 @@ Builder.load_file("client/output/screens/createGame_menu.kv")
 class CreateGame(FloatLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.chosen_world = StringProperty("Choose your world")
         self.app = App.get_running_app()
 
-    def changeWorldSpinnerText(self, text) -> None:
-        """Change le texte affiché sur le dépliant de choix du circuit"""
-        self.chosen_world = text
 
     def generateWorldsList(self) -> list:
         """Génère la liste des curcuits jouables"""
@@ -52,15 +48,16 @@ class CreateGame(FloatLayout):
             "client/worlds.json", "r", encoding="utf8"
         ) as f:  # Lecture et transformation du ficher worlds.json pour y accéder sous la forme d'un dictionnaire
             worlds = json.loads(f.read())
-        if self.chosen_world in worlds:
+        chosen_world = self.ids.worlds_spinner_id.text
+        if self.ids.worlds_spinner_id.text in worlds:
             try:
                 name = (
                     self.children[0].children[1].text
                 )  # Récupération  du texte pour le nom à partir d'un "TextInput" ajouté dans "MyScreenManager"
             except:
-                self.app.instanciate_SoloKS(world=self.chosen_world, on_collision=self.on_Collision, changeLabelText=self.changeLabelText)
+                self.app.instanciate_SoloKS(world=chosen_world, on_collision=self.on_Collision, changeLabelText=self.changeLabelText)
             else:
-                worldVersion_id = worlds[self.chosen_world]["version_id"]
+                worldVersion_id = worlds[chosen_world]["version_id"]
                 self.app.instanciate_MultiKS(name=name, worldVersion_id=worldVersion_id, on_collision=self.on_Collision, changeLabelText=self.changeLabelText)
         else:
             self.changeLabelText(message="Please choose a world before playing!")
