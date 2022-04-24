@@ -40,24 +40,19 @@
         on_release: app.game.disconnect(), app.manager.popAll(), app.ButtonSound()
     
 <WaitingRoom>:
-    pos: 0,0
     canvas.before:
-        BorderImage:
-            border: 10, 10, 10, 10
-            source: 'client/Images/black_background.jpg'
-            pos: self.pos
-            size: self.size
-    Label:
-        pos_hint: {"center_x":.5,"y":.8}
-        size_hint: .5,.2
-        text: '[size=24]Waiting Room[/size]\n[size=20]Waiting for players to connect...[/size]'
-        markup: True
-        halign: "center"
+        Color:
+            rgba: 0,0,0,.15
+        Rectangle:
+            pos:self.pos
+            size:self.size
+
     Label:
         id: game_info
-        pos_hint: {"x":.75,"y":.4}
-        size_hint: .25,.6
-        text: 'Game informations:'
+        pos_hint: {'center_x': .8, 'center_y':.3 }
+        size_hint: .38, .6
+        color: 0,0,0,1
+        text: 'Game informations:\n\n'
         valign: "bottom"
         markup: True
 

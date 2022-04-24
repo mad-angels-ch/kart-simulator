@@ -25,6 +25,7 @@ class MultiplayerGame(ClientNamespace):
     _sio: Client
     _myKart: "Kart | None" = None
     _lastEvent: "Event | None" = None
+    _connectedPlayers: List[str]
 
     def __init__(
         self,
@@ -45,7 +46,6 @@ class MultiplayerGame(ClientNamespace):
         self._changeLabelText = changeLabelText
         output.set_frameCallback(self.frame_callback)
         self._game = Game("", output, onCollision)
-        self._output = output
         self._sio = Client(http_session=session)
         self.app = App.get_running_app()
         try:
@@ -56,8 +56,9 @@ class MultiplayerGame(ClientNamespace):
                 error="Couldn't reach the server. Please check your internet connection and try again."
             )
         else:
+            self._connectedPlayers = []
             self.app.start_ks()
-            self.waitingScreen = WaitingRoom()
+            self.waitingScreen = WaitingRoom(size_hint=(1, 1))
             self.parentScreen.add_widget(self.waitingScreen)
             self.play = True
 
@@ -73,6 +74,7 @@ class MultiplayerGame(ClientNamespace):
         touch_up,
         touch_down,
     )
+    
 
     def to_window(self, a, b):
         # c.f. commentaire de self.y ci-dessus
@@ -124,7 +126,9 @@ class MultiplayerGame(ClientNamespace):
 
     def createStartButton(self) -> None:
         self.start_button = Button(
-            text="start The game!", size_hint=(0.25, 0.1), pos_hint={'center_x': .5, 'y': .1}
+            text="start The game!",
+            size_hint=(0.25, 0.1),
+            pos_hint={"center_x": 0.5, "y": 0.1},
         )  # Création du bouton qui permet de démarrer la partie
         self.start_button.bind(on_press=lambda _: self.start())
         self.waitingScreen.add_widget(self.start_button)
@@ -148,13 +152,14 @@ class MultiplayerGame(ClientNamespace):
         self.executeInMainKivyThread(
             self.parentScreen.startingAnimation, start_theGame=lambda: None
         )
-        self.parentScreen.remove_widget(self.waitingScreen)
+        self.executeInMainKivyThread(self.parentScreen.remove_widget,self.waitingScreen)
 
     def on_game_data(self, data: dict):
         """Evènement appelé à chaque nouvelle factory partagée par le serveur.
         Recréé la factory locale en fonction des informations reçues."""
         self.executeInMainKivyThread(self._game.minimalImport, data)
         self.executeInMainKivyThread(self.get_myKart)
+        self.executeInMainKivyThread(self.checkIfNewConnection)
 
     def on_objects_update(self, outputs: Dict[int, Tuple[float, float, float]]):
         """Evènement appelé à chaque nouvelle position d'objets reçus.
@@ -168,17 +173,20 @@ class MultiplayerGame(ClientNamespace):
             obj.set_center(lib.Point(newPos))
             obj.set_angle(newPos[2])
         self.callOutput()
-        self.parentScreen.updateGatesCount(self._output.getAllGates(), self.myKart().formID())
-        self.parentScreen.updateLapsCount(self._output.getFinishLine(), self.myKart().formID())
+        self.parentScreen.updateGatesCount(
+            self._game.gates(), self.myKart().formID()
+        )
+        self.parentScreen.updateLapsCount(
+            self._game.finishLine(), self.myKart().formID()
+        )
         self.parentScreen.updateTimer(0)
-        # self.parentScreen.checkIfGameIsOver(self._output.getAllKarts(), self._output.getFinishLine(), self.myKart().formID())
-        
-    def on_new_connection(self, player: str) -> None:
+
+    def new_connection(self, player: str) -> None:
         self.waitingScreen.add_player(player)
-        
-    def on_new_disconnection(self, player: str) -> None:
+
+    def new_disconnection(self, player: str) -> None:
         self.waitingScreen.remove_player(player)
-        
+
     def on_disconnect(self) -> None:
         print("Connection perdue")
 
@@ -192,16 +200,14 @@ class MultiplayerGame(ClientNamespace):
         self.executeInMainKivyThread(self._game.callOutput)
 
     def myKart(self) -> Kart:
-        """Retourne le kart associé au joueur connecté. """
+        """Retourne le kart associé au joueur connecté."""
         return self._myKart
-    
+
     def get_myKart(self) -> int:
-        for kart in self._game.kartPlaceholders():
+        for kart in self._game.karts():
             if kart.username() == self.app.get_userSettings()["username"]:
-                self._myKart = (
-                    kart
-                )  # Récupère le kart associé au joueur connecté.
-                
+                self._myKart = kart  # Récupère le kart associé au joueur connecté.
+
     def checkIfGameIsOver(self, karts: List[Kart], finishLine: FinishLine) -> None:
         """Contrôle si la partie est terminée et si oui gère celle-ci"""
         # if not self.completed:
@@ -216,3 +222,17 @@ class MultiplayerGame(ClientNamespace):
         #         self.parentScreen.end_game("You have burned!\n\nTry again!")
         #         self.completed_time = self.timer
         #         self.burned = True
+
+    def connectedPlayers(self):
+        """Retourne la liste des joueurs connectés."""
+        return self._connectedPlayers
+
+    def checkIfNewConnection(self):
+        """Appelé à chaque nouvelle factory créée. Vérifie si il y a eu une nouvelle (dé)connection et informe les autre joueurs."""
+        for kart in self._game._factory.karts():
+            if kart.username() not in self.connectedPlayers():
+                self.new_connection(kart.username())
+        for player in self.connectedPlayers():
+            if player not in list(kart.username() for kart in self._game.karts()):
+                self.new_disconnection(player)
+        self._connectedPlayers = list(kart.username() for kart in self._game.karts())

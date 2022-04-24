@@ -18,23 +18,38 @@ Builder.load_file("client/output/screens/InGameScreen.kv")
 class WaitingRoom(FloatLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.entries = ["finally got up and joined the game !", "wants to loose another game !","is ready for the fight !", ", we were waiting for you !","has found his way to heaven !"]
-        self.exits = ["remembered he had a bac to study...", "got cought by the philosophy teacher...", "got scared by his oponents...", "left us. RIP.", "swung to the dark side..."]
+        self.entries = [
+            "finally got up and joined the game !",
+            "wants to loose another game !",
+            "is ready for the fight !",
+            ", we were waiting for you !",
+            "has found his way to heaven !",
+        ]
+        self.exits = [
+            "remembered he had a bac to study...",
+            "got cought by the philosophy teacher...",
+            "got scared by his oponents...",
+            "left us. RIP.",
+            "swung to the dark side...",
+        ]
+
     def add_player(self, player: str):
-        
         """Ajoute un joueur à la liste lors d'une connection."""
         if player in ["lj44", "Noe"]:
             self.ids.game_info.text += f"\n {player} THE BOSS IS IN THE PLACE !"
+        elif player in ["CHAJ","chaj","johnschmidt"]:
+            self.ids.game_info.text += f"\n Bienvenue {player}. Ce projet mérite un 6."
         else:
             self.ids.game_info.text += f"\n {player} {self.entries[randrange(5)]}"
-            
+
     def remove_player(self, player: str):
         """Retire un joueur de la liste lors d'une déconnection."""
         self.ids.game_info.text += f"\n {player} {self.exits[randrange(5)]}"
-            
-            
+
+
 class EndGameMode(FloatLayout):
     """Menu de fin de partie"""
+
     pass
 
 
@@ -44,8 +59,7 @@ class PauseMode(FloatLayout):
         self.width = size[0]
         self.height = size[1]
         super().__init__(**kwargs)
-        
-        
+
 
 class KS_screen(Screen):
     def __init__(self, **kw):
@@ -55,21 +69,20 @@ class KS_screen(Screen):
         self.ids.noActionBar.add_widget(self.widget)
         self.timer = 0
         self.app = App.get_running_app()
-        
+
     def quit(self):
         """Nettoyage du canvas de jeu et arrêt de la pendule après la partie"""
         self.ids.noActionBar.canvas.clear()
-        
+
     def pauseMode(self):
         """Appel du mode de pause, utilisé dans le cas d'une partie en solo."""
-        self.pauseMenu = PauseMode(
-            size=self.app.windowSize())
+        self.pauseMenu = PauseMode(size=self.app.windowSize())
         self.add_widget(self.pauseMenu)
-        
+
     def resumeGame(self):
         """Reprise de la partie à la fin de la pause. A surcharger dans le cas d'une partie en solo."""
         self.remove_widget(self.pauseMenu)
-        
+
     def endGameMode(self, message):
         """Appel du mode de fin de partie"""
         self.app.game.finish_game()
@@ -84,11 +97,11 @@ class KS_screen(Screen):
         anim.repeat = True
         anim.start(self.endGameMenu.ids.gameOverLabel_id)
         self.add_widget(self.endGameMenu)
-        
+
     def begin_game(self, start_theGame, dt):
         """Démarrage de la partie"""
         start_theGame()
-        
+
     def startingAnimation(self, start_theGame):
         """Création et affichage de l'animation de début de partie"""
         # self.ids.noActionBar.remove_widget(self.start_button)
@@ -136,26 +149,26 @@ class KS_screen(Screen):
             + Animation(font_size=0, duration=0.5)
         )
         anim.start(start_animationGO)
-        
+
         Clock.schedule_once(partial(self.begin_game, start_theGame), 6)
-        
+
     def end_game(self, endGameMessage=""):
         """Appel du mode de fin de partie"""
         self.endGameMode(endGameMessage)
 
     def updateLapsCount(self, finishLine: FinishLine, kartID: int) -> None:
         """Met l'affichage du nombre de tours terminés à jour"""
-        self.ids.laps_id.text = f"{finishLine.passagesCount(kartID)}/{finishLine.numberOfLapsRequired()}"
+        self.ids.laps_id.text = (
+            f"{finishLine.passagesCount(kartID)}/{finishLine.numberOfLapsRequired()}"
+        )
 
     def updateGatesCount(self, gatesList: List[Gate], kartID: int) -> None:
         """Met l'affiche du nombre de portillons (du tour) franchis à jour"""
         numberOfGates = len(gatesList)
         gatesPassed = (
-            sum([gate.passagesCount(kartID) for gate in gatesList])
-            % numberOfGates
+            sum([gate.passagesCount(kartID) for gate in gatesList]) % numberOfGates
         )
         self.ids.gates_id.text = f"{gatesPassed}/{numberOfGates}"
-
 
     def updateTimer(self, time: float) -> None:
         """Mise à jour du timer"""

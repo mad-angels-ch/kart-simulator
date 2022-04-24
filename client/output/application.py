@@ -1,27 +1,20 @@
-from functools import partial
+import os
+import pickle
 from logging import info, warning
-from kivy.app import App
-from kivy.clock import Clock
-from kivy.core import window
-from kivy.properties import StringProperty, ObjectProperty
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.button import Button
-from kivy.uix.widget import Widget
-from kivy.utils import get_color_from_hex, rgba
-from kivy.core.window import Window
 
+import requests
 from client.MultiplayerGame import MultiplayerGame
 from client.output.outputFactory import OutputFactory
-from ..SingleplayerGame import SingleplayerGame
+from kivy.app import App
 from kivy.core.audio import SoundLoader
-from kivy.graphics import Rectangle, Color
-from kivy.uix.label import Label
-from kivy.uix.image import Image
+from kivy.core.window import Window
+from kivy.properties import ObjectProperty, StringProperty
+from kivy.uix.button import Button
+from kivy.utils import get_color_from_hex, rgba
+
+from ..SingleplayerGame import SingleplayerGame
 from . import MyScreenManager
 from .screens.InGameScreen import KS_screen
-import os
-
-import requests, pickle
 
 ######################## App de lancement de kivy ########################
 
@@ -30,8 +23,8 @@ class MenuApp(App):
     manager = ObjectProperty(None)
     soundEnabled = True
     cookiesPath = "client/cookies"
-    server = "https://lj44.ch"
-    # server = "https://test.lj44.ch"
+    # server = "https://lj44.ch"
+    server = "https://test.lj44.ch"
     # server = "http://localhost:5044"
 
     _isLogged: bool = True

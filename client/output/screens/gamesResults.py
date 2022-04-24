@@ -32,20 +32,21 @@ class Results(FloatLayout):
         if self.ids.minPlayers.text:
             chosenOptions["minPlayers"]=self.ids.minPlayers.text
         if self.ids.my_games.state == "down":
-            print(chosenOptions)
-            try:
-                result = self.app.session.get(self.app.server + "/games/kart/mygames.json", params=chosenOptions)
-            except :
-                print("non")
-            else:
-                print(result.json())
-        else:
-            try:
-                result = self.app.session.get(self.app.server + "/games/kart/bestgames.json", params=chosenOptions)
-            except:
+            result = self.app.session.get(self.app.server + "/games/kart/mygames.json", params=chosenOptions)
+            if result.status_code == 400:
                 pass
             else:
                 print(result.json())
+
+        else:
+            if self.ids.username.text:
+                chosenOptions["username"]=self.ids.username.text
+            result = self.app.session.get(self.app.server + "/games/kart/bestgames.json", params=chosenOptions)
+            if result.status_code == 400:
+                pass
+            else:
+                print(result.json())
+                
     def generateWorldsList(self) -> list:
         """Génère la liste des curcuits jouables"""
         return [world[:-5] for world in listdir("client/worlds")]
