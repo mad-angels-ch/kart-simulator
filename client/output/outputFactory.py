@@ -1,6 +1,6 @@
 from kivy.graphics.transformation import Matrix
 from logging import warning
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 from kivy.app import App
 import math
 from kivy.utils import get_color_from_hex
@@ -18,7 +18,7 @@ from game.objects.Lava import Lava
 class OutputFactory:
     _w: Widget
     _frameCallback: "function"
-    _createdObject: Dict[int, Any]
+    _createdObjects: Dict[int, Any]
     _maxWidth: float
     _maxHeight: float
     _center: List[float]
@@ -53,7 +53,7 @@ class OutputFactory:
             raise "Either the dimensions or the scale must be given"
         self._w = widget
         self._frameCallback = frame_callback
-        self._createdObject = {}
+        self._createdObjects = {}
         self._initialized = False
 
         self._karts = []
@@ -86,6 +86,8 @@ class OutputFactory:
         return self._finishLine
 
     def __call__(self, objects: List[game_objects.Object]) -> None:
+        """Instantie les objets dans le canvas, met à jour la taille de celui-ci en fonction de la taille
+        de la fenêtre et de la POV choisie, et met à jour la position des objets."""
         self._frameCallback(self, objects)
         if not self._scale:
             # calculer la taille du canvas
@@ -93,6 +95,7 @@ class OutputFactory:
             rights = []
             bottoms = []
             tops = []
+
             for obj in objects:
                 if isinstance(obj, game_objects.Circle):
                     lefts.append(obj.center().x() - obj.radius())
@@ -171,7 +174,7 @@ class OutputFactory:
 
         for obstacle in objects:
             if not obstacle.lastFrame() and (
-                not self._initialized or obstacle.formID() not in self._createdObject
+                not self._initialized or obstacle.formID() not in self._createdObjects
             ):
                 if isinstance(obstacle, game_objects.Kart):
                     self.createKart(obstacle)
@@ -199,7 +202,7 @@ class OutputFactory:
                                     angle=obstacle.angle(),
                                     scale=self._scale,
                                 )
-                            self._createdObject[obstacle.formID()] = io_obstacle
+                            self._createdObjects[obstacle.formID()] = io_obstacle
                     else:
                         raise "Only quadrilaterals can be filled with a pattern"
 
@@ -211,14 +214,14 @@ class OutputFactory:
                 if obstacle.lastFrame():
                     # l'objet va tout prochainement être supprimé, le faire maintenant pour éviter à devoir le faire plus tard
                     try:
-                        io_object = self._createdObject.pop(obstacle.formID())
+                        io_object = self._createdObjects.pop(obstacle.formID())
                     except:
                         continue  # Au cas où l'objet a dégà été supprimer de la liste, plus rien besoin de faire
                     else:
                         self._w.canvas.remove(io_object)
 
                 else:
-                    io_object = self._createdObject[obstacle.formID()]
+                    io_object = self._createdObjects[obstacle.formID()]
                     if isinstance(obstacle, game_objects.Circle):
                         io_object.updatePosition()
                     elif isinstance(obstacle, game_objects.Kart):
@@ -230,7 +233,6 @@ class OutputFactory:
                     elif isinstance(obstacle, game_objects.Polygon):
                         io_object.updatePosition()
 
-        # print(len(self._createdObject))
         self._initialized = True
 
     def createCircle(self, lgeCircle: game_objects.Circle) -> None:
@@ -240,7 +242,7 @@ class OutputFactory:
             widget=self._w, LGEObject=lgeCircle, source="client/Images/lava_circle.jpg"
         )
         self._w.canvas.add(ioCircle)
-        self._createdObject[lgeCircle.formID()] = ioCircle
+        self._createdObjects[lgeCircle.formID()] = ioCircle
 
     def createPolygon(self, lgePolygon: game_objects.Polygon) -> None:
         """Dessine le polygon sur le canvas du widget et l'ajout au registre"""
@@ -254,41 +256,42 @@ class OutputFactory:
         else:
             ioPolygon = io_objects.Polygon(widget=self._w, LGEObject=lgePolygon)
         self._w.canvas.add(ioPolygon)
-        self._createdObject[lgePolygon.formID()] = ioPolygon
+        self._createdObjects[lgePolygon.formID()] = ioPolygon
 
     def createKart(self, lgeKart: game_objects.Kart) -> None:
         """Dessine le kart sur le canvas du widget et l'ajout au registre"""
         self._karts.append(lgeKart)
-        with self._w.canvas:  # Ce type d'objet doit être placé dans l'instruction 'with self.canvas:'
+        with self._w.canvas:
             Color(rgba=(1, 1, 1, 1))
 
-            imageName = lgeKart.image()
-            ioKart = io_objects.FilledQuadrilateral(
-                LGEObject=lgeKart, source=f"client/Images/karts/{imageName}.png"
-            )
-        self._createdObject[lgeKart.formID()] = ioKart
+        imageName = lgeKart.image()
+        ioKart = io_objects.FilledQuadrilateral(
+            widget=self._w,
+            LGEObject=lgeKart,
+            source=f"client/Images/karts/{imageName}.png",
+        )
+        self._createdObjects[lgeKart.formID()] = ioKart
 
     def createFinishLine(self, lgeFinishLine: game_objects.FinishLine) -> None:
         """Dessine la ligne d'arrivée sur le canvas du widget et l'ajout au registre"""
         self._w.canvas.add(Color(rgba=(1, 1, 1, 1)))
-        with self._w.canvas:
-            self._gates.append(lgeFinishLine)
-            self._finishLine = lgeFinishLine
-            ioFinishLine = io_objects.FilledQuadrilateral(
-                LGEObject=lgeFinishLine,
-                patternToRepeat="client/Images/finishLineMotif.jpg",
-            )
-        self._createdObject[lgeFinishLine.formID()] = ioFinishLine
+        self._gates.append(lgeFinishLine)
+        self._finishLine = lgeFinishLine
+        ioFinishLine = io_objects.FilledQuadrilateral(
+            widget=self._w,
+            LGEObject=lgeFinishLine,
+            patternToRepeat="client/Images/finishLineMotif.jpg",
+        )
+        self._createdObjects[lgeFinishLine.formID()] = ioFinishLine
 
     def createGate(self, lgeGate: game_objects.Gate) -> None:
         """Dessine le portillon sur le canvas du widget et l'ajout au registre"""
         self._w.canvas.add(Color(rgba=(1, 1, 1, 1)))
-        with self._w.canvas:
-            self._gates.append(lgeGate)
-            ioGate = io_objects.FilledQuadrilateral(
-                LGEObject=lgeGate, patternToRepeat="client/Images/gates.png"
-            )
-        self._createdObject[lgeGate.formID()] = ioGate
+        self._gates.append(lgeGate)
+        ioGate = io_objects.FilledQuadrilateral(
+            widget=self._w, LGEObject=lgeGate, patternToRepeat="client/Images/gates.png"
+        )
+        self._createdObjects[lgeGate.formID()] = ioGate
 
     def get_updatedPositionInCanvas(self, point):
         """Retourne une copie du point ajustée au canvas affiché"""

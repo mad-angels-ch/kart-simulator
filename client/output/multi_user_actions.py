@@ -10,39 +10,39 @@ def keyboard_closed(self):
 
 
 def keyboard_down(self, keyboard, keycode, text, modifiers):
-    if keycode[1] in ["left", "a"]:
-        self.newEvent(game.events.KartTurnEvent(1, -1))
+    if keycode[1] in ["left", "a"] and self.myKart(): # Si aucun kart ne nous a encore été attribué, self.myKart() a comme valeur par défaut "None".
+        self.newEvent(game.events.KartTurnEvent(1, self.myKart().formID()))
 
-    if keycode[1] in ["right", "d"]:
-        self.newEvent(game.events.KartTurnEvent(-1, -1))
+    if keycode[1] in ["right", "d"] and self.myKart():
+        self.newEvent(game.events.KartTurnEvent(-1, self.myKart().formID()))
 
-    if keycode[1] in ["up", "w"]:
-        self.newEvent(game.events.KartMoveEvent(1, -1))
+    if keycode[1] in ["up", "w"] and self.myKart():
+        self.newEvent(game.events.KartMoveEvent(1, self.myKart().formID()))
 
-    if keycode[1] in ["down", "s"]:
-        self.newEvent(game.events.KartMoveEvent(-1, -1))
+    if keycode[1] in ["down", "s"] and self.myKart():
+        self.newEvent(game.events.KartMoveEvent(-1, self.myKart().formID()))
 
     if keycode[1] == "escape":
         self.change_gameState()
 
-    if keycode[1] == "x":
-        self.newEvent(game.events.FireBallEvent(-1))
+    if keycode[1] == "x" and self.myKart():
+        self.newEvent(game.events.FireBallEvent(self.myKart().formID()))
 
     return True
 
 
 def keyboard_up(self, keyboard, keycode):
-    if keycode[1] in ["left", "a"]:
-        self.newEvent(game.events.KartTurnEvent(0, -1))
+    if keycode[1] in ["left", "a"] and self.myKart():
+        self.newEvent(game.events.KartTurnEvent(0, self.myKart().formID()))
 
-    if keycode[1] in ["right", "d"]:
-        self.newEvent(game.events.KartTurnEvent(0, -1))
+    if keycode[1] in ["right", "d"] and self.myKart():
+        self.newEvent(game.events.KartTurnEvent(0, self.myKart().formID()))
 
-    if keycode[1] in ["up", "w"]:
-        self.newEvent(game.events.KartMoveEvent(0, -1))
+    if keycode[1] in ["up", "w"] and self.myKart():
+        self.newEvent(game.events.KartMoveEvent(0, self.myKart().formID()))
 
-    if keycode[1] in ["down", "s"]:
-        self.newEvent(game.events.KartMoveEvent(0, -1))
+    if keycode[1] in ["down", "s"] and self.myKart():
+        self.newEvent(game.events.KartMoveEvent(0, self.myKart().formID()))
 
 
 def touch_down(self, touch):

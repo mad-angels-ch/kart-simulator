@@ -1,6 +1,5 @@
 #:import navigation_screen_manager client.output.navigation_screen_manager
-# :import layouts client.output.screens.layouts
-# :import action_bar client.output.screens.action_bar
+#:import gamesResults client.output.screens.gamesResults 
 #:import webbrowser webbrowser
 #:import mainMenu1 client.output.screens.mainMenu1
 #:import playingMode_menu client.output.screens.playingMode_menu
@@ -33,6 +32,7 @@
             CreateGame:
                 FloatLayout:
                     TextInput:
+                        hint_text: "Game name"
                         font_size: 12
                         pos_hint: {"x":.499,"y":.91}
                         size_hint: .25,.045
@@ -67,6 +67,11 @@
             BoxLayout:
                 Image:
                     source: "client/Images/karts/Red_kart.png"
+    Screen:
+        name: "Results"
+        BoxLayoutWithActionBar:
+            title: "Results"
+            Results:
     Screen:
         name:"SettingsMenu"
         BoxLayoutWithActionBar:

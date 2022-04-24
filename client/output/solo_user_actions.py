@@ -13,12 +13,14 @@ def on_keyboard_down(self, keyboard, keycode, text, modifiers):
     if keycode[1] in ["left", "a"]:
         if self.kart_ID:
             self.eventsList.append(game.events.KartTurnEvent(1, self.kart_ID))
-        self.eventsList.append(game.events.FlipperEvent(True, "leftFlipper"))
+        if self.isEasterEgg:
+            self.eventsList.append(game.events.FlipperEvent(True, "leftFlipper"))
 
     if keycode[1] in ["right", "d"]:
         if self.kart_ID:
             self.eventsList.append(game.events.KartTurnEvent(-1, self.kart_ID))
-        self.eventsList.append(game.events.FlipperEvent(True, "rightFlipper"))
+        if self.isEasterEgg:
+            self.eventsList.append(game.events.FlipperEvent(True, "rightFlipper"))
 
     if keycode[1] in ["up", "w"]:
         if self.kart_ID:

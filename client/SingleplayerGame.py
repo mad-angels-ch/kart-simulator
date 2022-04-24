@@ -1,53 +1,25 @@
 import json
 from os import path
-from posixpath import abspath
-from re import S
-from sys import hexversion
 from threading import Thread
-import time
-import os.path
-from typing import Dict, List
-from os import listdir
-from kivy.core.window import Window
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.button import Button
-from kivy.uix.floatlayout import FloatLayout
-from kivy.uix.label import Label
-from kivy.uix.relativelayout import RelativeLayout
-import requests
+from typing import List
+
+import game
+from game.objects import *
+from game.objects import Circle, Object
 from game.objects.FinishLine import FinishLine
 from game.objects.ObjectFactory import ObjectCountError
-from game.objects.fill.Hex import Hex
-from game.objects.fill.Pattern import Pattern
-from game import objects
-from logging import error, warning
 from kivy.app import App
-from lib import Point
-import client
-from game.objects import *
-import game
-import datetime
-from kivy.utils import get_color_from_hex, rgba
-from kivy.lang import Builder
-from kivy.uix.widget import Widget
-from kivy.graphics import Rectangle, Color
+from kivy.core.window import Window
 from kivy.properties import Clock
-from kivy.properties import StringProperty
-from .outputFactory import OutputFactory
-from game.objects import Circle, Object
-from lib import Point
 
-
-# Builder.load_file("layouts.kv")
+from .output import OutputFactory
 
 
 class SingleplayerGame:
-    from client.output.solo_user_actions import (
+    from client.output.solo_user_actions import (  # on_touch_up,; on_touch_down,
         keyboard_closed,
         on_keyboard_down,
-        # on_touch_up,
         on_keyboard_up,
-        # on_touch_down,
     )
 
     kart_ID = 0
@@ -75,11 +47,13 @@ class SingleplayerGame:
             dataUrl = self.world
             self.isEasterEgg = True
         self.eventsList = list()
+
         # Récupération de l'app principale
         self.app = App.get_running_app()
         # A condition que ObjectFactory n'ait pas renvoyé d'erreur lorsde la création des objets physiques
-        with open(dataUrl, "r", encoding="utf8") as f:
-            try:
+
+        try:
+            with open(dataUrl, "r", encoding="utf8") as f:
                 # Création de la partie
                 self._game = game.Game(
                     f.read(),
@@ -90,13 +64,19 @@ class SingleplayerGame:
                 )
 
                 self.app.start_ks()
-                #################################################################
                 self.fps = 60
 
-            except ObjectCountError as OCE:
-                self._game = None
-                changeLabelText(OCE.message())  # Affichage de l'erreur obtenue
-        self.y = 0  # Pour une raison inconnue, lors du redimensionnement d'une fenêtre (qui n'arrive normalement pas car le jeu est par défaut en plein écran), kivy essaie de retrouver la "hauteur" "self.y" de cette classe alors qu'elle n'est en rien liée à l'application graphique... n'ayant pas réussi à régler le problème autrement, nous avons créé la méthode to_window() et l'attribut "y" qui règlent le problème.
+        except ObjectCountError as OCE:
+            self._game = None
+            changeLabelText(OCE.message())  # Affichage de l'erreur obtenue
+        else:
+            self.parentScreen.updateLapsCount(
+                self._game._factory.finishLine(), self.kart_ID
+            )  # Met à jour le nombre de tours et le nombre de gates à franchir.
+            self.parentScreen.updateGatesCount(
+                self._game._factory.gates(), self.kart_ID
+            )
+            self.y = 0  # Pour une raison inconnue, lors du redimensionnement d'une fenêtre (qui n'arrive normalement pas car le jeu est par défaut en plein écran), kivy essaie de retrouver la "hauteur" "self.y" de cette classe alors qu'elle n'est en rien liée à l'application graphique... n'ayant pas réussi à régler le problème autrement, nous avons créé la méthode to_window() et l'attribut "y" qui règlent le problème.
 
     def to_window(self, a, b):
         # c.f. commentaire de self.y ci-dessus
@@ -105,6 +85,10 @@ class SingleplayerGame:
     def nextFrame(self, elapsedTime: float) -> None:
         self._game.nextFrame(elapsedTime, self.eventsList)
         self.eventsList.clear()
+
+    def disconnect(self) -> None:
+        """Déconnection du joueur lorsqu'il quitte la partie. Utile uniquement pour le multijoueur."""
+        pass
 
     def finish_game(self) -> None:
         """Arrêt de la pendule"""
@@ -145,33 +129,11 @@ class SingleplayerGame:
     def frame_callback(self, output: OutputFactory, objects: List[Object]) -> None:
         """Fonction appellée à chaque frame par output"""
         if output.isInitialized() and not self.isEasterEgg:
-            self.updateGatesCount(output.getAllGates())
-            self.updateLapsCount(output.getFinishLine())
-            self.updateTimer()
+            self.parentScreen.updateGatesCount(output.getAllGates(), self.kart_ID)
+            self.parentScreen.updateLapsCount(output.getFinishLine(), self.kart_ID)
+            self.timer += 1 / self.fps
+            self.parentScreen.updateTimer(self.timer)
             self.checkIfGameIsOver(output.getAllKarts(), output.getFinishLine())
-
-    def updateTimer(self) -> None:
-        """Mise à jour du timer"""
-        self.timer += 1 / self.fps
-        s, mili = divmod(int(1000 * self.timer), 1000)
-        min, s = divmod(s, 60)
-        if mili > 100:
-            self.parentScreen.ids.timer_id.text = f"{min:d}:{s:02d}:{mili:02d}"
-        else:
-            self.parentScreen.ids.timer_id.text = f"{min:d}:{s:02d}:0{mili:02d}"
-
-    def updateLapsCount(self, finishLine: FinishLine) -> None:
-        """Met l'affichage du nombre de tours terminés à jour"""
-        self.parentScreen.ids.laps_id.text = f"{finishLine.passagesCount(self.kart_ID)}/{finishLine.numberOfLapsRequired()}"
-
-    def updateGatesCount(self, gatesList: List[Gate]) -> None:
-        """Met l'affiche du nombre de portillons (du tour) franchis à jour"""
-        numberOfGates = len(gatesList)
-        gatesPassed = (
-            sum([gate.passagesCount(self.kart_ID) for gate in gatesList])
-            % numberOfGates
-        )
-        self.parentScreen.ids.gates_id.text = f"{gatesPassed}/{numberOfGates}"
 
     def checkIfGameIsOver(self, karts: List[Kart], finishLine: FinishLine) -> None:
         """Contrôle si la partie est terminée et si oui gère celle-ci"""

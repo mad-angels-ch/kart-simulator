@@ -37,9 +37,29 @@
         size_hint:.2,.1
         pos_hint: {'x': .4 , 'y': .3 }
         text:"Quit game"
-        on_release: app.manager.popAll(), app.ButtonSound()
+        on_release: app.game.disconnect(), app.manager.popAll(), app.ButtonSound()
     
-
+<WaitingRoom>:
+    pos: 0,0
+    canvas.before:
+        BorderImage:
+            border: 10, 10, 10, 10
+            source: 'client/Images/black_background.jpg'
+            pos: self.pos
+            size: self.size
+    Label:
+        pos_hint: {"center_x":.5,"y":.8}
+        size_hint: .5,.2
+        text: '[size=24]Waiting Room[/size]\n[size=20]Waiting for players to connect...[/size]'
+        markup: True
+        halign: "center"
+    Label:
+        id: game_info
+        pos_hint: {"x":.75,"y":.4}
+        size_hint: .25,.6
+        text: 'Game informations:'
+        valign: "bottom"
+        markup: True
 
 <KS_screen>:
     name: "Kart_Simulator"
@@ -61,10 +81,10 @@
 
     
     GridLayout:
-        cols: 2
-        rows: 3
-        pos_hint: {'x': .45, 'y': .9}
-        size_hint: .15, .1
+        cols: 6
+        rows: 1
+        pos_hint: {'x': .25, 'y': .95}
+        size_hint: .5, .05
         canvas.before:
             Color:
                 rgba: 0,0,0,.5
@@ -78,7 +98,7 @@
 
         Label:
             id: laps_id
-            text: "0/1"
+            text: "--/--"
             color: 0.4, 1, 0.4, .5
 
         Label:
@@ -87,7 +107,7 @@
 
         Label:
             id: gates_id
-            text: "0/2"
+            text: "--/--"
             color: 0.4, 1, 0.4, .5
         Label:
             text: "Timer"
@@ -96,3 +116,4 @@
             id: timer_id
             text: "00:00:00"
             color: 0.4, 1, 0.4, .5
+
