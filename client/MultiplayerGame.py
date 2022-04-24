@@ -74,7 +74,6 @@ class MultiplayerGame(ClientNamespace):
         touch_up,
         touch_down,
     )
-    
 
     def to_window(self, a, b):
         # c.f. commentaire de self.y ci-dessus
@@ -152,7 +151,9 @@ class MultiplayerGame(ClientNamespace):
         self.executeInMainKivyThread(
             self.parentScreen.startingAnimation, start_theGame=lambda: None
         )
-        self.executeInMainKivyThread(self.parentScreen.remove_widget,self.waitingScreen)
+        self.executeInMainKivyThread(
+            self.parentScreen.remove_widget, self.waitingScreen
+        )
 
     def on_game_data(self, data: dict):
         """Evènement appelé à chaque nouvelle factory partagée par le serveur.
@@ -173,9 +174,7 @@ class MultiplayerGame(ClientNamespace):
             obj.set_center(lib.Point(newPos))
             obj.set_angle(newPos[2])
         self.callOutput()
-        self.parentScreen.updateGatesCount(
-            self._game.gates(), self.myKart().formID()
-        )
+        self.parentScreen.updateGatesCount(self._game.gates(), self.myKart().formID())
         self.parentScreen.updateLapsCount(
             self._game.finishLine(), self.myKart().formID()
         )
