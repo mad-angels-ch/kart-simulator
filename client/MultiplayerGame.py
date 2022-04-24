@@ -154,9 +154,8 @@ class MultiplayerGame(ClientNamespace):
             self.parentScreen.remove_widget, self.waitingScreen
         )
 
-    def on_passage(self, data: Tuple[int, int, int]) -> None:
+    def on_passage(self, gate, kart, count) -> None:
         """Evènement appelé à chaque fois qu'un kart passe une gate"""
-        gate, kart, count = data
         self._game.objectByFormID(gate).set_passagesCount(kart, count)
 
     def on_game_data(self, data: dict):
