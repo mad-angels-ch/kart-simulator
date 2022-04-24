@@ -179,7 +179,6 @@ class MultiplayerGame(ClientNamespace):
             obj.set_center(lib.Point(newPos))
             obj.set_angle(newPos[2])
         self.callOutput()
-<<<<<<< HEAD
         self.parentScreen.updateGatesCount(self._game.gates(), self.myKart().formID())
         self.parentScreen.updateLapsCount(
             self._game.finishLine(), self.myKart().formID()
@@ -190,21 +189,6 @@ class MultiplayerGame(ClientNamespace):
         self.waitingScreen.add_player(player)
 
     def new_disconnection(self, player: str) -> None:
-=======
-        self.parentScreen.updateGatesCount(
-            self._output.getAllGates(), self.myKart().formID()
-        )
-        self.parentScreen.updateLapsCount(
-            self._output.getFinishLine(), self.myKart().formID()
-        )
-        self.parentScreen.updateTimer(0)
-        # self.parentScreen.checkIfGameIsOver(self._output.getAllKarts(), self._output.getFinishLine(), self.myKart().formID())
-
-    def on_new_connection(self, player: str) -> None:
-        self.waitingScreen.add_player(player)
-
-    def on_new_disconnection(self, player: str) -> None:
->>>>>>> 63fd41edab89c739f56aa67d6b8528ed3b32e985
         self.waitingScreen.remove_player(player)
 
     def on_disconnect(self) -> None:
@@ -242,7 +226,6 @@ class MultiplayerGame(ClientNamespace):
         #         self.parentScreen.end_game("You have burned!\n\nTry again!")
         #         self.completed_time = self.timer
         #         self.burned = True
-<<<<<<< HEAD
 
     def connectedPlayers(self):
         """Retourne la liste des joueurs connectés."""
@@ -257,5 +240,3 @@ class MultiplayerGame(ClientNamespace):
             if player not in list(kart.username() for kart in self._game.karts()):
                 self.new_disconnection(player)
         self._connectedPlayers = list(kart.username() for kart in self._game.karts())
-=======
->>>>>>> 63fd41edab89c739f56aa67d6b8528ed3b32e985
