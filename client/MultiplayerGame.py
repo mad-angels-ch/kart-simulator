@@ -1,5 +1,6 @@
 from typing import Callable, Dict, List, Tuple, AnyStr
 import click
+import engineio
 from socketio import Client, ClientNamespace
 from socketio.exceptions import BadNamespaceError
 from requests import Session
@@ -133,9 +134,7 @@ class MultiplayerGame(ClientNamespace):
         self.waitingScreen.add_widget(self.start_button)
 
     def on_connect(self):
-        self._keyboard = Window.request_keyboard(self.keyboard_closed, self)
-        self._keyboard.bind(on_key_down=self.keyboard_down)
-        self._keyboard.bind(on_key_up=self.keyboard_up)
+        self.executeInMainKivyThread(self.bind_keyboard)
         if self._worldVersion_id == None:
             self.emit("join", self._name, callback=self.joiningError)
         else:
@@ -240,3 +239,8 @@ class MultiplayerGame(ClientNamespace):
             if player not in list(kart.username() for kart in self._game.karts()):
                 self.new_disconnection(player)
         self._connectedPlayers = list(kart.username() for kart in self._game.karts())
+
+    def bind_keyboard(self) -> None:
+        self._keyboard = Window.request_keyboard(self.keyboard_closed, self)
+        self._keyboard.bind(on_key_down=self.keyboard_down)
+        self._keyboard.bind(on_key_up=self.keyboard_up)
