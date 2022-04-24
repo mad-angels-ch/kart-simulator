@@ -5,7 +5,7 @@ from socketio.exceptions import BadNamespaceError
 from requests import Session
 
 from game import Game, OnCollisionT
-from game.objects import Object
+from game.objects import Object, Kart, Gate
 from game.events import Event, KartMoveEvent, KartTurnEvent
 import lib
 from client.output.outputFactory import OutputFactory
@@ -148,6 +148,11 @@ class MultiplayerGame(ClientNamespace):
         self._keyboard = Window.request_keyboard(self.keyboard_closed, self)
         self._keyboard.bind(on_key_down=self.keyboard_down)
         self._keyboard.bind(on_key_up=self.keyboard_up)
+
+    def on_passage(self, data: Tuple[int, int, int]) -> None:
+        """Evènement appelé à chaque fois qu'un kart passe une gate"""
+        gate, kart, count = data
+        self._game.objectByFormID(gate).set_passagesCount(kart, count)
 
     def on_game_data(self, data: dict):
         """Evènement appelé à chaque nouvelle factory partagée par le serveur.
