@@ -28,7 +28,6 @@ class CreateGame(FloatLayout):
         super().__init__(**kwargs)
         self.app = App.get_running_app()
 
-
     def generateWorldsList(self) -> list:
         """Génère la liste des curcuits jouables"""
         return [world[:-5] for world in listdir("client/worlds")]
@@ -40,7 +39,7 @@ class CreateGame(FloatLayout):
 
     def clearLabelText(self, dt) -> None:
         """Vidage du message d'erreur après un temps <dt> donné"""
-        self.ids.labelID.text = ""  
+        self.ids.labelID.text = ""
 
     def create(self) -> None:
         """Crée la partie multijoueur."""
@@ -55,10 +54,19 @@ class CreateGame(FloatLayout):
                     self.children[0].children[1].text
                 )  # Récupération  du texte pour le nom à partir d'un "TextInput" ajouté dans "MyScreenManager"
             except:
-                self.app.instanciate_SoloKS(world=chosen_world, on_collision=self.on_Collision, changeLabelText=self.changeLabelText)
+                self.app.instanciate_SoloKS(
+                    world=chosen_world,
+                    on_collision=self.on_Collision,
+                    changeLabelText=self.changeLabelText,
+                )
             else:
                 worldVersion_id = worlds[chosen_world]["version_id"]
-                self.app.instanciate_MultiKS(name=name, worldVersion_id=worldVersion_id, on_collision=self.on_Collision, changeLabelText=self.changeLabelText)
+                self.app.instanciate_MultiKS(
+                    name=name,
+                    worldVersion_id=worldVersion_id,
+                    on_collision=self.on_Collision,
+                    changeLabelText=self.changeLabelText,
+                )
         else:
             self.changeLabelText(message="Please choose a world before playing!")
 

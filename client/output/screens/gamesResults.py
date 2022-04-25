@@ -12,6 +12,9 @@ from kivy.uix.label import Label
 from kivy.uix.scrollview import ScrollView
 from kivy.core.window import Window
 from kivy.uix.button import Button
+from kivy.graphics import Rectangle, Color
+
+from .layouts import CustomPopup
 
 from datetime import datetime, timedelta
 
@@ -54,10 +57,9 @@ class Results(FloatLayout):
             if result.status_code == 400:
                 pass
             else:
-                print(result.json())
                 self.generateTables(result.json())
 
-        else:
+        elif self.ids.best_games.state == "down":
             if self.ids.username.text:
                 chosenOptions["username"] = self.ids.username.text
             result = self.app.session.get(
@@ -66,13 +68,13 @@ class Results(FloatLayout):
             if result.status_code == 400:
                 pass
             else:
-                print(result.json())
                 self.generateTables(result.json())
 
     def generateTables(self, result: List[dict]) -> None:
         """Génère les nouvelles lignes du tableau qui affiche les parties."""
         for widget in self._widgets:
             self.ids.table.remove_widget(widget)
+        self._widgets = []
         n = 0
         for game in result:
             n += 1
@@ -81,7 +83,27 @@ class Results(FloatLayout):
             finishTime = str(self.finishTime(game=game, player=winner)).split(".")
             worldName = self.worldName(game=game)
             date = self.gameDate(game=game)
-            b = BoxLayout(orientation="horizontal", size_hint=(None, None), size=self.ids.entete.size)  # Récupération de la taille de l'entête, sinon par défaut la taille serait celle de la fenêtre entière
+            b = BoxLayout(
+                orientation="horizontal",
+                size_hint=(None, None),
+                size=self.ids.entete.size,
+            )  # Récupération de la taille de l'entête, sinon par défaut la taille serait celle de la fenêtre entière
+            if self.ids.my_games.state == "down":
+                if self.hasBurned(
+                    game=game, player=self.app.get_userSettings()["username"]
+                ):
+                    with b.canvas.before:
+                        Color(1, 0, 0, 1)
+                        Rectangle(size=b.size, pos=(0, (len(result) - n) * 50))
+                else:
+                    with b.canvas.before:
+                        Color(0, 1, 0, 1)
+                        Rectangle(size=b.size, pos=(0, (len(result) - n) * 50))
+            elif self.ids.best_games.state == "down":
+                with b.canvas.before:
+                    Color(0, 0, 1, 0.1)
+                    Rectangle(size=b.size, pos=(0, (len(result) - n) * 50))
+
             b.add_widget(
                 Label(
                     text=str(n),
@@ -106,7 +128,7 @@ class Results(FloatLayout):
             )
             b.add_widget(
                 Label(
-                    text=finishTime[0]+"."+finishTime[1][:2],
+                    text=finishTime[0] + "." + finishTime[1][:2],
                     color=(0, 0, 0, 1),
                     size_hint=(0.18, 1),
                     halign="left",
@@ -125,7 +147,7 @@ class Results(FloatLayout):
             )
             self.ids.table.add_widget(b)
             self._widgets.append(b)
-        print(n)
+
     def generateWorldsList(self) -> list:
         """Génère la liste des curcuits jouables"""
         l = list(world[:-5] for world in listdir("client/worlds"))
@@ -148,9 +170,7 @@ class Results(FloatLayout):
     def finishTime(self, game: dict, player: str) -> float:
         """Retourne le temps qu'a pris le joueur pour finir le circuit, ou False s'il ne l'a pas fini."""
         return list(
-            p["finishTime"]
-            for p in game["players"]
-            if p["username"] == player
+            p["finishTime"] for p in game["players"] if p["username"] == player
         )[0]
 
     def worldName(self, game: dict) -> str:
@@ -163,3 +183,33 @@ class Results(FloatLayout):
         return str(
             datetime.strptime(date[2:], "%y-%m-%d %H:%M:%S") + timedelta(hours=2)
         )
+
+    def hasBurned(self, game: dict, player: str) -> bool:
+        """Retourne False si le joueur spécifié a terminé la course sans se faire brûler."""
+        reponse = list(
+            p["burned"] for p in game["players"] if p["username"] == player
+        )  # Si je faisais bool(p["burned"] for p in game["players"] if p["username"] == player) avec p["burned"] == 0, cela retourne True = bool([0]), et pas bool(0) = False
+        return bool(reponse[0])
+
+    def playersList(self, game: dict) -> list:
+        """Retourne la liste des joueurs ayant participé à la partie."""
+        return list(p["username"] for p in game["players"])
+
+    def SettingsPopup(self):
+        """Ajoute le Popup qui demande à l'utilisateur s'il veut se logger."""
+        self.popup = CustomPopup(
+            "You must be logged in to use this function.",
+            func1=self.pushLogIn,
+            func1_name="Log In",
+            func2=lambda _: self.remove_widget(self.popup),
+            func2_name="No",
+        )
+        self.add_widget(self.popup)
+
+    def pushLogIn(self, button):
+        self.app.manager.push("LogIn")
+        self.remove_widget(self.popup)
+
+    def change_state(self):
+        """Décoche le bouton "my games" si le joueur n'est pas connecté."""
+        self.ids.my_games.state = "normal"

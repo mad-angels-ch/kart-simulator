@@ -8,11 +8,15 @@
             ToggleButton:
                 id: my_games
                 text: "My games"
-                state: "down"
+                state: "normal"
                 group: "resluts"
+                on_press:
+                    if not app.is_logged(): root.change_state(), root.SettingsPopup()
             ToggleButton:
+                id: best_games
                 text: "Best games"
                 group: "resluts"
+
 
         BoxLayout:
             orientation: 'horizontal'
@@ -37,7 +41,7 @@
                 hint_text: "Min. players"
         Button:
             text: "Search games"
-            on_press: root.search_games()
+            on_release: root.search_games()
 
     StackLayout:
         pos_hint: {'center_x': .5, 'top':.7 }
@@ -103,9 +107,27 @@
             height: self.minimum_height
             row_default_height: 50
             row_force_default: True
+    
+    Label:
+        text: "[color=#000000]Not Burned[/color]"
+        pos_hint: {'center_x': .425, 'y':.05}
+        size_hint: .15, .025
+        markup: True
+        canvas.before:
+            Color:
+                rgba: 0,1,0,1
+            Rectangle:
+                size:self.size
+                pos:self.pos
 
-
-
-
-
-            
+    Label:
+        text: "[color=#000000]Burned[/color]"
+        pos_hint: {'center_x': .575, 'y':.05}
+        size_hint: .15, .025
+        markup: True
+        canvas.before:
+            Color:
+                rgba: 1,0,0,1
+            Rectangle:
+                pos:self.pos
+                size:self.size

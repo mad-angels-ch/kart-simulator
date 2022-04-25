@@ -1,24 +1,22 @@
-from typing import Callable, Dict, List, Tuple, AnyStr
+from typing import AnyStr, Callable, Dict, List, Tuple
+
 import click
 import engineio
-from socketio import Client, ClientNamespace
-from socketio.exceptions import BadNamespaceError
-from requests import Session
-from client.output.screens.InGameScreen import KS_screen, WaitingRoom
-
-from game import Game, OnCollisionT
-from game.objects import Object, Kart, FinishLine, Gate
-from game.events import Event, KartMoveEvent, KartTurnEvent
-from game.objects.Kart import Kart
 import lib
-from client.output.outputFactory import OutputFactory
-
-from kivy.uix.label import Label
-from kivy.uix.screenmanager import Screen
+from game import Game, OnCollisionT
+from game.events import Event
+from game.objects import FinishLine, Gate, Kart, Object
+from game.objects.Kart import Kart
 from kivy.app import App
-from kivy.uix.button import Button
 from kivy.clock import Clock
 from kivy.core.window import Window
+from kivy.uix.button import Button
+from requests import Session
+from socketio import Client, ClientNamespace
+from socketio.exceptions import BadNamespaceError
+
+from client.output.outputFactory import OutputFactory
+from client.output.screens.InGameScreen import KS_screen, WaitingRoom
 
 
 class MultiplayerGame(ClientNamespace):
@@ -72,8 +70,8 @@ class MultiplayerGame(ClientNamespace):
         keyboard_closed,
         keyboard_down,
         keyboard_up,
-        touch_up,
         touch_down,
+        touch_up,
     )
 
     def to_window(self, a, b):
