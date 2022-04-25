@@ -176,8 +176,9 @@ class UpdateWorldButton(Button):
                         os.remove(f"client/worlds/{name}.json")
                         updateWorlds_output.text += "done!\n"
                 # téléchargement des autres
+                downloadedWorlds = [world[:-5] for world in listdir("client/worlds")]
                 for name, data in worldsInfo.items():
-                    if name not in savedWorld:
+                    if name not in downloadedWorlds:
                         updateWorlds_output.text += f"Downloading world {name} ... "
                         with open(f"client/worlds/{name}.json", "w") as worldJSON:
                             worldJSON.write(
@@ -193,7 +194,7 @@ class UpdateWorldButton(Button):
             with open("client/worlds.json", "w") as f:
                 json.dump(worldsInfo, f)
 
-            worlds_spinner.value = [world[:-5] for world in listdir("client/worlds")]
+            worlds_spinner.values = [world[:-5] for world in listdir("client/worlds")]
             updateWorlds_output.text += "All worlds are up to date!"
             self._updating = False
             Clock.schedule_once(partial(self.clearLabelText, updateWorlds_output), 4)
