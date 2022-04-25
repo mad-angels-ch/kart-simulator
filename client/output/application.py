@@ -1,6 +1,8 @@
+import json
 import os
 import pickle
 from logging import info, warning
+import threading
 
 import requests
 from client.MultiplayerGame import MultiplayerGame
@@ -23,9 +25,9 @@ class MenuApp(App):
     manager = ObjectProperty(None)
     soundEnabled = True
     cookiesPath = "client/cookies"
-    server = "https://lj44.ch"
+    # server = "https://lj44.ch"
     # server = "https://test.lj44.ch"
-    # server = "http://localhost:5044"
+    server = "http://localhost:5044"
 
     _isLogged: bool = True
 
@@ -47,6 +49,8 @@ class MenuApp(App):
             self._isLogged = False
             os.remove(self.cookiesPath)
             warning("Deleted corrupted cookies")
+        else:
+            self.generateUpdatedWorldsList()
         self.update_userSettings()
 
     def build(self):
@@ -105,8 +109,6 @@ class MenuApp(App):
             changeLabelText=changeLabelText,
             parentScreen=self.game_instance,
         )
-        # self.game._game.callOutput()       # Appel d'une instance de l'output afin d'afficher le circuit derrière l'animation
-        # self.game_instance.startingAnimation(start_theGame=self.game.start_theGame)
 
     def start_ks(self):
         """Affichage de la partie"""
@@ -119,11 +121,6 @@ class MenuApp(App):
     def clearLabelText(self, label, dt):
         """Vidage du message d'erreur après un temps donné"""
         label.text = ""
-
-    # def changeLabelText(self, labelText):
-    #     """Mise à jour puis suppession du message d'erreur à afficher"""
-    #     self.errorLabel.text += labelText + "\n"
-    #     Clock.schedule_once(self.clearLabelText, 2)
 
     def clear_game(self):
         """Nettoyage de la partie finie"""
@@ -206,3 +203,61 @@ class MenuApp(App):
     def is_logged(self) -> bool:
         """Retourne vrai si un utilisateur est connecté à son compte."""
         return self._isLogged
+
+    def generateUpdatedWorldsList(self):
+        """Met à jour les donnés des mondes"""
+        self._updating = True
+        worldsInfo = {}
+        try:
+            worlds = self.session.get(
+                self.server + "/creator/kart/worldsjson",
+                params={"id": True, "worldVersion_id": True, "name": True},
+            ).json()
+        except requests.ConnectionError:
+            self._updating = False
+        else:
+            for world in worlds:
+                worldsInfo[world["name"]] = {
+                    "id": world["id"],
+                    "version_id": world["worldVersion_id"],
+                }
+            try:
+                f = open("client/worlds.json", "r", encoding="utf8")
+            except FileNotFoundError:
+                f = open("client/worlds.json", "w", encoding="utf8")
+                f.write("{}")
+                f.close()
+                f = open("client/worlds.json", "r", encoding="utf8")
+
+            try:
+                savedWorld = json.load(f)
+                # mise à jour des mondes déjà téléchargés
+                for name, data in savedWorld.items():
+                    if name in worldsInfo:
+                        if data.get("version_id", -1) != worldsInfo[name]["version_id"]:
+                            with open(f"client/worlds/{name}.json", "w") as worldJSON:
+                                worldJSON.write(
+                                    self.session.get(
+                                        f"{self.server}/creator/kart/worlds/{worldsInfo[name]['id']}/fabric"
+                                    ).text
+                                )
+                            data["version_id"] = worldsInfo[name]["version_id"]
+                    else:
+                        os.remove(f"client/worlds/{name}.json")
+                # téléchargement des autres
+                downloadedWorlds = [world[:-5] for world in os.listdir("client/worlds")]
+                for name, data in worldsInfo.items():
+                    if name not in downloadedWorlds:
+                        with open(f"client/worlds/{name}.json", "w") as worldJSON:
+                            worldJSON.write(
+                                self.session.get(
+                                    f"{self.server}/creator/kart/worlds/{worldsInfo[name]['id']}/fabric"
+                                ).text
+                            )
+
+            finally:
+                f.close()
+
+            with open("client/worlds.json", "w") as f:
+                json.dump(worldsInfo, f)
+            self._updating = False
