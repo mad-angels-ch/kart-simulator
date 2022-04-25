@@ -24,7 +24,7 @@
                 hint_text: "Version ID"
             Spinner:
                 id: world
-                text: "Worlds"
+                text: "All Worlds"
                 values: root.generateWorldsList()
             TextInput:
                 id: maxGames
@@ -38,5 +38,74 @@
         Button:
             text: "Search games"
             on_press: root.search_games()
-        
-        
+
+    StackLayout:
+        pos_hint: {'center_x': .5, 'top':.7 }
+        size_hint: .9,None
+        BoxLayout:
+            id:entete
+            canvas.before:
+                Color:
+                    rgba: 0,0,0,.4
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            orientation: 'horizontal'
+            size_hint: 1, .2
+            height: 4
+            Label:
+                size_hint: .1,1
+                color: 0,0,0,1
+                text:"[b]Games[/b]"
+                halign:"left"
+                markup: True
+            Label:
+                size_hint: .18,1
+                color: 0,0,0,1
+                text:"[b]World Name[/b]"
+                halign:"left"
+                markup: True
+            Label:
+                size_hint: .18,1
+                color: 0,0,0,1
+                text:"[b]Winner[/b]"
+                halign:"left"
+                markup: True
+            Label:
+                size_hint: .18,1
+                color: 0,0,0,1
+                text:"[b]Time[/b]"
+                halign:"left"
+                markup: True
+            Label:
+                size_hint: .18,1
+                color: 0,0,0,1
+                text:"[b]Nb. of players[/b]"
+                halign:"left"
+                markup: True
+            Label:
+                size_hint: .18,1
+                color: 0,0,0,1
+                text:"[b]Date[/b]"
+                halign:"left"
+                markup: True
+
+    ScrollView:
+        pos_hint: {'center_x': .5, 'top':.65 }
+        size_hint: .9, .55
+        do_scroll_x: False
+        do_scroll_y: True
+        GridLayout:
+            size: (root.width, root.height)
+            id: table
+            size_hint: None, None
+            cols: 1
+            height: self.minimum_height
+            row_default_height: 50
+            row_force_default: True
+
+
+
+
+
+            
