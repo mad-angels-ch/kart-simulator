@@ -37,7 +37,7 @@ class WaitingRoom(FloatLayout):
         """Ajoute un joueur à la liste lors d'une connection."""
         if player in ["lj44", "Noe"]:
             self.ids.game_info.text += f"\n {player} THE BOSS IS IN THE PLACE !"
-        elif player in ["CHAJ","chaj","johnschmidt"]:
+        elif player in ["CHAJ", "chaj", "johnschmidt"]:
             self.ids.game_info.text += f"\n Bienvenue {player}. Ce projet mérite un 6."
         else:
             self.ids.game_info.text += f"\n {player} {self.entries[randrange(5)]}"
@@ -156,19 +156,13 @@ class KS_screen(Screen):
         """Appel du mode de fin de partie"""
         self.endGameMode(endGameMessage)
 
-    def updateLapsCount(self, finishLine: FinishLine, kartID: int) -> None:
-        """Met l'affichage du nombre de tours terminés à jour"""
-        self.ids.laps_id.text = (
-            f"{finishLine.passagesCount(kartID)}/{finishLine.numberOfLapsRequired()}"
+    def updateLapsAndGatesCount(self, factory: ObjectFactory, kart: Kart) -> None:
+        """Met l'affichage du nombre de tours et du nombre de portillons à jour"""
+        finishLine = factory.finishLine()
+        self.ids.laps_id.text = f"{finishLine.passagesCount(kart.formID())}/{finishLine.numberOfLapsRequired()}"
+        self.ids.gates_id.text = (
+            f"{kart.lastGatePosition()}/{finishLine.numberOfGates()}"
         )
-
-    def updateGatesCount(self, gatesList: List[Gate], kartID: int) -> None:
-        """Met l'affiche du nombre de portillons (du tour) franchis à jour"""
-        numberOfGates = len(gatesList)
-        gatesPassed = (
-            sum([gate.passagesCount(kartID) for gate in gatesList]) % numberOfGates
-        )
-        self.ids.gates_id.text = f"{gatesPassed}/{numberOfGates}"
 
     def updateTimer(self, time: float) -> None:
         """Mise à jour du timer"""

@@ -10,7 +10,7 @@ from kivy.uix.widget import Widget
 from kivy.graphics import Rectangle, Color
 from kivy.graphics.transformation import Matrix
 import game
-from game.objects.ObjectFactory import ObjectCountError
+from game.objects.ObjectFactory import InvalidWorld
 from client.output import OutputFactory
 from kivy.clock import Clock
 import requests, json, os, threading
@@ -107,8 +107,8 @@ class PreView(Widget):
                     )
 
                 self._game.callOutput()
-            except ObjectCountError as OCE:
-                self.parent.parent.parent.parent.changeLabelText(OCE.message())
+            except InvalidWorld as IW:
+                self.parent.parent.parent.parent.changeLabelText(IW.message())
 
 
 class UpdateWorldButton(Button):

@@ -177,9 +177,8 @@ class MultiplayerGame(ClientNamespace):
             obj.set_center(lib.Point(newPos))
             obj.set_angle(newPos[2])
         self.callOutput()
-        self.parentScreen.updateGatesCount(self._game.gates(), self.myKart().formID())
-        self.parentScreen.updateLapsCount(
-            self._game.finishLine(), self.myKart().formID()
+        self.parentScreen.updateLapsAndGatesCount(
+            self._game.objectsFactory(), self.myKart()
         )
         self.parentScreen.updateTimer(0)
 
