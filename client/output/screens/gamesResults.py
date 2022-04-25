@@ -148,9 +148,9 @@ class Results(FloatLayout):
     def finishTime(self, game: dict, player: str) -> float:
         """Retourne le temps qu'a pris le joueur pour finir le circuit, ou False s'il ne l'a pas fini."""
         return list(
-            player["finishTime"]
-            for player in game["players"]
-            if player["username"] == "4444"
+            p["finishTime"]
+            for p in game["players"]
+            if p["username"] == player
         )[0]
 
     def worldName(self, game: dict) -> str:
@@ -161,5 +161,5 @@ class Results(FloatLayout):
         """Retourne la data et l'heure à laquelle a été jouée la partie."""
         date = game["startDateTime"]
         return str(
-            datetime.strptime(date[2:], "%d-%m-%y %H:%M:%S") + timedelta(hours=2)
+            datetime.strptime(date[2:], "%y-%m-%d %H:%M:%S") + timedelta(hours=2)
         )
