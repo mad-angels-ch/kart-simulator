@@ -7,7 +7,7 @@ import game
 from game.objects import *
 from game.objects import Circle, Object
 from game.objects.FinishLine import FinishLine
-from game.objects.ObjectFactory import ObjectCountError
+from game.objects.ObjectFactory import InvalidWorld
 from kivy.app import App
 from kivy.core.window import Window
 from kivy.properties import Clock
@@ -66,16 +66,12 @@ class SingleplayerGame:
                 self.app.start_ks()
                 self.fps = 60
 
-        except ObjectCountError as OCE:
+        except InvalidWorld as IW:
             self._game = None
-            changeLabelText(OCE.message())  # Affichage de l'erreur obtenue
+            changeLabelText(IW.message())  # Affichage de l'erreur obtenue
         else:
-            self.parentScreen.updateLapsCount(
-                self._game._factory.finishLine(), self.kart_ID
-            )  # Met à jour le nombre de tours et le nombre de gates à franchir.
-            self.parentScreen.updateGatesCount(
-                self._game._factory.gates(), self.kart_ID
-            )
+            factory = self._game.objectsFactory()
+            self.parentScreen.updateLapsAndGatesCount(factory, factory[self.kart_ID])
             self.y = 0  # Pour une raison inconnue, lors du redimensionnement d'une fenêtre (qui n'arrive normalement pas car le jeu est par défaut en plein écran), kivy essaie de retrouver la "hauteur" "self.y" de cette classe alors qu'elle n'est en rien liée à l'application graphique... n'ayant pas réussi à régler le problème autrement, nous avons créé la méthode to_window() et l'attribut "y" qui règlent le problème.
 
     def to_window(self, a, b):
@@ -129,8 +125,8 @@ class SingleplayerGame:
     def frame_callback(self, output: OutputFactory, objects: List[Object]) -> None:
         """Fonction appellée à chaque frame par output"""
         if output.isInitialized() and not self.isEasterEgg:
-            self.parentScreen.updateGatesCount(output.getAllGates(), self.kart_ID)
-            self.parentScreen.updateLapsCount(output.getFinishLine(), self.kart_ID)
+            factory = self._game.objectsFactory()
+            self.parentScreen.updateLapsAndGatesCount(factory, factory[self.kart_ID])
             self.timer += 1 / self.fps
             self.parentScreen.updateTimer(self.timer)
             self.checkIfGameIsOver(output.getAllKarts(), output.getFinishLine())
