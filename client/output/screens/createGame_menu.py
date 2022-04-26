@@ -89,8 +89,7 @@ class PreView(Widget):
     def changePreView(self, world):
         """Change le mode de preview pour afficher le nouveau circuit"""
         # Se comporte comme SingleplayerGame, mais n'instancie qu'une seule frame
-        # self.parent.parent.parent.parent.clearLabelText()
-        if not isinstance(world, StringProperty):
+        if not isinstance(world, StringProperty) and world != "Choose your world !":
             self.canvas.before.clear()
             self.canvas.clear()
             self.canvas.after.clear()
@@ -126,7 +125,9 @@ class UpdateWorldButton(Button):
         self._updating = False
         self.app = App.get_running_app()
 
-    def generateUpdatedWorldsList(self, updateWorlds_output, worlds_spinner):
+    def generateUpdatedWorldsList(
+        self, updateWorlds_output, worlds_spinner, callback: lambda: None
+    ):
         """Met à jour les donnés des mondes et met l'affichage à jour"""
         if self._updating:
             self.text = "It's already updating!"
@@ -134,10 +135,12 @@ class UpdateWorldButton(Button):
             self._updating = True
             threading.Thread(
                 target=self.generateUpdatedWorldsListTask,
-                args=(updateWorlds_output, worlds_spinner),
+                args=(updateWorlds_output, worlds_spinner, callback),
             ).start()
 
-    def generateUpdatedWorldsListTask(self, updateWorlds_output, worlds_spinner):
+    def generateUpdatedWorldsListTask(
+        self, updateWorlds_output, worlds_spinner, callback
+    ):
         """Récupère les données des mondes et met à jour l'affichage"""
         updateWorlds_output.text = "\nUpdating the worlds ...\n"
         worldsInfo = {}
@@ -211,6 +214,7 @@ class UpdateWorldButton(Button):
                 sound = SoundLoader.load("client/sounds/success-sound-effect.mp3")
                 sound.volume = 0.5
                 sound.play()
+            callback()
 
     def clearLabelText(self, label, dt):
         label.text = ""
