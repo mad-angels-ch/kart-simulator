@@ -55,6 +55,8 @@ class MultiplayerGame(ClientNamespace):
                 error="Couldn't reach the server. Please check your internet connection and try again."
             )
         else:
+            self._moving = False
+            self._rotating = False  # Pour ne pas surcharger le serveur avec des events, un seul event est émi lorsqu'une touche pour avancer ou tourner est émi et un seul autre lorsqu'elle est relâchée.
             self._connectedPlayers = []
             self.app.start_ks()
             self.waitingScreen = WaitingRoom(size_hint=(1, 1))
