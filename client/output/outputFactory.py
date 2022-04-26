@@ -239,7 +239,7 @@ class OutputFactory:
         """Dessine le cercle sur le canvas du widget et l'ajout au registre"""
         self._w.canvas.add(Color(rgba=(1, 1, 1, 1)))
         ioCircle = io_objects.Circle(
-            widget=self._w, LGEObject=lgeCircle, source="client/Images/lava_circle.jpg"
+            widget=self._w, LGEObject=lgeCircle, source="client/Images/lava_circle.png"
         )
         self._w.canvas.add(ioCircle)
         self._createdObjects[lgeCircle.formID()] = ioCircle
