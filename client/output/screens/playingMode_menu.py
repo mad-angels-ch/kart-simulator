@@ -20,4 +20,3 @@ class PlayingMode(FloatLayout):
     def redirect(self, button):
         """Appelé si l'utilisateur clique sur 'No' sur le popup."""
         self.remove_widget(self.popup)
-        App.get_running_app().manager.popAll()
