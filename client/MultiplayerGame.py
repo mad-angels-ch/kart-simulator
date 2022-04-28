@@ -86,7 +86,6 @@ class MultiplayerGame(ClientNamespace):
         # c.f. commentaire de self.y ci-dessus
         return self.app.windowSize()
 
-
     def updateInfos(self, dt):
         """Met à jour les information affichées sur l'écran de jeu (timer, laps, gates)"""
         self.parentScreen.updateLapsAndGatesCount(
@@ -184,6 +183,11 @@ class MultiplayerGame(ClientNamespace):
         self._game.objectByFormID(gate).set_passagesCount(kart, count)
         self._game.objectByFormID(kart).set_lastGate(self._game.objectByFormID(gate))
 
+    def on_burned(self, kart) -> None:
+        """Evénement émit à chaque kart brûlé.
+        Cette méthode peut être appelée plusieurs fois par kart"""
+        self._game.objectByFormID[kart].burn()
+
     def on_game_data(self, data: dict):
         """Evènement appelé à chaque nouvelle factory partagée par le serveur.
         Recréé la factory locale en fonction des informations reçues."""
@@ -204,9 +208,10 @@ class MultiplayerGame(ClientNamespace):
             obj.set_angle(newPos[2])
         self.callOutput()
 
-
-    def new_connection(self, player: str) -> None:  
-        self.waitingScreen.set_laps(self._game.finishLine().numberOfLapsRequired()) # pas faisable à la création de waitingScreen car _game était en train d'être créé dans un thread parallèle.
+    def new_connection(self, player: str) -> None:
+        self.waitingScreen.set_laps(
+            self._game.finishLine().numberOfLapsRequired()
+        )  # pas faisable à la création de waitingScreen car _game était en train d'être créé dans un thread parallèle.
         self.waitingScreen.add_player(player)
 
     def new_disconnection(self, player: str) -> None:
@@ -217,18 +222,18 @@ class MultiplayerGame(ClientNamespace):
         self._moving = False
         print("Connection perdue")
         if self.play:
-            self.add_reconnectionPopup()
+            self.executeInMainKivyThread(self.add_reconnectionPopup)
 
     def quitTheGame(self) -> None:
         """Quitte la partie"""
         self.play = False
         self.disconnect()
         self.app.manager.popAll()
-        
+
     def finish_game(self) -> None:
         """Arrêt de la pendule. Appelé dès la fin de la partie."""
         self.my_clock.unschedule(self.updateInfos)
-        
+
     def executeInMainKivyThread(self, function, *args, **kwargs) -> None:
         Clock.schedule_once(lambda _: function(*args, **kwargs), 0)
 
