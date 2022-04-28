@@ -2,6 +2,7 @@ from typing import AnyStr, Callable, Dict, List, Tuple
 
 import click
 import engineio
+from client.output.screens.layouts import CustomPopup
 import lib
 from game import Game, OnCollisionT
 from game.events import Event
@@ -39,6 +40,7 @@ class MultiplayerGame(ClientNamespace):
     ):
         super().__init__("/kartmultiplayer")
         self.play = False
+        self.pauseMode = False
         self.parentScreen = parentScreen
         self._name = name
         self._worldVersion_id = worldVersion_id
@@ -47,9 +49,12 @@ class MultiplayerGame(ClientNamespace):
         self._game = Game("", output, onCollision)
         self._sio = Client(http_session=session)
         self.app = App.get_running_app()
+        self._joiningError = False
         try:
             self._sio.register_namespace(self)
             self._sio.connect(server, namespaces="/kartmultiplayer")
+        # except KeyError:
+        # pass
         except:
             self.fatalError(
                 error="Couldn't reach the server. Please check your internet connection and try again."
@@ -59,9 +64,10 @@ class MultiplayerGame(ClientNamespace):
             self._rotating = False  # Pour ne pas surcharger le serveur avec des events, un seul event est émi lorsqu'une touche pour avancer ou tourner est émi et un seul autre lorsqu'elle est relâchée.
             self._connectedPlayers = []
             self.app.start_ks()
-            self.waitingScreen = WaitingRoom(size_hint=(1, 1))
+            self.waitingScreen = WaitingRoom(gameName=self.name(), size_hint=(1, 1))
             self.parentScreen.add_widget(self.waitingScreen)
-            self.play = True
+            self.timer = 0
+            self.my_clock = Clock
 
         self.y = 0
         # Pour une raison inconnue, lors du redimensionnement d'une fenêtre (qui n'arrive normalement pas car le jeu est par défaut en plein écran),
@@ -80,13 +86,21 @@ class MultiplayerGame(ClientNamespace):
         # c.f. commentaire de self.y ci-dessus
         return self.app.windowSize()
 
+    def name(self) -> str:
+        """Retourne le nom de la partie"""
+        return self._name
+
+    def updateTimer(self, dt):
+        self.timer += 1 / 60
+        self.parentScreen.updateTimer(self.timer)
+
     def change_gameState(self) -> None:
         """Change l'état du jeu: pause ou jeu"""
-        if self.play:
-            self.play = False
+        if not self.pauseMode:
+            self.pauseMode = True
             self.parentScreen.pauseMode()
         else:
-            self.play = True
+            self.pauseMode = False
             self.parentScreen.resumeGame()
             if self.myKart():
                 self.myKart().set_image(self.app.get_userSettings()["kart"])
@@ -98,14 +112,16 @@ class MultiplayerGame(ClientNamespace):
     def fatalError(self, error: "None | str" = None) -> None:
         """Gestion des erreurs fatales"""
         if error:
-            self._changeLabelText("Fatal error...\n" + error)
+            self._changeLabelText("Fatal error...\n" + error, 6)
             print(error)
             self.disconnect()
 
     def joiningError(self, error: "None | str" = None) -> None:
         """Gestion des erreur d'entrées en parties"""
         if error:
-            print(error)
+            self.add_reconnectionPopup(error=error)
+            # self.fatalError(error=error)
+            # raise KeyError
             if click.confirm("Do you want to try again?"):
                 self.emit("join", self._name, callback=self.joiningError)
 
@@ -146,9 +162,16 @@ class MultiplayerGame(ClientNamespace):
             )  # Informe le serveur de la création d'une partie
             self._worldVersion_id = None
 
+    def start_theGame(self):
+        """Appelé à la fin du compteur."""
+        self.play = True
+        self.my_clock.schedule_interval(
+            self.updateTimer, 1 / 60
+        )  # Initialise la pendule qui compte le temps de la partie.
+
     def on_countdown(self):
         self.executeInMainKivyThread(
-            self.parentScreen.startingAnimation, start_theGame=lambda: None
+            self.parentScreen.startingAnimation, start_theGame=self.start_theGame
         )
         self.executeInMainKivyThread(
             self.parentScreen.remove_widget, self.waitingScreen
@@ -157,6 +180,7 @@ class MultiplayerGame(ClientNamespace):
     def on_passage(self, gate, kart, count) -> None:
         """Evènement appelé à chaque fois qu'un kart passe une gate"""
         self._game.objectByFormID(gate).set_passagesCount(kart, count)
+        self._game.objectByFormID(kart).set_lastGate(self._game.objectByFormID(gate))
 
     def on_game_data(self, data: dict):
         """Evènement appelé à chaque nouvelle factory partagée par le serveur.
@@ -180,7 +204,7 @@ class MultiplayerGame(ClientNamespace):
         self.parentScreen.updateLapsAndGatesCount(
             self._game.objectsFactory(), self.myKart()
         )
-        self.parentScreen.updateTimer(0)
+        self.checkIfGameIsOver(finishLine=self._game.finishLine())
 
     def new_connection(self, player: str) -> None:
         self.waitingScreen.add_player(player)
@@ -189,7 +213,18 @@ class MultiplayerGame(ClientNamespace):
         self.waitingScreen.remove_player(player)
 
     def on_disconnect(self) -> None:
+        self._rotating = False
+        self._moving = False
         print("Connection perdue")
+        if self.play:
+            self.add_reconnectionPopup()
+
+    def quitTheGame(self) -> None:
+        """Quitte la partie"""
+        self.play = False
+        self.disconnect()
+        self.my_clock.unschedule(self.updateTimer)
+        self.app.manager.popAll()
 
     def executeInMainKivyThread(self, function, *args, **kwargs) -> None:
         Clock.schedule_once(lambda _: function(*args, **kwargs), 0)
@@ -209,20 +244,15 @@ class MultiplayerGame(ClientNamespace):
             if kart.username() == self.app.get_userSettings()["username"]:
                 self._myKart = kart  # Récupère le kart associé au joueur connecté.
 
-    def checkIfGameIsOver(self, karts: List[Kart], finishLine: FinishLine) -> None:
+    def checkIfGameIsOver(self, finishLine: FinishLine) -> None:
         """Contrôle si la partie est terminée et si oui gère celle-ci"""
-        # if not self.completed:
-        #     if finishLine.completedAllLaps(self.kart_ID):
-        #         self.completed_time = self.timer
-        #         self.completed = True
-        #         self.parentScreen.end_game(
-        #             f"Completed!\n\nWell done!\n Your time: {self.parentScreen.ids.timer_id.text}"
-        #         )
+        if finishLine.completedAllLaps(self.myKart().formID()):
+            self.parentScreen.end_game(
+                f"Completed!\n\nWell done!\n Your time: {self.parentScreen.ids.timer_id.text}"
+            )
 
-        #     elif karts[0].hasBurned() and not self.burned:
-        #         self.parentScreen.end_game("You have burned!\n\nTry again!")
-        #         self.completed_time = self.timer
-        #         self.burned = True
+        elif self.myKart().hasBurned():
+            self.parentScreen.end_game("You have burned!\n\nDo better next time!")
 
     def connectedPlayers(self):
         """Retourne la liste des joueurs connectés."""
@@ -242,3 +272,23 @@ class MultiplayerGame(ClientNamespace):
         self._keyboard = Window.request_keyboard(self.keyboard_closed, self)
         self._keyboard.bind(on_key_down=self.keyboard_down)
         self._keyboard.bind(on_key_up=self.keyboard_up)
+
+    def add_reconnectionPopup(self, error: str = "") -> None:
+        self.popup = CustomPopup(
+            error + "\n" + "Do you want to try again?",
+            func1=lambda _: self.emit("join", self._name, callback=self.joiningError),
+            func1_name="Yes",
+            func2=self.no,
+            func2_name="No",
+        )
+        self.parentScreen.add_widget(self.popup)
+
+    def try_reconnection(self, button=None) -> None:
+        """Appelé si le joueur essaie de se reconnecter à la partie en appuyant sur le bouton <yes> du popup."""
+        self.emit("join", self._name, callback=self.joiningError)
+        self.parentScreen.remove_widget(self.popup)
+
+    def no(self, b):
+        """Appelé si le joueur renonce à se reconnecter à la partie en appuyant sur le bouton <no> du popup."""
+        self.parentScreen.remove_widget(self.popup)
+        self.quitTheGame()

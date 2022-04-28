@@ -16,8 +16,9 @@ Builder.load_file("client/output/screens/InGameScreen.kv")
 
 
 class WaitingRoom(FloatLayout):
-    def __init__(self, **kwargs):
+    def __init__(self, gameName, **kwargs):
         super().__init__(**kwargs)
+        self.ids.game_info.text += f"[color=#ff0000]{gameName}[/color]"
         self.entries = [
             "finally got up and joined the game !",
             "wants to loose another game !",

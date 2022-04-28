@@ -16,10 +16,10 @@ class JoinGame(FloatLayout):
     def join(self):
         self.app.instanciate_MultiKS(name=self.ids.gameName.text, worldVersion_id=None, on_collision=self.on_Collision, changeLabelText=self.changeLabelText)
         
-    def changeLabelText(self, message) -> None:
-        """Mise à jour puis suppession du message d'erreur à afficher"""
+    def changeLabelText(self, message, time = 5) -> None:
+        """Mise à jour puis suppession du message d'erreur à afficher après un temps <time>"""
         self.ids.labelID.text = message
-        Clock.schedule_once(self.clearLabelText, 4)
+        Clock.schedule_once(self.clearLabelText, time)
 
     def clearLabelText(self, dt) -> None:
         """Vidage du message d'erreur après un temps <dt> donné"""

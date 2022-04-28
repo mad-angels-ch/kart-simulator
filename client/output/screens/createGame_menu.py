@@ -32,10 +32,10 @@ class CreateGame(FloatLayout):
         """Génère la liste des curcuits jouables"""
         return [world[:-5] for world in listdir("client/worlds")]
 
-    def changeLabelText(self, message) -> None:
-        """Mise à jour puis suppession du message d'erreur à afficher"""
+    def changeLabelText(self, message, time = 5) -> None:
+        """Mise à jour puis suppession du message d'erreur à afficher après un temps <time>"""
         self.ids.labelID.text = message
-        Clock.schedule_once(self.clearLabelText, 5)
+        Clock.schedule_once(self.clearLabelText, time)
 
     def clearLabelText(self, dt) -> None:
         """Vidage du message d'erreur après un temps <dt> donné"""

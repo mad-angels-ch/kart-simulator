@@ -12,46 +12,54 @@ def keyboard_closed(self):
 
 def keyboard_down(self, keyboard, keycode, text, modifiers):
     if (
-        keycode[1] in ["left", "a"] and self.myKart() and not self._rotating
+        keycode[1] in ["left", "a"]
+        and self.play
+        and self.myKart()
+        and not self._rotating
     ):  # Si aucun kart ne nous a encore été attribué, self.myKart() a comme valeur par défaut "None".
         self._rotating = True
         self.newEvent(game.events.KartTurnEvent(1, self.myKart().formID()))
 
-    if keycode[1] in ["right", "d"] and self.myKart() and not self._rotating:
+    if (
+        keycode[1] in ["right", "d"]
+        and self.play
+        and self.myKart()
+        and not self._rotating
+    ):
         self._rotating = True
         self.newEvent(game.events.KartTurnEvent(-1, self.myKart().formID()))
 
-    if keycode[1] in ["up", "w"] and self.myKart() and not self._moving:
+    if keycode[1] in ["up", "w"] and self.play and self.myKart() and not self._moving:
         self._moving = True
         self.newEvent(game.events.KartMoveEvent(1, self.myKart().formID()))
 
-    if keycode[1] in ["down", "s"] and self.myKart() and not self._moving:
+    if keycode[1] in ["down", "s"] and self.play and self.myKart() and not self._moving:
         self._moving = True
         self.newEvent(game.events.KartMoveEvent(-1, self.myKart().formID()))
 
     if keycode[1] == "escape":
         self.change_gameState()
 
-    if keycode[1] == "x" and self.myKart():
+    if keycode[1] == "x" and self.play and self.myKart():
         self.newEvent(game.events.FireBallEvent(self.myKart().formID()))
 
     return True
 
 
 def keyboard_up(self, keyboard, keycode):
-    if keycode[1] in ["left", "a"] and self.myKart():
+    if keycode[1] in ["left", "a"] and self.play and self.myKart():
         self._rotating = False
         self.newEvent(game.events.KartTurnEvent(0, self.myKart().formID()))
 
-    if keycode[1] in ["right", "d"] and self.myKart():
+    if keycode[1] in ["right", "d"] and self.play and self.myKart():
         self._rotating = False
         self.newEvent(game.events.KartTurnEvent(0, self.myKart().formID()))
 
-    if keycode[1] in ["up", "w"] and self.myKart():
+    if keycode[1] in ["up", "w"] and self.play and self.myKart():
         self._moving = False
         self.newEvent(game.events.KartMoveEvent(0, self.myKart().formID()))
 
-    if keycode[1] in ["down", "s"] and self.myKart():
+    if keycode[1] in ["down", "s"] and self.play and self.myKart():
         self._moving = False
         self.newEvent(game.events.KartMoveEvent(0, self.myKart().formID()))
 

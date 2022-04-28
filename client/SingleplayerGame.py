@@ -82,9 +82,9 @@ class SingleplayerGame:
         self._game.nextFrame(elapsedTime, self.eventsList)
         self.eventsList.clear()
 
-    def disconnect(self) -> None:
-        """Déconnection du joueur lorsqu'il quitte la partie. Utile uniquement pour le multijoueur."""
-        pass
+    def quitTheGame(self) -> None:
+        """Déconnection du joueur lorsqu'il quitte la partie."""
+        self.app.manager.popAll()
 
     def finish_game(self) -> None:
         """Arrêt de la pendule"""
@@ -165,3 +165,4 @@ class SingleplayerGame:
                     },
                 ),
             ).start()
+
