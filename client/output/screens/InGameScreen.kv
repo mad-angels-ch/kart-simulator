@@ -17,7 +17,7 @@
         size_hint:.2,.1
         pos_hint: {'x':.4, 'y': .45}
         text:"Quit game"
-        on_release: app.manager.popAll(), app.clear_game(), app.ButtonSound()
+        on_release: app.game.quitTheGame(), app.clear_game(), app.ButtonSound()
 
 
 
@@ -37,7 +37,7 @@
         size_hint:.2,.1
         pos_hint: {'x': .4 , 'y': .3 }
         text:"Quit game"
-        on_release: app.game.quitTheGame(), app.ButtonSound()
+        on_release: app.game.quitTheGame(), app.clear_game(), app.ButtonSound()
     
 
 <WaitingRoom>:
@@ -50,12 +50,13 @@
 
     Label:
         id: game_info
-        pos_hint: {'center_x': .8, 'center_y':.3 }
+        pos_hint: {'center_x': .8, 'center_y':.4 }
         size_hint: .38, .6
         color: 0,0,0,1
-        text: '[b][u][size=16]Game informations:[/b][/u][/size]\n Name of the game: '
+        text: '[b][u][size=16]Game informations:[/b][/u][/size]\n° Name of the game: '
         valign: "bottom"
         markup: True
+
 
 
 <KS_screen>:

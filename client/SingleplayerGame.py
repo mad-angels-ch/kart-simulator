@@ -84,12 +84,14 @@ class SingleplayerGame:
 
     def quitTheGame(self) -> None:
         """Déconnection du joueur lorsqu'il quitte la partie."""
+        self.play = False
         self.app.manager.popAll()
+        self.save()
 
     def finish_game(self) -> None:
         """Arrêt de la pendule"""
         self.my_clock.unschedule(self.nextFrame)
-        self.play = False
+
 
     def change_gameState(self) -> None:
         """Change l'état du jeu: pause ou jeu"""

@@ -18,7 +18,7 @@ Builder.load_file("client/output/screens/InGameScreen.kv")
 class WaitingRoom(FloatLayout):
     def __init__(self, gameName, **kwargs):
         super().__init__(**kwargs)
-        self.ids.game_info.text += f"[color=#ff0000]{gameName}[/color]"
+        self.ids.game_info.text += f"[color=#ff0000]{gameName}[/color]\n"
         self.entries = [
             "finally got up and joined the game !",
             "wants to loose another game !",
@@ -34,18 +34,26 @@ class WaitingRoom(FloatLayout):
             "swung to the dark side...",
         ]
 
+    def set_laps(self, laps: int) -> None:
+        """Met à jour les informations de la partie."""
+        self.ids.game_info.text += f"° Number of laps: [color=#ff0000]{laps}[/color]\n"
+
     def add_player(self, player: str):
         """Ajoute un joueur à la liste lors d'une connection."""
         if player in ["lj44", "Noe"]:
-            self.ids.game_info.text += f"\n {player} THE BOSS IS IN THE PLACE !"
+            self.ids.game_info.text += f"\n --> {player} THE BOSS IS IN THE PLACE !"
         elif player in ["CHAJ", "chaj", "johnschmidt"]:
-            self.ids.game_info.text += f"\n Bienvenue {player}. Ce projet mérite un 6."
+            self.ids.game_info.text += (
+                f"\n --> Bienvenue {player}. Ce projet mérite un 6."
+            )
         else:
-            self.ids.game_info.text += f"\n {player} {self.entries[randrange(5)]}"
+            self.ids.game_info.text += f"\n --> {player} {self.entries[randrange(5)]}"
 
     def remove_player(self, player: str):
         """Retire un joueur de la liste lors d'une déconnection."""
-        self.ids.game_info.text += f"\n {player} {self.exits[randrange(5)]}"
+        self._nbPlayers -= 1
+        self.ids.game_info.text = self.ids.game_info.text.format(p=self._nbPlayers)
+        self.ids.game_info.text += f"\n --> {player} {self.exits[randrange(5)]}"
 
 
 class EndGameMode(FloatLayout):

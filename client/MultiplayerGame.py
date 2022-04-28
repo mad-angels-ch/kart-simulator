@@ -64,7 +64,7 @@ class MultiplayerGame(ClientNamespace):
             self._rotating = False  # Pour ne pas surcharger le serveur avec des events, un seul event est émi lorsqu'une touche pour avancer ou tourner est émi et un seul autre lorsqu'elle est relâchée.
             self._connectedPlayers = []
             self.app.start_ks()
-            self.waitingScreen = WaitingRoom(gameName=self.name(), size_hint=(1, 1))
+            self.waitingScreen = WaitingRoom(self._name, size_hint=(1, 1))
             self.parentScreen.add_widget(self.waitingScreen)
             self.timer = 0
             self.my_clock = Clock
@@ -86,11 +86,13 @@ class MultiplayerGame(ClientNamespace):
         # c.f. commentaire de self.y ci-dessus
         return self.app.windowSize()
 
-    def name(self) -> str:
-        """Retourne le nom de la partie"""
-        return self._name
 
-    def updateTimer(self, dt):
+    def updateInfos(self, dt):
+        """Met à jour les information affichées sur l'écran de jeu (timer, laps, gates)"""
+        self.parentScreen.updateLapsAndGatesCount(
+            self._game.objectsFactory(), self.myKart()
+        )
+        self.checkIfGameIsOver(finishLine=self._game.finishLine())
         self.timer += 1 / 60
         self.parentScreen.updateTimer(self.timer)
 
@@ -166,7 +168,7 @@ class MultiplayerGame(ClientNamespace):
         """Appelé à la fin du compteur."""
         self.play = True
         self.my_clock.schedule_interval(
-            self.updateTimer, 1 / 60
+            self.updateInfos, 1 / 60
         )  # Initialise la pendule qui compte le temps de la partie.
 
     def on_countdown(self):
@@ -201,12 +203,10 @@ class MultiplayerGame(ClientNamespace):
             obj.set_center(lib.Point(newPos))
             obj.set_angle(newPos[2])
         self.callOutput()
-        self.parentScreen.updateLapsAndGatesCount(
-            self._game.objectsFactory(), self.myKart()
-        )
-        self.checkIfGameIsOver(finishLine=self._game.finishLine())
 
-    def new_connection(self, player: str) -> None:
+
+    def new_connection(self, player: str) -> None:  
+        self.waitingScreen.set_laps(self._game.finishLine().numberOfLapsRequired()) # pas faisable à la création de waitingScreen car _game était en train d'être créé dans un thread parallèle.
         self.waitingScreen.add_player(player)
 
     def new_disconnection(self, player: str) -> None:
@@ -223,9 +223,12 @@ class MultiplayerGame(ClientNamespace):
         """Quitte la partie"""
         self.play = False
         self.disconnect()
-        self.my_clock.unschedule(self.updateTimer)
         self.app.manager.popAll()
-
+        
+    def finish_game(self) -> None:
+        """Arrêt de la pendule. Appelé dès la fin de la partie."""
+        self.my_clock.unschedule(self.updateInfos)
+        
     def executeInMainKivyThread(self, function, *args, **kwargs) -> None:
         Clock.schedule_once(lambda _: function(*args, **kwargs), 0)
 
