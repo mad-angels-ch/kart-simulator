@@ -147,7 +147,7 @@ class UpdateWorldButton(Button):
                 params={"id": True, "worldVersion_id": True, "name": True},
             ).json()
         except requests.ConnectionError:
-            updateWorlds_output.text += "ERROR: The server in unreachable, please check your internet connection and try again."
+            updateWorlds_output.text += "ERROR: The server in unreachable, \nplease check your internet connection and try again."
             self._updating = False
             self.text = "Update the worlds now"
         else:

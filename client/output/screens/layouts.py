@@ -31,12 +31,11 @@ class CustomPopup(Popup):
         **kwargs
     ):
         super().__init__(title=title, **kwargs)
-        self.content.font_size = sp(20)
         self.pos_hint = pos_hint
         self.size_hint = size_hint
         box1 = BoxLayout(orientation="vertical")
         box1.add_widget(Label(text=text,font_size= sp(20)))
-        box2 = BoxLayout(orientation="horizontal",size_hint=(1,None),height=50)
+        box2 = BoxLayout(orientation="horizontal",size_hint=(1,None),height=sp(50))
         box1.add_widget(box2)
         if func1:
             box2.add_widget(Button(text=func1_name,font_size= sp(20), on_press=func1))
