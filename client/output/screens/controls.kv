@@ -1,37 +1,28 @@
 
 
 <Controls>:
-    TextInput:
-        pos_hint: {'center_x':.55,'center_y':.38}
-        size_hint: .015, .015
-        width: "100dp"
-        text: ""
-        multiline: False
-        on_text_validate: root.on_text_validate(self)
+    GridLayout:
+    # Image de fond
+        canvas.before:
+            BorderImage:
+                border: 10, 10, 10, 10
+                source: 'client/Images/red_bg.png'
+                pos: self.pos
+                size: self.size
 
     Label:
         bold: True
         text: "Controls of the Kart Simulator"
-        pos_hint: {'x':0,'y':.9}
+        pos_hint: {'center_x':.7,'y': .9}
         font_size: 32
-        color: .8,.4,.2,1
+        color: 1,0,0,.75
         size_hint: 1,.1
-        canvas.before:
-            Color:
-                rgba: 0, 0, 0, 1
-            Rectangle:
-                pos: self.pos
-                size: self.size
 
     Label:
+        pos_hint: {'center_x':.7 , 'center_y':.5 }
         italic: True
         text: ' - Avancer/Accélérer: W / up\n\n - Reculer/Ralentir: S / down\n\n - Tourner à gauche: A / left\n\n - Tourner à droite: D / right\n\n - Pause/Reprendre: Esc'
         font_size: 16
         color: 0,0,0,1
-        size_hint: 1,.9
-        canvas.before:
-            Color:
-                rgba: .8,.4,.2,1
-            Rectangle:
-                pos: self.pos
-                size: self.size
+        size_hint: 6,.9
+

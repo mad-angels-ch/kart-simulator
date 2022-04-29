@@ -1,26 +1,27 @@
-<Rules@BoxLayout>:
-    orientation: "vertical"
+<Rules>:
+    GridLayout:
+    # Image de fond
+        canvas.before:
+            BorderImage:
+                border: 10, 10, 10, 10
+                source: 'client/Images/red_bg.png'
+                pos: self.pos
+                size: self.size
+
     Label:
         bold: True
         text: "Rules of the Kart Simulator"
+        pos_hint: {'center_x':.7,'y': .9}
         font_size: 32
-        color: .8,.4,.2,1
+        color: 1,0,0,.75
         size_hint: 1,.1
-        canvas.before:
-            Color:
-                rgba: 0, 0, 0, 1
-            Rectangle:
-                pos: self.pos
-                size: self.size
+
     Label:
+        pos_hint: {'center_x':.7 , 'center_y':.5 }
+        size_hint: .2, .1
+        padding: .05,.05
         italic: True
         text: " - Le but est de compléter le nombre de tours requis le plus rapidement possible\n\n - Les karts perdent de la vitesse lorsqu'ils touchent le bord de la piste ou des obstacles quelconques\n\n - La partie est perdue si le joueur sort de la piste (par un bout sans barrières)"
         font_size: 16
         color: 0,0,0,1
-        size_hint: 1,.9
-        canvas.before:
-            Color:
-                rgba: .8,.4,.2,1
-            Rectangle:
-                pos: self.pos
-                size: self.size
+        size_hint: 6,.9

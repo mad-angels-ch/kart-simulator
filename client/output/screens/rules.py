@@ -1,7 +1,7 @@
-from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.floatlayout import FloatLayout
 from kivy.lang import Builder
 
 Builder.load_file("client/output/screens/rules.kv")
 
-class Rules(BoxLayout):
+class Rules(FloatLayout):
     pass
