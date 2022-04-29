@@ -51,7 +51,6 @@ class WaitingRoom(FloatLayout):
 
     def remove_player(self, player: str):
         """Retire un joueur de la liste lors d'une déconnection."""
-        self.ids.game_info.text = self.ids.game_info.text.format(p=self._nbPlayers)
         self.ids.game_info.text += f"\n --> {player} {self.exits[randrange(5)]}"
 
 
@@ -113,50 +112,22 @@ class KS_screen(Screen):
     def startingAnimation(self, start_theGame):
         """Création et affichage de l'animation de début de partie"""
         # self.ids.noActionBar.remove_widget(self.start_button)
-        start_animation3 = Label(
-            text="3", font_size=0, halign="center", color=(1, 0, 1, 1)
-        )
-        start_animation2 = Label(
-            text="2", font_size=0, halign="center", color=(1, 0, 1, 1)
-        )
-        start_animation1 = Label(
-            text="1", font_size=0, halign="center", color=(1, 0, 1, 1)
-        )
-        start_animationGO = Label(
-            text="GOOOO!!!!", font_size=0, halign="center", color=(1, 0, 1, 1)
-        )
+        time=0
+        for text in ["3","2","1","GOOOO!!!!"]:
+            start_animation = Label(
+                text=text, font_size=0, halign="center", color=(0, 1, 0, 1)
+            )
 
-        self.ids.animationLayout.add_widget(start_animation3)
-        self.ids.animationLayout.add_widget(start_animation2)
-        self.ids.animationLayout.add_widget(start_animation1)
-        self.ids.animationLayout.add_widget(start_animationGO)
-        anim = (
-            Animation(font_size=74, duration=0.5)
-            + Animation(font_size=200, duration=0.5)
-            + Animation(font_size=0, duration=0.5)
-        )
-        anim.start(start_animation3)
-        anim = (
-            Animation(duration=1.5)
-            + Animation(font_size=74, duration=0.5)
-            + Animation(font_size=200, duration=0.5)
-            + Animation(font_size=0, duration=0.5)
-        )
-        anim.start(start_animation2)
-        anim = (
-            Animation(duration=3)
-            + Animation(font_size=74, duration=0.5)
-            + Animation(font_size=200, duration=0.5)
-            + Animation(font_size=0, duration=0.5)
-        )
-        anim.start(start_animation1)
-        anim = (
-            Animation(duration=4.5)
-            + Animation(font_size=74, duration=0.5)
-            + Animation(font_size=400, duration=0.5)
-            + Animation(font_size=0, duration=0.5)
-        )
-        anim.start(start_animationGO)
+            self.ids.animationLayout.add_widget(start_animation)
+            anim = (
+                Animation(duration=1.5*time)
+                + Animation(font_size=74, duration=0.5)
+                + Animation(font_size=200, duration=0.5)
+                + Animation(font_size=0, duration=0.5)
+            )
+            anim.start(start_animation)
+            time += 1
+
 
         Clock.schedule_once(partial(self.begin_game, start_theGame), 6)
 

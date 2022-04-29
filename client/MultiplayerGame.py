@@ -284,7 +284,7 @@ class MultiplayerGame(ClientNamespace):
 
     def add_reconnectionPopup(self, error: str = "") -> None:
         self.popup = CustomPopup(
-            error + "\n" + "Do you want to try again?",
+            "Connection lost:\n" + error + "\n" + "Do you want to try to reconnect?",
             func1=lambda _: self.emit("join", self._name, callback=self.joiningError),
             func1_name="Yes",
             func2=self.no,

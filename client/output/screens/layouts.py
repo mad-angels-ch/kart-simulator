@@ -26,15 +26,16 @@ class CustomPopup(Popup):
         func1_name="",
         func2=None,
         func2_name="",
+        pos_hint={"center_x": 0.5, "center_y": 0.7},
+        size_hint = (0.5, 0.2),
         **kwargs
     ):
         super().__init__(title=title, **kwargs)
-        self.pos_hint = {"center_x": 0.5, "center_y": 0.7}
-        self.size_hint = (0.5, 0.2)
+        self.pos_hint = pos_hint
+        self.size_hint = size_hint
         box1 = BoxLayout(orientation="vertical")
-        app = App.get_running_app()
         box1.add_widget(Label(text=text))
-        box2 = BoxLayout(orientation="horizontal")
+        box2 = BoxLayout(orientation="horizontal",size_hint=(1,None),height=50)
         box1.add_widget(box2)
         if func1:
             box2.add_widget(Button(text=func1_name, on_press=func1))

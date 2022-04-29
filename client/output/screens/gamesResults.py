@@ -113,38 +113,21 @@ class Results(FloatLayout):
                     halign="left",
                 )
             )
-            b.add_widget(
-                Label(
-                    text=worldName,
-                    color=(0, 0, 0, 1),
-                    size_hint=(0.18, 1),
-                    halign="left",
+            for name in [
+                worldName,
+                winner,
+                finishTime[0] + "." + finishTime[1][:2],
+                nbPlayers,
+                date,
+            ]:
+                b.add_widget(
+                    Label(
+                        text=name,
+                        color=(0, 0, 0, 1),
+                        size_hint=(0.18, 1),
+                        halign="left",
+                    )
                 )
-            )
-            b.add_widget(
-                Label(
-                    text=winner, color=(0, 0, 0, 1), size_hint=(0.18, 1), halign="left"
-                )
-            )
-            b.add_widget(
-                Label(
-                    text=finishTime[0] + "." + finishTime[1][:2],
-                    color=(0, 0, 0, 1),
-                    size_hint=(0.18, 1),
-                    halign="left",
-                )
-            )
-            b.add_widget(
-                Label(
-                    text=nbPlayers,
-                    color=(0, 0, 0, 1),
-                    size_hint=(0.18, 1),
-                    halign="left",
-                )
-            )
-            b.add_widget(
-                Label(text=date, color=(0, 0, 0, 1), size_hint=(0.18, 1), halign="left")
-            )
             self.ids.table.add_widget(b)
             self._widgets.append(b)
 
@@ -160,18 +143,29 @@ class Results(FloatLayout):
 
     def winner(self, game: dict) -> str:
         """Retourne le nom du vainqueur de la partie."""
-        minTime = min(player["finishTime"] for player in game["players"])
-        return list(
-            player["username"]
-            for player in game["players"]
-            if player["finishTime"] == minTime
-        )[0]
+        try:
+            minTime = min(
+                player["finishTime"]
+                for player in game["players"]
+                if player["completed"] == 1
+            )
+        except ValueError:
+            return "No Winner"
+        else:
+            return list(
+                player["username"]
+                for player in game["players"]
+                if player["finishTime"] == minTime
+            )[0]
 
     def finishTime(self, game: dict, player: str) -> float:
         """Retourne le temps qu'a pris le joueur pour finir le circuit, ou False s'il ne l'a pas fini."""
-        return list(
-            p["finishTime"] for p in game["players"] if p["username"] == player
-        )[0]
+        if player == "No Winner":
+            return 0.00
+        else:
+            return list(
+                p["finishTime"] for p in game["players"] if p["username"] == player
+            )[0]
 
     def worldName(self, game: dict) -> str:
         """Retourne le nom du circuit de la partie."""

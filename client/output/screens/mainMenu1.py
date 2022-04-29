@@ -13,7 +13,23 @@ class MainMenu1(FloatLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.app = App.get_running_app()
-        
+    def on_kv_post(self,a):
+        try:
+            open("client/cookies","rb")
+        except FileNotFoundError:
+            self.add_conditions()
+            
+    def add_conditions(self) -> None:
+        """Ajoute le Popup des conditions d'utilisation."""
+        self.popup = CustomPopup(pos_hint={'center_x': 0.5, 'center_y': 0.5},size_hint=(0.9,0.4),
+            title='Terms and conditions:',title_size=24,text= 'Welcome to the kart simulator!\nThis application uses cookies and collects non-anonymous data.\nPlease consent to schare your informations if you want to play.',
+            func1=lambda _: self.remove_widget(self.popup),
+            func1_name="I Agree",
+            func2=lambda _:self.app.stop(),
+            func2_name="Quit",
+        )
+        self.add_widget(self.popup)
+    
     def callback(self, inst, dt):
         self.app.manager.push("MainMenu")
         
