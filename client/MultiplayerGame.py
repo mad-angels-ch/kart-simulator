@@ -144,6 +144,7 @@ class MultiplayerGame(ClientNamespace):
     def createStartButton(self) -> None:
         self.start_button = Button(
             text="start The game!",
+            font_size= "20sp",
             size_hint=(0.25, 0.1),
             pos_hint={"center_x": 0.5, "y": 0.1},
         )  # Création du bouton qui permet de démarrer la partie

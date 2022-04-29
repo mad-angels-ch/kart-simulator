@@ -15,34 +15,41 @@
             id: updateWorlds_output_id
             pos_hint: {'center_x':.5,'center_y':.5}
             text: ""
-            font_size: 16
+            font_size: "20sp"
             color: 1,1,1,1
             size_hint: 1,.7
         Button:
             text: "Play"
+            font_size: "20sp"
             background_color: (1, 0, 0.0, .75)
             on_press: app.manager.push("Playingmode"), app.ButtonSound()
                         
 
         Button:
             text: "Games"
+            font_size: "20sp"
             on_press: app.manager.push("Results"), app.ButtonSound()
 
         Button:
             text: "Rules of the game"
+            font_size: "20sp"
             on_press: app.manager.push("Rules"), app.ButtonSound()
         Button:
             text: "Controls"
+            font_size: "20sp"
             on_press: app.manager.push("Controls"), app.ButtonSound()
         Button:
             text: "Settings"
+            font_size: "20sp"
             on_press: 
                 if app.is_logged(): app.manager.push("SettingsMenu"), app.ButtonSound()
                 else: root.SettingsPopup(), app.ButtonSound()
         Button:
             text: "Credits"
+            font_size: "20sp"
             on_press: app.manager.push("Credits"), app.ButtonSound()
         Button:
             id:btnExit
+            font_size: "20sp"
             text:"Exit"
             on_press: app.ButtonSound(), app.stop()

@@ -13,6 +13,7 @@ from kivy.uix.scrollview import ScrollView
 from kivy.core.window import Window
 from kivy.uix.button import Button
 from kivy.graphics import Rectangle, Color
+from kivy.metrics import sp
 
 from .layouts import CustomPopup
 
@@ -107,6 +108,7 @@ class Results(FloatLayout):
             b.add_widget(
                 Label(
                     text=str(n),
+                    font_size= sp(20),
                     color=(0, 0, 0, 1),
                     bold=True,
                     size_hint=(0.1, 1),
@@ -123,6 +125,7 @@ class Results(FloatLayout):
                 b.add_widget(
                     Label(
                         text=name,
+                        font_size= sp(20),
                         color=(0, 0, 0, 1),
                         size_hint=(0.18, 1),
                         halign="left",

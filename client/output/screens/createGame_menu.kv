@@ -16,6 +16,7 @@
                 id: worlds_spinner_id
                 size_hint: .25,1
                 text: "Choose your world !"
+                font_size: "20sp"
                 values: root.generateWorldsList()
                 on_text:
                     app.ButtonSound(), preView_ID.changePreView(worlds_spinner_id.text)
@@ -23,11 +24,13 @@
             UpdateWorldButton:
                 size_hint: .5,.5
                 pos_hint: {'top': 1}
+                font_size: "30sp"
                 text: "Update the worlds"
                 on_press: self.generateUpdatedWorldsList(labelID,worlds_spinner_id, lambda:preView_ID.changePreView(worlds_spinner_id.text))
 
             Button:
                 size_hint: .25,1
+                font_size: "25sp"
                 text: "Play"
                 background_color: (1.0, 0.0, 0.0, .75)
                 on_press: root.create(), app.ButtonSound()
@@ -43,9 +46,9 @@
     Label:
         id: labelID
         pos_hint: {"center_x":.5,"center_y":.5}
+        font_size: "20sp"
         text:""
-        text_size: self.size
         halign: 'center'
         valign: 'middle'
-        font_size: 32
+        font_size: "50sp"
 

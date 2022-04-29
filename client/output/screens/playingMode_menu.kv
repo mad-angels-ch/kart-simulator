@@ -15,11 +15,13 @@
 
         Button:
             text: "Multiplayer"
+            font_size: "20sp"
             on_press: 
                 if app.is_logged(): app.manager.push("CreateOrJoin")
                 else: root.ModePopup()
                     
         Button:
             text: "Singleplayer"
+            font_size: "20sp"
             on_press:
                 app.manager.push("CreateSPGame"), app.ButtonSound()

@@ -7,7 +7,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.button import Button
 from kivy.app import App
-
+from kivy.metrics import sp
 
 class KartSettings(GridLayout):
     karts_list: list
@@ -30,6 +30,7 @@ class KartSettings(GridLayout):
             box.add_widget(im)
             b = ToggleButton(
                 text=self.karts_list[k][:-4],
+                font_size= sp(20),
                 size_hint=(1, 0.1),
                 group="karts",
                 on_press=self.updateChosenKart,
@@ -38,7 +39,7 @@ class KartSettings(GridLayout):
             self.add_widget(box)
             self.buttons.append(b)
 
-        self.add_widget(Button(text="Save my choice", on_press=self.updateUserSettings))
+        self.add_widget(Button(text="Save my choice",font_size= sp(20), on_press=self.updateUserSettings))
 
     def generateKartsList(self):
         """Génère la liste des karts disponibles."""

@@ -12,30 +12,36 @@
         id: errorLabel
         pos_hint: {'center_x':.5,'center_y':.8}
         size_hint: .4, .06
+        font_size: "20sp"
         text: ""
     Label:
         color: 0,0,0,1
         pos_hint: {'x':.5,'y':.6}
+        font_size: "20sp"
         size_hint: .2, .06
         text: "Username"
     TextInput:
         pos_hint: {'x':.7,'y':.6}
+        font_size: "20sp"
         size_hint: .2, .06
         id: username
         hint_text: "Username"
     Label:        
         color: 0,0,0,1
+        font_size: "20sp"
         pos_hint: {'x':.5,'y':.5}
         size_hint: .2, .06
         text: "Password"
     TextInput:
         pos_hint: {'x':.7,'y':.5}
+        font_size: "20sp"
         size_hint: .2, .06
         hint_text: "Password"
         password: True
         id: password
     Button:
         text:"Log In"
+        font_size: "20sp"
         pos_hint: {'center_x':.8,'y':.4}
         size_hint: .2, .06
         on_press: root.log_in()

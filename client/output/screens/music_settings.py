@@ -7,7 +7,7 @@ from kivy.uix.button import Button
 from kivy.app import App
 from kivy.graphics import Rectangle, Color
 from kivy.core.audio import SoundLoader
-
+from kivy.metrics import sp
 
 class MusicSettings(GridLayout):
     musics_list: list
@@ -32,6 +32,7 @@ class MusicSettings(GridLayout):
             box.add_widget(im)
             b = ToggleButton(
                 text=self.musics_list[k][:-4],
+                font_size= sp(20),
                 size_hint=(1, 0.1),
                 group="musics",
                 on_press=self.updateChosenKart,
@@ -40,7 +41,7 @@ class MusicSettings(GridLayout):
             self.add_widget(box)
             self.buttons.append(b)
 
-        self.add_widget(Button(text="Save my choice", on_press=self.updateUserSettings))
+        self.add_widget(Button(text="Save my choice",font_size= sp(20), on_press=self.updateUserSettings))
 
     def generateKartsList(self):
         """Génère la liste des karts disponibles."""

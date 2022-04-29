@@ -1,14 +1,12 @@
 from os import listdir, path
 from typing import Tuple
-from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.app import App
 from kivy.uix.button import Button
 from kivy.lang import Builder
-from kivy.properties import StringProperty, ObjectProperty
+from kivy.properties import StringProperty
 from kivy.uix.widget import Widget
-from kivy.graphics import Rectangle, Color
-from kivy.graphics.transformation import Matrix
+from kivy.metrics import sp
 import game
 from game.objects.ObjectFactory import InvalidWorld
 from client.output import OutputFactory
@@ -16,8 +14,6 @@ from kivy.clock import Clock
 import requests, json, os, threading
 from kivy.core.audio import SoundLoader
 from functools import partial
-from client.MultiplayerGame import MultiplayerGame
-from client.SingleplayerGame import SingleplayerGame
 import json
 
 Builder.load_file("client/output/screens/createGame_menu.kv")
@@ -123,6 +119,7 @@ class UpdateWorldButton(Button):
         """Bouton qui met à jour dynamiquement la liste des mondes jouables"""
         super().__init__(**kwargs)
         self._updating = False
+        self.font_size = sp(20)
         self.app = App.get_running_app()
 
     def generateUpdatedWorldsList(

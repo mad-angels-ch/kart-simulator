@@ -13,12 +13,14 @@
         orientation: 'vertical'
         Button:
             text: "My kart"
+            font_size: "20sp"
             on_press: 
                 if app.is_logged(): app.manager.push("Kart_Settings"), app.ButtonSound()
                 else: root.SettingsPopup()
 
         Button:
             text: "My Music"
+            font_size: "20sp"
             on_press: 
                 if app.is_logged: app.manager.push("Music_Settings"), app.ButtonSound()
                 else: root.SettingsPopup()
@@ -26,12 +28,14 @@
         Spinner:
             id: pov_spinner_id
             text: "Chose your POV !"
+            font_size: "20sp"
             values: ["Third Person", "First Person"]
             on_text:
                 root.updatePOVSettings(pov_spinner_id.text), app.ButtonSound()
 
         Button:
             text: "Log In / Log Out"
+            font_size: "20sp"
             on_press: 
                 app.ButtonSound(),
                 if app.is_logged(): app.logOut()

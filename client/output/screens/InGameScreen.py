@@ -11,6 +11,7 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen
 from kivy.uix.widget import Widget
+from kivy.metrics import sp
 
 Builder.load_file("client/output/screens/InGameScreen.kv")
 
@@ -96,10 +97,10 @@ class KS_screen(Screen):
         self.endGameMenu = EndGameMode()
         self.endGameMenu.ids.gameOverLabel_id.text = message
         anim = (
-            Animation(font_size=74, duration=0.1)
-            + Animation(font_size=120, duration=1)
-            + Animation(font_size=120, duration=0.1)
-            + Animation(font_size=74, duration=1)
+            Animation(font_size=sp(100), duration=0.1)
+            + Animation(font_size=sp(150), duration=1)
+            + Animation(font_size=sp(150), duration=0.1)
+            + Animation(font_size=sp(100), duration=1)
         )
         anim.repeat = True
         anim.start(self.endGameMenu.ids.gameOverLabel_id)
@@ -121,8 +122,8 @@ class KS_screen(Screen):
             self.ids.animationLayout.add_widget(start_animation)
             anim = (
                 Animation(duration=1.5*time)
-                + Animation(font_size=74, duration=0.5)
-                + Animation(font_size=200, duration=0.5)
+                + Animation(font_size=sp(200), duration=0.5)
+                + Animation(font_size=sp(250), duration=0.5)
                 + Animation(font_size=0, duration=0.5)
             )
             anim.start(start_animation)
