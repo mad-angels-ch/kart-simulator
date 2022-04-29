@@ -186,7 +186,8 @@ class MultiplayerGame(ClientNamespace):
     def on_burned(self, kart) -> None:
         """Evénement émit à chaque kart brûlé.
         Cette méthode peut être appelée plusieurs fois par kart"""
-        self._game.objectByFormID[kart].burn()
+        if not self._game.objectByFormID(kart).hasBurned():
+            self._game.objectByFormID(kart).burn()
 
     def on_game_data(self, data: dict):
         """Evènement appelé à chaque nouvelle factory partagée par le serveur.

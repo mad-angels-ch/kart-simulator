@@ -51,7 +51,6 @@ class WaitingRoom(FloatLayout):
 
     def remove_player(self, player: str):
         """Retire un joueur de la liste lors d'une déconnection."""
-        self._nbPlayers -= 1
         self.ids.game_info.text = self.ids.game_info.text.format(p=self._nbPlayers)
         self.ids.game_info.text += f"\n --> {player} {self.exits[randrange(5)]}"
 

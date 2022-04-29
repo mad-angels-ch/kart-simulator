@@ -112,6 +112,7 @@ class SingleplayerGame:
                 ),
                 2 / self.fps,
             )
+            
 
     def start_theGame(self) -> None:
         """Instantation du clavier, des commandes liées et de la pendule"""
@@ -126,9 +127,16 @@ class SingleplayerGame:
 
     def frame_callback(self, output: OutputFactory, objects: List[Object]) -> None:
         """Fonction appellée à chaque frame par output"""
-        if output.isInitialized() and not self.isEasterEgg:
+        if output.isInitialized() and not self.isEasterEgg and self.play:
             factory = self._game.objectsFactory()
-            self.parentScreen.updateLapsAndGatesCount(factory, factory[self.kart_ID])
+            try:
+                kart = factory[self.kart_ID]        # Il se peut que le kart soit en train d'être réinstancié (Game.loadKart), comme par exemple à la reprise d'une partie après un menu de pause.
+            except:
+                pass
+            else:
+                self.parentScreen.updateLapsAndGatesCount(factory, kart)
+            factory = self._game.objectsFactory()
+            
             self.timer += 1 / self.fps
             self.parentScreen.updateTimer(self.timer)
             self.checkIfGameIsOver(output.getAllKarts(), output.getFinishLine())
