@@ -293,7 +293,7 @@ class OutputFactory:
         )
         self._createdObjects[lgeGate.formID()] = ioGate
 
-    def get_updatedPositionInCanvas(self, point):
+    def get_updatedPositionInCanvas(self, point) -> lib.Point:
         """Retourne une copie du point ajustée au canvas affiché"""
         pt = lib.Point(point)
         pt.translate(self._translation1)
@@ -301,7 +301,7 @@ class OutputFactory:
         pt.translate(self._translation2)
         return pt
 
-    def setPOVPosition(self, lgeKart):
+    def setPOVPosition(self, lgeKart) -> None:
         """Etabli le "Point Of View" du début de la partie"""
         self.KartCenterPosition = self.get_updatedPositionInCanvas(lgeKart.center())
         self.angle = lgeKart.angle()
@@ -331,7 +331,7 @@ class OutputFactory:
             anchor=(0, 0),
         )
 
-    def updatePOVposition(self, lgeKart):
+    def updatePOVposition(self, lgeKart) -> None:
         """Met à jour le "Point Of View" par rapport au Kart à chaque frame"""
         kp1 = self.get_updatedPositionInCanvas(lgeKart.center())
         speedDirection = lib.Vector.fromPoints(kp1, self.KartCenterPosition)

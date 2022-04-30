@@ -17,10 +17,7 @@ from .output import OutputFactory
 
 class SingleplayerGame:
     from client.output.solo_user_actions import (  # on_touch_up,; on_touch_down,
-        keyboard_closed,
-        on_keyboard_down,
-        on_keyboard_up,
-    )
+        keyboard_closed, on_keyboard_down, on_keyboard_up)
 
     kart_ID = 0
     completed_time = None
@@ -74,7 +71,7 @@ class SingleplayerGame:
             self.parentScreen.updateLapsAndGatesCount(factory, factory[self.kart_ID])
             self.y = 0  # Pour une raison inconnue, lors du redimensionnement d'une fenêtre (qui n'arrive normalement pas car le jeu est par défaut en plein écran), kivy essaie de retrouver la "hauteur" "self.y" de cette classe alors qu'elle n'est en rien liée à l'application graphique... n'ayant pas réussi à régler le problème autrement, nous avons créé la méthode to_window() et l'attribut "y" qui règlent le problème.
 
-    def to_window(self, a, b):
+    def to_window(self, a, b) -> None:
         # c.f. commentaire de self.y ci-dessus
         return self.app.windowSize()
 
@@ -91,7 +88,6 @@ class SingleplayerGame:
     def finish_game(self) -> None:
         """Arrêt de la pendule"""
         self.my_clock.unschedule(self.nextFrame)
-
 
     def change_gameState(self) -> None:
         """Change l'état du jeu: pause ou jeu"""
@@ -112,7 +108,6 @@ class SingleplayerGame:
                 ),
                 2 / self.fps,
             )
-            
 
     def start_theGame(self) -> None:
         """Instantation du clavier, des commandes liées et de la pendule"""
@@ -130,13 +125,15 @@ class SingleplayerGame:
         if output.isInitialized() and not self.isEasterEgg and self.play:
             factory = self._game.objectsFactory()
             try:
-                kart = factory[self.kart_ID]        # Il se peut que le kart soit en train d'être réinstancié (Game.loadKart), comme par exemple à la reprise d'une partie après un menu de pause.
+                kart = factory[
+                    self.kart_ID
+                ]  # Il se peut que le kart soit en train d'être réinstancié (Game.loadKart), comme par exemple à la reprise d'une partie après un menu de pause.
             except:
                 pass
             else:
                 self.parentScreen.updateLapsAndGatesCount(factory, kart)
             factory = self._game.objectsFactory()
-            
+
             self.timer += 1 / self.fps
             self.parentScreen.updateTimer(self.timer)
             self.checkIfGameIsOver(output.getAllKarts(), output.getFinishLine())
@@ -175,4 +172,3 @@ class SingleplayerGame:
                     },
                 ),
             ).start()
-

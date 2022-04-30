@@ -12,7 +12,7 @@ class LogIn(FloatLayout):
         super().__init__(**kwargs)
         self.app = App.get_running_app()
 
-    def log_in(self):
+    def log_in(self) -> None:
         data = {"username": self.ids.username.text, "password": self.ids.password.text}
         try:
             response = self.app.session.post(

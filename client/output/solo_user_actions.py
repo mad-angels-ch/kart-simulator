@@ -3,13 +3,13 @@ import game.events
 # Liens utilisateur-programme à travers le clavier, reliés à la classe SingleplayerGame lors de l'instanciation d'une partie
 
 
-def keyboard_closed(self):
+def keyboard_closed(self) -> None:
     self._keyboard.unbind(on_key_down=self.on_keyboard_down)
     self._keyboard.unbind(on_key_up=self.on_keyboard_up)
     self._keyboard = None
 
 
-def on_keyboard_down(self, keyboard, keycode, text, modifiers):
+def on_keyboard_down(self, keyboard, keycode, text, modifiers) -> True:
     if keycode[1] in ["left", "a"]:
         if self.kart_ID:
             self.eventsList.append(game.events.KartTurnEvent(1, self.kart_ID))
@@ -40,7 +40,7 @@ def on_keyboard_down(self, keyboard, keycode, text, modifiers):
     return True
 
 
-def on_keyboard_up(self, keyboard, keycode):
+def on_keyboard_up(self, keyboard, keycode) -> None:
     if keycode[1] in ["left", "a"]:
         if self.kart_ID:
             self.eventsList.append(game.events.KartTurnEvent(0, self.kart_ID))
@@ -60,9 +60,9 @@ def on_keyboard_up(self, keyboard, keycode):
             self.eventsList.append(game.events.KartMoveEvent(0, self.kart_ID))
 
 
-def on_touch_down(self, touch):
+def on_touch_down(self, touch) -> None:
     pass
 
 
-def on_touch_up(self, touch):
+def on_touch_up(self, touch) -> None:
     pass

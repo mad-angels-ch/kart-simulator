@@ -2,7 +2,7 @@ import json
 import os
 import pickle
 from logging import info, warning
-import threading
+from typing import Tuple
 
 import requests
 from client.MultiplayerGame import MultiplayerGame
@@ -12,7 +12,7 @@ from kivy.core.audio import SoundLoader
 from kivy.core.window import Window
 from kivy.properties import ObjectProperty, StringProperty
 from kivy.uix.button import Button
-from kivy.utils import get_color_from_hex, rgba
+from kivy.utils import get_color_from_hex
 
 from ..SingleplayerGame import SingleplayerGame
 from . import MyScreenManager
@@ -60,7 +60,7 @@ class MenuApp(App):
         self.manager = MyScreenManager()
         return self.manager
 
-    def instanciate_SoloKS(self, world, on_collision, changeLabelText):
+    def instanciate_SoloKS(self, world, on_collision, changeLabelText) -> None:
         """Création de tout ce qui est nécessaire à une partie en solo"""
         if self.manager.has_screen("Kart_Simulator"):
             screen = self.manager.get_screen("Kart_Simulator")
@@ -86,7 +86,9 @@ class MenuApp(App):
             self.game._game.callOutput()  # Appel d'une instance de l'output afin d'afficher le circuit derrière l'animation
             self.game_instance.startingAnimation(start_theGame=self.game.start_theGame)
 
-    def instanciate_MultiKS(self, name, worldVersion_id, on_collision, changeLabelText):
+    def instanciate_MultiKS(
+        self, name, worldVersion_id, on_collision, changeLabelText
+    ) -> None:
         """Création de tout ce qui est nécessaire à une partie en multijoueur"""
         if self.manager.has_screen("Kart_Simulator"):
             screen = self.manager.get_screen("Kart_Simulator")
@@ -110,19 +112,19 @@ class MenuApp(App):
             parentScreen=self.game_instance,
         )
 
-    def start_ks(self):
+    def start_ks(self) -> None:
         """Affichage de la partie"""
         self.manager.add_widget(self.game_instance)
         self.manager.push("Kart_Simulator")
 
-    def windowSize(self):
+    def windowSize(self) -> Tuple[float, float]:
         return Window.size
 
-    def clearLabelText(self, label, dt):
+    def clearLabelText(self, label, dt) -> None:
         """Vidage du message d'erreur après un temps donné"""
         label.text = ""
 
-    def clear_game(self):
+    def clear_game(self) -> None:
         """Nettoyage de la partie finie"""
         if self.game_instance:
             if isinstance(self.game, SingleplayerGame):
@@ -130,18 +132,18 @@ class MenuApp(App):
             self.game_instance.quit()
             self.game_instance = None
 
-    def ButtonSound(self):
+    def ButtonSound(self) -> None:
         """Crée le son produit par un bouton si l'utilisateur n'a pas disactivé les effets sonores"""
         if self.soundEnabled:
             sound = SoundLoader.load("client/sounds/ButtonClick2.wav")
             sound.volume = 0.25
             sound.play()
 
-    def isWorldChosen(self, world):
+    def isWorldChosen(self, world) -> bool:
         """Retourne vrai si un monde a été choisi"""
         return not isinstance(world, StringProperty)
 
-    def changeSoundMode(self, widget: Button):
+    def changeSoundMode(self, widget: Button) -> None:
         """Active ou désactive les effets sonores"""
         self.soundEnabled = not self.soundEnabled
         if self.soundEnabled:
@@ -149,7 +151,7 @@ class MenuApp(App):
         else:
             widget.text = "Unmute sounds"
 
-    def get_userSettings(self):
+    def get_userSettings(self) -> dict:
         """Retourne le dictionnaire contenant les information relatives aux paramètres du joueur connecté."""
         return self.userSettings
 
@@ -204,7 +206,7 @@ class MenuApp(App):
         """Retourne vrai si un utilisateur est connecté à son compte."""
         return self._isLogged
 
-    def generateUpdatedWorldsList(self):
+    def generateUpdatedWorldsList(self) -> None:
         """Met à jour les donnés des mondes"""
         self._updating = True
         worldsInfo = {}

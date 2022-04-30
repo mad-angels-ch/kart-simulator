@@ -1,23 +1,17 @@
-from cgitb import text
 import json
-from mimetypes import init
+from datetime import datetime, timedelta
 from os import listdir
-from turtle import width
 from typing import List
-from kivy.uix.floatlayout import FloatLayout
+
 from kivy.app import App
+from kivy.graphics import Color, Rectangle
 from kivy.lang import Builder
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.label import Label
-from kivy.uix.scrollview import ScrollView
-from kivy.core.window import Window
-from kivy.uix.button import Button
-from kivy.graphics import Rectangle, Color
 from kivy.metrics import sp
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.label import Label
 
 from .layouts import CustomPopup
-
-from datetime import datetime, timedelta
 
 Builder.load_file("client/output/screens/gamesResults.kv")
 
@@ -33,7 +27,6 @@ class Results(FloatLayout):
         super().__init__(**kwargs)
         self.app = App.get_running_app()
         self._widgets = []
-        # self.add_widget(ScrollView(size_hint=(1, None), size=(Window.width, Window.height)))
 
     def search_games(self) -> None:
         """Recherche les parties correspondant aux critères choisis et affiche les résultats"""
@@ -108,7 +101,7 @@ class Results(FloatLayout):
             b.add_widget(
                 Label(
                     text=str(n),
-                    font_size= sp(20),
+                    font_size=sp(20),
                     color=(0, 0, 0, 1),
                     bold=True,
                     size_hint=(0.1, 1),
@@ -125,7 +118,7 @@ class Results(FloatLayout):
                 b.add_widget(
                     Label(
                         text=name,
-                        font_size= sp(20),
+                        font_size=sp(20),
                         color=(0, 0, 0, 1),
                         size_hint=(0.18, 1),
                         halign="left",
@@ -192,7 +185,7 @@ class Results(FloatLayout):
         """Retourne la liste des joueurs ayant participé à la partie."""
         return list(p["username"] for p in game["players"])
 
-    def SettingsPopup(self):
+    def SettingsPopup(self) -> None:
         """Ajoute le Popup qui demande à l'utilisateur s'il veut se logger."""
         self.popup = CustomPopup(
             "You must be logged in to use this function.",
@@ -203,10 +196,10 @@ class Results(FloatLayout):
         )
         self.add_widget(self.popup)
 
-    def pushLogIn(self, button):
+    def pushLogIn(self, button) -> None:
         self.app.manager.push("LogIn")
         self.remove_widget(self.popup)
 
-    def change_state(self):
+    def change_state(self) -> None:
         """Décoche le bouton "my games" si le joueur n'est pas connecté."""
         self.ids.my_games.state = "normal"

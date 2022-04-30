@@ -2,7 +2,6 @@ from typing import AnyStr, Callable, Dict, List, Tuple
 
 import click
 import engineio
-from client.output.screens.layouts import CustomPopup
 import lib
 from game import Game, OnCollisionT
 from game.events import Event
@@ -18,6 +17,7 @@ from socketio.exceptions import BadNamespaceError
 
 from client.output.outputFactory import OutputFactory
 from client.output.screens.InGameScreen import KS_screen, WaitingRoom
+from client.output.screens.layouts import CustomPopup
 
 
 class MultiplayerGame(ClientNamespace):
@@ -82,11 +82,11 @@ class MultiplayerGame(ClientNamespace):
         touch_up,
     )
 
-    def to_window(self, a, b):
+    def to_window(self, a, b) -> None:
         # c.f. commentaire de self.y ci-dessus
         return self.app.windowSize()
 
-    def updateInfos(self, dt):
+    def updateInfos(self, dt) -> None:
         """Met à jour les information affichées sur l'écran de jeu (timer, laps, gates)"""
         self.parentScreen.updateLapsAndGatesCount(
             self._game.objectsFactory(), self.myKart()
@@ -144,14 +144,14 @@ class MultiplayerGame(ClientNamespace):
     def createStartButton(self) -> None:
         self.start_button = Button(
             text="start The game!",
-            font_size= "20sp",
+            font_size="20sp",
             size_hint=(0.25, 0.1),
             pos_hint={"center_x": 0.5, "y": 0.1},
         )  # Création du bouton qui permet de démarrer la partie
         self.start_button.bind(on_press=lambda _: self.start())
         self.waitingScreen.add_widget(self.start_button)
 
-    def on_connect(self):
+    def on_connect(self) -> None:
         self.executeInMainKivyThread(self.bind_keyboard)
         if self._worldVersion_id == None:
             self.emit("join", self._name, callback=self.joiningError)
@@ -164,14 +164,14 @@ class MultiplayerGame(ClientNamespace):
             )  # Informe le serveur de la création d'une partie
             self._worldVersion_id = None
 
-    def start_theGame(self):
+    def start_theGame(self) -> None:
         """Appelé à la fin du compteur."""
         self.play = True
         self.my_clock.schedule_interval(
             self.updateInfos, 1 / 60
         )  # Initialise la pendule qui compte le temps de la partie.
 
-    def on_countdown(self):
+    def on_countdown(self) -> None:
         self.executeInMainKivyThread(
             self.parentScreen.startingAnimation, start_theGame=self.start_theGame
         )
@@ -190,14 +190,14 @@ class MultiplayerGame(ClientNamespace):
         if not self._game.objectByFormID(kart).hasBurned():
             self._game.objectByFormID(kart).burn()
 
-    def on_game_data(self, data: dict):
+    def on_game_data(self, data: dict) -> None:
         """Evènement appelé à chaque nouvelle factory partagée par le serveur.
         Recréé la factory locale en fonction des informations reçues."""
         self.executeInMainKivyThread(self._game.minimalImport, data)
         self.executeInMainKivyThread(self.get_myKart)
         self.executeInMainKivyThread(self.checkIfNewConnection)
 
-    def on_objects_update(self, outputs: Dict[int, Tuple[float, float, float]]):
+    def on_objects_update(self, outputs: Dict[int, Tuple[float, float, float]]) -> None:
         """Evènement appelé à chaque nouvelle position d'objets reçus.
         Met la liste des objets à jour en fonction de celles-ci."""
         for formID, newPos in outputs.items():
@@ -264,11 +264,11 @@ class MultiplayerGame(ClientNamespace):
         elif self.myKart().hasBurned():
             self.parentScreen.end_game("You have burned!\n\nDo better next time!")
 
-    def connectedPlayers(self):
+    def connectedPlayers(self) -> List:
         """Retourne la liste des joueurs connectés."""
         return self._connectedPlayers
 
-    def checkIfNewConnection(self):
+    def checkIfNewConnection(self) -> None:
         """Appelé à chaque nouvelle factory créée. Vérifie si il y a eu une nouvelle (dé)connection et informe les autre joueurs."""
         for kart in self._game._factory.karts():
             if kart.username() not in self.connectedPlayers():
@@ -298,7 +298,7 @@ class MultiplayerGame(ClientNamespace):
         self.emit("join", self._name, callback=self.joiningError)
         self.parentScreen.remove_widget(self.popup)
 
-    def no(self, b):
+    def no(self, b) -> None:
         """Appelé si le joueur renonce à se reconnecter à la partie en appuyant sur le bouton <no> du popup."""
         self.parentScreen.remove_widget(self.popup)
         self.quitTheGame()

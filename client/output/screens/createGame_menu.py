@@ -1,20 +1,23 @@
+import json
+import os
+import threading
+from functools import partial
 from os import listdir, path
 from typing import Tuple
-from kivy.uix.floatlayout import FloatLayout
-from kivy.app import App
-from kivy.uix.button import Button
-from kivy.lang import Builder
-from kivy.properties import StringProperty
-from kivy.uix.widget import Widget
-from kivy.metrics import sp
+
 import game
-from game.objects.ObjectFactory import InvalidWorld
+import requests
 from client.output import OutputFactory
+from game.objects.ObjectFactory import InvalidWorld
+from kivy.app import App
 from kivy.clock import Clock
-import requests, json, os, threading
 from kivy.core.audio import SoundLoader
-from functools import partial
-import json
+from kivy.lang import Builder
+from kivy.metrics import sp
+from kivy.properties import StringProperty
+from kivy.uix.button import Button
+from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.widget import Widget
 
 Builder.load_file("client/output/screens/createGame_menu.kv")
 
@@ -28,7 +31,7 @@ class CreateGame(FloatLayout):
         """Génère la liste des curcuits jouables"""
         return [world[:-5] for world in listdir("client/worlds")]
 
-    def changeLabelText(self, message, time = 5) -> None:
+    def changeLabelText(self, message, time=5) -> None:
         """Mise à jour puis suppession du message d'erreur à afficher après un temps <time>"""
         self.ids.labelID.text = message
         Clock.schedule_once(self.clearLabelText, time)
@@ -82,7 +85,7 @@ class PreView(Widget):
         self.maxSize = maxSize
         super().__init__(**kwargs)
 
-    def changePreView(self, world):
+    def changePreView(self, world) -> None:
         """Change le mode de preview pour afficher le nouveau circuit"""
         # Se comporte comme SingleplayerGame, mais n'instancie qu'une seule frame
         if not isinstance(world, StringProperty) and world != "Choose your world !":
@@ -124,7 +127,7 @@ class UpdateWorldButton(Button):
 
     def generateUpdatedWorldsList(
         self, updateWorlds_output, worlds_spinner, callback: lambda: None
-    ):
+    ) -> None:
         """Met à jour les donnés des mondes et met l'affichage à jour"""
         if self._updating:
             self.text = "It's already updating!"
@@ -137,7 +140,7 @@ class UpdateWorldButton(Button):
 
     def generateUpdatedWorldsListTask(
         self, updateWorlds_output, worlds_spinner, callback
-    ):
+    ) -> None:
         """Récupère les données des mondes et met à jour l'affichage"""
         updateWorlds_output.text = "\nUpdating the worlds ...\n"
         worldsInfo = {}

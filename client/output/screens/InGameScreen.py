@@ -1,17 +1,16 @@
 from functools import partial
-from typing import List
 from random import randrange
-from game.objects import *
 
+from game.objects import *
 from kivy.animation import Animation
 from kivy.app import App
 from kivy.lang import Builder
+from kivy.metrics import sp
 from kivy.properties import Clock
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen
 from kivy.uix.widget import Widget
-from kivy.metrics import sp
 
 Builder.load_file("client/output/screens/InGameScreen.kv")
 
@@ -78,20 +77,20 @@ class KS_screen(Screen):
         self.timer = 0
         self.app = App.get_running_app()
 
-    def quit(self):
+    def quit(self) -> None:
         """Nettoyage du canvas de jeu et arrêt de la pendule après la partie"""
         self.ids.noActionBar.canvas.clear()
 
-    def pauseMode(self):
+    def pauseMode(self) -> None:
         """Appel du mode de pause, utilisé dans le cas d'une partie en solo."""
         self.pauseMenu = PauseMode(size=self.app.windowSize())
         self.add_widget(self.pauseMenu)
 
-    def resumeGame(self):
+    def resumeGame(self) -> None:
         """Reprise de la partie à la fin de la pause. A surcharger dans le cas d'une partie en solo."""
         self.remove_widget(self.pauseMenu)
 
-    def endGameMode(self, message):
+    def endGameMode(self, message) -> None:
         """Appel du mode de fin de partie"""
         self.app.game.finish_game()
         self.endGameMenu = EndGameMode()
@@ -106,22 +105,21 @@ class KS_screen(Screen):
         anim.start(self.endGameMenu.ids.gameOverLabel_id)
         self.add_widget(self.endGameMenu)
 
-    def begin_game(self, start_theGame, dt):
+    def begin_game(self, start_theGame, dt) -> None:
         """Démarrage de la partie"""
         start_theGame()
 
-    def startingAnimation(self, start_theGame):
+    def startingAnimation(self, start_theGame) -> None:
         """Création et affichage de l'animation de début de partie"""
-        # self.ids.noActionBar.remove_widget(self.start_button)
-        time=0
-        for text in ["3","2","1","GOOOO!!!!"]:
+        time = 0
+        for text in ["3", "2", "1", "GOOOO!!!!"]:
             start_animation = Label(
                 text=text, font_size=0, halign="center", color=(0, 1, 0, 1)
             )
 
             self.ids.animationLayout.add_widget(start_animation)
             anim = (
-                Animation(duration=1.5*time)
+                Animation(duration=1.5 * time)
                 + Animation(font_size=sp(200), duration=0.5)
                 + Animation(font_size=sp(250), duration=0.5)
                 + Animation(font_size=0, duration=0.5)
@@ -129,10 +127,9 @@ class KS_screen(Screen):
             anim.start(start_animation)
             time += 1
 
-
         Clock.schedule_once(partial(self.begin_game, start_theGame), 6)
 
-    def end_game(self, endGameMessage=""):
+    def end_game(self, endGameMessage="") -> None:
         """Appel du mode de fin de partie"""
         self.endGameMode(endGameMessage)
 

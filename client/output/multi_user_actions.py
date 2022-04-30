@@ -4,13 +4,13 @@ import game.events
 # Les <on_> présents devant les méthodes en solo ont été supprémés pour ne pas faire d'interférences/confusions avec l'interaction serveur-client
 
 
-def keyboard_closed(self):
+def keyboard_closed(self) -> None:
     self._keyboard.unbind(on_key_down=self.keyboard_down)
     self._keyboard.unbind(on_key_up=self.keyboard_up)
     self._keyboard = None
 
 
-def keyboard_down(self, keyboard, keycode, text, modifiers):
+def keyboard_down(self, keyboard, keycode, text, modifiers) -> True:
     if (
         keycode[1] in ["left", "a"]
         and self.play
@@ -46,7 +46,7 @@ def keyboard_down(self, keyboard, keycode, text, modifiers):
     return True
 
 
-def keyboard_up(self, keyboard, keycode):
+def keyboard_up(self, keyboard, keycode) -> None:
     if keycode[1] in ["left", "a"] and self.play and self.myKart():
         self._rotating = False
         self.newEvent(game.events.KartTurnEvent(0, self.myKart().formID()))
@@ -64,9 +64,9 @@ def keyboard_up(self, keyboard, keycode):
         self.newEvent(game.events.KartMoveEvent(0, self.myKart().formID()))
 
 
-def touch_down(self, touch):
+def touch_down(self, touch) -> None:
     pass
 
 
-def touch_up(self, touch):
+def touch_up(self, touch) -> None:
     pass
