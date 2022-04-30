@@ -205,7 +205,7 @@ class UpdateWorldButton(Button):
             with open("client/worlds.json", "w") as f:
                 json.dump(worldsInfo, f)
 
-            worlds_spinner.values = [world[:-5] for world in listdir("client/worlds")]
+            Clock.schedule_once(lambda _: self.updateWorldsList(worlds_spinner))
             updateWorlds_output.text += "All worlds are up to date!"
             self._updating = False
             Clock.schedule_once(partial(self.clearLabelText, updateWorlds_output), 4)
@@ -218,3 +218,7 @@ class UpdateWorldButton(Button):
 
     def clearLabelText(self, label, dt):
         label.text = ""
+
+    def updateWorldsList(self, spinner) -> list:
+        """Met à jour la liste des curcuits jouables"""
+        spinner.values = [world[:-5] for world in listdir("client/worlds")]

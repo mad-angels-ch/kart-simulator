@@ -48,8 +48,8 @@ class MenuApp(App):
             self._isLogged = False
             os.remove(self.cookiesPath)
             warning("Deleted corrupted cookies")
-        else:
-            self.generateUpdatedWorldsList()
+
+        self.generateUpdatedWorldsList()
         self.update_userSettings()
 
     def build(self):
