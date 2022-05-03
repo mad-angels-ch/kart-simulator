@@ -22,10 +22,7 @@ class CustomPopup(Popup):
         self,
         title="",
         text="",
-        func1=None,
-        func1_name="",
-        func2=None,
-        func2_name="",
+        functions={},
         pos_hint={"center_x": 0.5, "center_y": 0.7},
         size_hint=(0.5, 0.2),
         **kwargs
@@ -37,8 +34,6 @@ class CustomPopup(Popup):
         box1.add_widget(Label(text=text, font_size=sp(20)))
         box2 = BoxLayout(orientation="horizontal", size_hint=(1, None), height=sp(50))
         box1.add_widget(box2)
-        if func1:
-            box2.add_widget(Button(text=func1_name, font_size=sp(20), on_press=func1))
-        if func2:
-            box2.add_widget(Button(text=func2_name, font_size=sp(20), on_press=func2))
+        for funcName in functions:
+            box2.add_widget(Button(text=funcName, font_size=sp(20), on_press=functions[funcName]))
         self.content = box1

@@ -11,10 +11,7 @@ class PlayingMode(FloatLayout):
         """Ajoute le Popup qui demande à l'utilisateur s'il veut se logger"""
         self.popup = CustomPopup(
             "You must be logged in to play to this mode.",
-            func1=self.yes,
-            func1_name="Log In",
-            func2=self.redirect,
-            func2_name="No",
+            functions={"Log In":self.yes, "No": self.redirect}
         )
         self.add_widget(self.popup)
 

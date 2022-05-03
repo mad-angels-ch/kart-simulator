@@ -29,10 +29,7 @@ class MainMenu1(FloatLayout):
             title="Terms and conditions:",
             title_size=sp(32),
             text="Welcome to the kart simulator!\nThis application uses cookies and collects non-anonymous data.\nPlease consent to schare your informations if you want to play.",
-            func1=lambda _: self.remove_widget(self.popup),
-            func1_name="I Agree",
-            func2=lambda _: self.app.stop(),
-            func2_name="Quit",
+            functions={"I Agree":lambda _: self.remove_widget(self.popup),"Quit":lambda _: self.app.stop()}
         )
         self.add_widget(self.popup)
 
@@ -43,10 +40,7 @@ class MainMenu1(FloatLayout):
         """Ajoute le Popup qui demande à l'utilisateur s'il veut se logger."""
         self.popup = CustomPopup(
             "You must be logged in to use this function.",
-            func1=self.yes,
-            func1_name="Log In",
-            func2=self.redirect,
-            func2_name="No",
+            functions={"Log In":self.yes, "No":self.redirect}
         )
         self.add_widget(self.popup)
 

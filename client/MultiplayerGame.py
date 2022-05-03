@@ -63,6 +63,7 @@ class MultiplayerGame(ClientNamespace):
             self._moving = False
             self._rotating = False  # Pour ne pas surcharger le serveur avec des events, un seul event est émi lorsqu'une touche pour avancer ou tourner est émi et un seul autre lorsqu'elle est relâchée.
             self._connectedPlayers = []
+            self.popup = None
             self.app.start_ks()
             self.waitingScreen = WaitingRoom(self._name, size_hint=(1, 1))
             self.parentScreen.add_widget(self.waitingScreen)
@@ -284,21 +285,30 @@ class MultiplayerGame(ClientNamespace):
         self._keyboard.bind(on_key_up=self.keyboard_up)
 
     def add_reconnectionPopup(self, error: str = "") -> None:
-        self.popup = CustomPopup(
-            "Connection lost:\n" + error + "\n" + "Do you want to try to reconnect?",
-            func1=lambda _: self.emit("join", self._name, callback=self.joiningError),
-            func1_name="Yes",
-            func2=self.no,
-            func2_name="No",
-        )
-        self.parentScreen.add_widget(self.popup)
+        print("popup")
+        if not self.popup:
+            self.popup = CustomPopup(
+                "Connection lost:\n" + error + "\n" + "Do you want to try to reconnect?",
+                functions={"Yes":self.try_reconnection,"No":self.no, "Quit":self.quit}
+            )
+            self.parentScreen.add_widget(self.popup)
 
     def try_reconnection(self, button=None) -> None:
         """Appelé si le joueur essaie de se reconnecter à la partie en appuyant sur le bouton <yes> du popup."""
-        self.emit("join", self._name, callback=self.joiningError)
         self.parentScreen.remove_widget(self.popup)
-
+        self.popup = None
+        try:
+            self.emit("join", self._name, callback=self.joiningError)
+        except BadNamespaceError as b:
+            print(b)
+        
+    def quit(self, b) -> None:
+        """Appelé si le joueur renonce à se reconnecter à la partie en appuyant sur le bouton <Quit> du popup."""
+        self.parentScreen.remove_widget(self.popup)
+        self.popup = None
+        self.quitTheGame()
+        
     def no(self, b) -> None:
         """Appelé si le joueur renonce à se reconnecter à la partie en appuyant sur le bouton <no> du popup."""
         self.parentScreen.remove_widget(self.popup)
-        self.quitTheGame()
+        self.popup = None
