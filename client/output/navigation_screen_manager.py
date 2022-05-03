@@ -3,7 +3,9 @@ from kivy.uix.screenmanager import ScreenManager
 
 
 class NavigationScreenManager(ScreenManager):
-    screen_stack = []
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.screen_stack = []
 
     def push(self, screen_name) -> None:
         if screen_name not in self.screen_stack:
