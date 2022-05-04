@@ -214,7 +214,7 @@ class UpdateWorldButton(Button):
                 sound = SoundLoader.load("client/sounds/success-sound-effect.mp3")
                 sound.volume = 0.5
                 sound.play()
-            callback()
+            Clock.schedule_once(callback)
 
     def clearLabelText(self, label, dt):
         label.text = ""

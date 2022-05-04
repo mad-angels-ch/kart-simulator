@@ -121,9 +121,7 @@ class MultiplayerGame(ClientNamespace):
     def joiningError(self, error: "None | str" = None) -> None:
         """Gestion des erreur d'entrées en parties"""
         if error:
-            self.add_reconnectionPopup(error=error)
-            # self.fatalError(error=error)
-            # raise KeyError
+            self.executeInMainKivyThread(self.add_reconnectionPopup,error)
             if click.confirm("Do you want to try again?"):
                 self.emit("join", self._name, callback=self.joiningError)
 
@@ -225,11 +223,12 @@ class MultiplayerGame(ClientNamespace):
         self._moving = False
         print("Connection perdue")
         if self.play:
-            self.executeInMainKivyThread(self.add_reconnectionPopup)
+            self.executeInMainKivyThread(self.try_reconnection)
 
     def quitTheGame(self) -> None:
         """Quitte la partie"""
         self.play = False
+        self.keyboard_closed()
         self.disconnect()
         self.app.manager.popAll()
 
@@ -285,7 +284,6 @@ class MultiplayerGame(ClientNamespace):
         self._keyboard.bind(on_key_up=self.keyboard_up)
 
     def add_reconnectionPopup(self, error: str = "") -> None:
-        print("popup")
         if not self.popup:
             self.popup = CustomPopup(
                 "Connection lost:\n" + error + "\n" + "Do you want to try to reconnect?",
@@ -295,8 +293,9 @@ class MultiplayerGame(ClientNamespace):
 
     def try_reconnection(self, button=None) -> None:
         """Appelé si le joueur essaie de se reconnecter à la partie en appuyant sur le bouton <yes> du popup."""
-        self.parentScreen.remove_widget(self.popup)
-        self.popup = None
+        if self.popup:
+            self.parentScreen.remove_widget(self.popup)
+            self.popup = None
         try:
             self.emit("join", self._name, callback=self.joiningError)
         except BadNamespaceError as b:

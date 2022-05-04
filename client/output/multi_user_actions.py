@@ -7,7 +7,7 @@ import game.events
 def keyboard_closed(self) -> None:
     self._keyboard.unbind(on_key_down=self.keyboard_down)
     self._keyboard.unbind(on_key_up=self.keyboard_up)
-    self._keyboard = None
+    self.app.bind_keyboard()
 
 
 def keyboard_down(self, keyboard, keycode, text, modifiers) -> True:

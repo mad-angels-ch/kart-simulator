@@ -51,10 +51,19 @@ class MenuApp(App):
 
         self.generateUpdatedWorldsList()
         self.update_userSettings()
+        self.y = 0
+        # Pour une raison inconnue, lors du redimensionnement d'une fenêtre (qui n'arrive normalement pas car le jeu est par défaut en plein écran),
+        # kivy essaie de retrouver la "hauteur" "self.y" de cette classe alors qu'elle n'est en rien liée à l'application graphique...
+        # N'ayant pas réussi à régler le problème autrement, nous avons créé la méthode to_window() et l'attribut "y" qui règlent le problème.
+
+    def to_window(self, a, b) -> None:
+        # c.f. commentaire de self.y ci-dessus
+        return self.windowSize()
 
     def build(self):
         """Création du manager qui gèrera les screens et de l'espace qui affichera les éventuelles erreurs"""
         Window.clearcolor = get_color_from_hex("#ffffff")
+        self.bind_keyboard()
         self.icon = "client/Images/kart.png"
         self.manager = MyScreenManager()
         return self.manager
@@ -262,3 +271,16 @@ class MenuApp(App):
             with open("client/worlds.json", "w") as f:
                 json.dump(worldsInfo, f)
             self._updating = False
+
+
+    def bind_keyboard(self) -> None:
+        self._keyboard = Window.request_keyboard(self.on_keyboard_closed, self)
+        self._keyboard.bind(on_key_down=self.on_keyboard_down)
+
+    def on_keyboard_closed(self) -> None:
+        self._keyboard.unbind(on_key_down=self.on_keyboard_down)
+        self._keyboard = None
+        
+    def on_keyboard_down(self, keyboard, keycode, text, modifiers) -> None:
+        if keycode[1] == "escape" and self.manager.current != "Kart_Simulator":
+            self.manager.pop()

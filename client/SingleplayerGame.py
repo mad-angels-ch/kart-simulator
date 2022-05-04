@@ -82,6 +82,7 @@ class SingleplayerGame:
     def quitTheGame(self) -> None:
         """Déconnection du joueur lorsqu'il quitte la partie."""
         self.play = False
+        self.keyboard_closed()
         self.app.manager.popAll()
         self.save()
 
