@@ -1,13 +1,9 @@
-from kivy.graphics.transformation import Matrix
 from typing import List
 from kivy.graphics import (
-    Mesh,
     Rectangle,
     PushMatrix,
     Rotate,
     PopMatrix,
-    Color,
-    BindTexture,
 )
 from typing import List
 import math

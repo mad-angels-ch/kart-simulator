@@ -1,3 +1,4 @@
+from cProfile import label
 from kivy.graphics.transformation import Matrix
 from logging import warning
 from typing import Any, Dict, List, Tuple
@@ -6,6 +7,14 @@ import math
 from kivy.utils import get_color_from_hex
 from kivy.graphics import Color, Rectangle
 from kivy.uix.widget import Widget
+from kivy.uix.label import Label
+from kivy.metrics import sp
+from kivy.graphics import (
+    Rectangle,
+    PushMatrix,
+    Rotate,
+    PopMatrix,
+)
 
 from game import objects as game_objects
 from game.objects import fill as game_fill
@@ -58,6 +67,7 @@ class OutputFactory:
 
         self._karts = []
         self._gates = []
+        self._labels = {}
 
         self.POV = POV
 
@@ -271,6 +281,13 @@ class OutputFactory:
             source=f"client/Images/karts/{imageName}.png",
         )
         self._createdObjects[lgeKart.formID()] = ioKart
+        if self.POV == "Third Person":
+            if lgeKart.username() not in self._labels:
+                lab_username = Label(text=lgeKart.username(), font_size=sp(32),color=(0,0,0,1), pos=(ioKart.pos[0], ioKart.pos[1] + 10/self._scale))
+                self._labels[lgeKart.username()] = lab_username
+                self._w.add_widget(lab_username)
+            else:
+                self._labels[lgeKart.username()].pos = (ioKart.pos[0], ioKart.pos[1] + 10/self._scale)
 
     def createFinishLine(self, lgeFinishLine: game_objects.FinishLine) -> None:
         """Dessine la ligne d'arrivée sur le canvas du widget et l'ajout au registre"""

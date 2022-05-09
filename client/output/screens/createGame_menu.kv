@@ -26,7 +26,7 @@
                 pos_hint: {'top': 1}
                 font_size: "25sp"
                 text: "Update the worlds"
-                on_press: self.generateUpdatedWorldsList(labelID,worlds_spinner_id, lambda:preView_ID.changePreView(worlds_spinner_id.text))
+                on_press: self.generateUpdatedWorldsList(labelID,worlds_spinner_id, lambda _:preView_ID.changePreView(worlds_spinner_id.text))
 
             Button:
                 size_hint: .25,1
