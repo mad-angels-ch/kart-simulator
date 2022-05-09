@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python : Fichier actuel",
+            "name": "Kart Simulator",
             "type": "python",
             "request": "launch",
             "program": "${file}",
@@ -17,15 +17,8 @@
             "request": "launch",
             "program": "main.py",
             "cwd": "${workspaceFolder}",
-            "console": "integratedTerminal"
-        },
-        {
-            "name": "Launch ks server",
-            "type": "python",
-            "request": "launch",
-            "program": "server.py",
             "console": "integratedTerminal",
-            "cwd": "${workspaceFolder}"
+            "justMyCode": true
         }
     ]
 }

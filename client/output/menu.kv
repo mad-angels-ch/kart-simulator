@@ -1,0 +1,111 @@
+#:import navigation_screen_manager client.output.navigation_screen_manager
+#:import gamesResults client.output.screens.gamesResults 
+#:import webbrowser webbrowser
+#:import mainMenu1 client.output.screens.mainMenu1
+#:import playingMode_menu client.output.screens.playingMode_menu
+#:import create_or_join client.output.screens.create_or_join
+#:import joinGame_menu client.output.screens.joinGame_menu
+#:import createGame_menu client.output.screens.createGame_menu
+#:import rules client.output.screens.rules
+#:import credits client.output.screens.credits
+#:import log_in client.output.screens.log_in
+#:import kart_settings client.output.screens.kart_settings
+#:import settings client.output.screens.settings
+#:import music_settings client.output.screens.music_settings
+#:import controls client.output.screens.controls
+# Création de l'interface de tous les screens
+
+
+<MyScreenManager>:
+    Screen:
+        name:"MainMenu"
+        MainMenu1:
+    Screen:
+        name: "CreateSPGame"
+        BoxLayoutWithActionBar:
+            title: "Create A Game"
+            CreateGame:
+    Screen:
+        name: "CreateMPGame"
+        BoxLayoutWithActionBar:
+            title: "Create A Game"
+            CreateGame:
+                FloatLayout:
+                    TextInput:
+                        hint_text: "Game name"
+                        font_size: "20sp"
+                        pos_hint: {"x":.499,"y":.91}
+                        size_hint: .25,.045
+
+                    Label:
+                        font_size: "20sp"
+                        pos_hint: {"x":.25,"y":.88}
+                        size_hint: .25,.1
+                        text: "Name of the game:"
+    Screen:
+        name:"JoinMPGame"
+        BoxLayoutWithActionBar:
+            title: "Join A Game"
+            JoinGame:
+    Screen:
+        name:"CreateOrJoin"
+        BoxLayoutWithActionBar:
+            title: "Create/Join A Game"
+            CreateOrJoin:
+
+    Screen:
+        name: "Playingmode"
+        BoxLayoutWithActionBar:
+            title: "Playing Mode"
+            PlayingMode:
+    Screen:
+        Widget:
+            canvas:
+                Color:
+                    rgba: 0, 0, 0, 1
+                Rectangle:
+            BoxLayout:
+                Image:
+                    source: "client/Images/karts/Red_kart.png"
+    Screen:
+        name: "Results"
+        BoxLayoutWithActionBar:
+            title: "Results"
+            Results:
+    Screen:
+        name:"SettingsMenu"
+        BoxLayoutWithActionBar:
+            title: "Settings Menu"
+            UserSettings:
+    Screen:
+        name:"Music_Settings"
+        BoxLayoutWithActionBar:
+            title:"Music Settings"
+            MusicSettings:
+    Screen:
+        name:"Kart_Settings"
+        BoxLayoutWithActionBar:
+            title: "Kart settings"
+            KartSettings:
+    Screen:
+        name: "LogIn"
+        BoxLayoutWithActionBar:
+            title: "Log In"
+            LogIn:
+    Screen:
+        name: "Rules"
+        BoxLayoutWithActionBar:
+            title: "Rules of the game"
+            Rules:
+    Screen:
+        name: "Controls"
+        BoxLayoutWithActionBar:
+            title: "Controls of the game"
+            Controls: 
+
+    Screen:
+        name: "Credits"
+        BoxLayoutWithActionBar:
+            title: "Credits"
+            Credits:
+

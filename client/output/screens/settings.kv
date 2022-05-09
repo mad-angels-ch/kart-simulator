@@ -1,0 +1,46 @@
+<UserSettings>:
+    GridLayout:
+    # Image de fond
+        canvas.before:
+            BorderImage:
+                border: 10, 10, 10, 10
+                source: 'client/Images/red_bg.png'
+                pos: self.pos
+                size: self.size
+    BoxLayout:
+        pos_hint: {"center_x": .7, "center_y": .5}
+        size_hint: .25,.32
+        orientation: 'vertical'
+        Button:
+            text: "My kart"
+            font_size: "20sp"
+            on_press: 
+                if app.is_logged(): app.manager.push("Kart_Settings"), app.ButtonSound()
+                else: root.SettingsPopup()
+
+        Button:
+            text: "My Music"
+            font_size: "20sp"
+            on_press: 
+                if app.is_logged: app.manager.push("Music_Settings"), app.ButtonSound()
+                else: root.SettingsPopup()
+
+        Spinner:
+            id: pov_spinner_id
+            text: "Chose your POV !"
+            font_size: "20sp"
+            values: ["Third Person", "First Person"]
+            on_text:
+                root.updatePOVSettings(pov_spinner_id.text), app.ButtonSound()
+
+        Button:
+            text: "Log In / Log Out"
+            font_size: "20sp"
+            on_press: 
+                app.ButtonSound(),
+                if app.is_logged(): app.logOut()
+                else: app.manager.push("LogIn")
+        Button:
+            font_size: "20sp"
+            text: "Sign up"
+            on_press: webbrowser.open("https://lj44.ch/auth/register"), app.ButtonSound()

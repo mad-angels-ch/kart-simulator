@@ -1,0 +1,53 @@
+<CreateGame>:
+    BoxLayout:
+        orientation:"vertical"
+        # Image de fond
+        canvas.before:
+            BorderImage:
+                border: 10, 10, 10, 10
+                source: 'client/Images/background.jpg'
+                pos: self.pos
+                size: self.size
+
+        BoxLayout:
+            orientation: "horizontal"
+            size_hint: 1,.1
+            Spinner:
+                id: worlds_spinner_id
+                size_hint: .25,1
+                text: "Choose your world !"
+                font_size: "20sp"
+                values: root.generateWorldsList()
+                on_text:
+                    app.ButtonSound(), preView_ID.changePreView(worlds_spinner_id.text)
+
+            UpdateWorldButton:
+                size_hint: .5,.5
+                pos_hint: {'top': 1}
+                font_size: "25sp"
+                text: "Update the worlds"
+                on_press: self.generateUpdatedWorldsList(labelID,worlds_spinner_id, lambda _:preView_ID.changePreView(worlds_spinner_id.text))
+
+            Button:
+                size_hint: .25,1
+                font_size: "25sp"
+                text: "Play"
+                background_color: (1.0, 0.0, 0.0, .75)
+                on_press: root.create(), app.ButtonSound()
+
+        ScatterLayout:
+            do_translation: False
+            do_rotation: False
+            do_scale: False
+            PreView:
+                maxSize: self.size
+                id: preView_ID
+
+    Label:
+        id: labelID
+        pos_hint: {"center_x":.5,"center_y":.5}
+        font_size: "40sp"
+        text:""
+        halign: 'center'
+        valign: 'middle'
+

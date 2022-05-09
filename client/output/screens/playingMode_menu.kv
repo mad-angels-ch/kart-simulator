@@ -1,0 +1,27 @@
+<PlayingMode>:
+    GridLayout:
+    # Image de fond
+        canvas.before:
+            BorderImage:
+                border: 10, 10, 10, 10
+                source: 'client/Images/red_bg.png'
+                pos: self.pos
+                size: self.size
+
+    BoxLayout:
+        pos_hint: {"center_x": .7, "center_y": .5}
+        size_hint: .3,.25
+        orientation: 'vertical'
+
+        Button:
+            text: "Multiplayer"
+            font_size: "20sp"
+            on_press: 
+                if app.is_logged(): app.manager.push("CreateOrJoin")
+                else: root.ModePopup()
+                    
+        Button:
+            text: "Singleplayer"
+            font_size: "20sp"
+            on_press:
+                app.manager.push("CreateSPGame"), app.ButtonSound()

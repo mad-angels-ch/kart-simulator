@@ -1,0 +1,127 @@
+<EndGameMode>:
+    canvas.before:
+        Color:
+            rgba: 0,0,0,.5
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    Label:
+        id: gameOverLabel_id
+        text: ""
+        font_size: "40sp"
+        halign: 'center'
+        color: 0.4, 1, 0.4, 1
+
+    Button:
+        size_hint:.2,.1
+        pos_hint: {'x':.4, 'y': .45}
+        font_size: "20sp"
+        text:"Quit game"
+        on_release: app.game.quitTheGame(), app.clear_game(), app.ButtonSound()
+
+
+
+
+<PauseMode>:
+    Button:
+        size_hint:.2,.1
+        pos_hint: {'x': .4 , 'y': .5 }
+        font_size: "20sp"
+        text:"Resume"
+        on_release: app.game.change_gameState(), app.ButtonSound()
+    Button:
+        size_hint:.2,.1
+        font_size: "20sp"
+        pos_hint: {'x': .4 , 'y': .4 }
+        text:"Settings"
+        on_release: app.manager.push("SettingsMenu"), app.ButtonSound()    
+    Button:
+        size_hint:.2,.1
+        font_size: "20sp"
+        pos_hint: {'x': .4 , 'y': .3 }
+        text:"Quit game"
+        on_release: app.game.quitTheGame(), app.clear_game(), app.ButtonSound()
+    
+
+<WaitingRoom>:
+    canvas.before:
+        Color:
+            rgba: 1,1,1,.5
+        Rectangle:
+            pos:self.pos
+            size:self.size
+
+    Label:
+        id: game_info
+        pos_hint: {'center_x': .8, 'center_y':.4 }
+        size_hint: .38, .6
+        color: 0,0,0,1
+        font_size: "20sp"
+        text: '[b][u][size=25]Game informations:[/b][/u][/size]\n° Name of the game: '
+        valign: "bottom"
+        markup: True
+
+
+
+<KS_screen>:
+    name: "Kart_Simulator"
+    size: app.windowSize()
+
+    ScatterLayout:
+        id: noActionBar
+        pos: 0,0
+        size: root.size
+        do_translation: False
+        do_rotation: False
+        do_scale: False
+
+    FloatLayout:
+        id: animationLayout
+        pos: 0,0
+        size: app.windowSize()
+
+    
+    GridLayout:
+        cols: 6
+        rows: 1
+        pos_hint: {'x': .25, 'y': .95}
+        size_hint: .5, .05
+        canvas.before:
+            Color:
+                rgba: 0,0,0,.5
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Label:
+            font_size: "15sp"
+            text: "Laps"
+            color: 0.4, 1, 0.4, .5
+
+        Label:
+            id: laps_id
+            font_size: "15sp"
+            text: "--/--"
+            color: 0.4, 1, 0.4, .5
+
+        Label:
+            text: "Gates"
+            font_size: "15sp"
+            color: 0.4, 1, 0.4, .5
+
+        Label:
+            id: gates_id
+            font_size: "15sp"
+            text: "--/--"
+            color: 0.4, 1, 0.4, .5
+        Label:
+            text: "Timer"
+            font_size: "15sp"
+            color: 0.4, 1, 0.4, .5
+        Label:
+            id: timer_id
+            font_size: "15sp"
+            text: "00:00:00"
+            color: 0.4, 1, 0.4, .5
+

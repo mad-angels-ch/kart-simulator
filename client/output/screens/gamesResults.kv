@@ -1,0 +1,151 @@
+<Results>:
+    BoxLayout:
+        orientation: 'vertical'
+        pos_hint: {'center_x':.5 , 'y':.75 }
+        size_hint: .7, .15
+        BoxLayout:
+            orientation: 'horizontal'
+            ToggleButton:
+                id: my_games
+                text: "My games"
+                font_size: "30sp"
+                state: "normal"
+                group: "resluts"
+                on_press:
+                    if not app.is_logged(): root.change_state(), root.SettingsPopup()
+            ToggleButton:
+                id: best_games
+                font_size: "30sp"
+                text: "Best games"
+                group: "resluts"
+
+
+        BoxLayout:
+            orientation: 'horizontal'
+            TextInput:
+                id:username
+                font_size: "20sp"
+
+                hint_text: "Username"
+            TextInput:
+                id: worldVersion_id
+                font_size: "20sp"
+                hint_text: "Version ID"
+            Spinner:
+                id: world
+                font_size: "20sp"
+                text: "All Worlds"
+                values: root.generateWorldsList()
+            TextInput:
+                id: maxGames
+                font_size: "20sp"
+                hint_text: "Max. games"
+            TextInput:
+                id: maxPlayers
+                font_size: "20sp"
+                hint_text: "Max. players to finish"
+            TextInput:
+                id: minPlayers
+                font_size: "20sp"
+                hint_text: "Min. players to finish"
+        Button:
+            text: "Search games"
+            font_size: "20sp"
+            on_release: root.search_games()
+
+    StackLayout:
+        pos_hint: {'center_x': .5, 'top':.7 }
+        size_hint: .9,None
+        BoxLayout:
+            id:entete
+            canvas.before:
+                Color:
+                    rgba: 0,0,0,.4
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            orientation: 'horizontal'
+            size_hint: 1, .2
+            height: 4
+            Label:
+                size_hint: .1,1
+                color: 0,0,0,1
+                text:"[b]Games[/b]"
+                font_size: "20sp"
+                halign:"left"
+                markup: True
+            Label:
+                size_hint: .18,1
+                color: 0,0,0,1
+                font_size: "20sp"
+                text:"[b]World Name[/b]"
+                halign:"left"
+                markup: True
+            Label:
+                size_hint: .18,1
+                color: 0,0,0,1
+                font_size: "20sp"
+                text:"[b]Winner[/b]"
+                halign:"left"
+                markup: True
+            Label:
+                size_hint: .18,1
+                color: 0,0,0,1
+                font_size: "20sp"
+                text:"[b]Time[/b]"
+                halign:"left"
+                markup: True
+            Label:
+                size_hint: .18,1
+                color: 0,0,0,1
+                font_size: "20sp"
+                text:"[b]Nb. of players[/b]"
+                halign:"left"
+                markup: True
+            Label:
+                size_hint: .18,1
+                color: 0,0,0,1
+                font_size: "20sp"
+                text:"[b]Date[/b]"
+                halign:"left"
+                markup: True
+
+    ScrollView:
+        pos_hint: {'center_x': .5, 'top':.65 }
+        size_hint: .9, .55
+        do_scroll_x: False
+        do_scroll_y: True
+        GridLayout:
+            size: (root.width, root.height)
+            id: table
+            size_hint: None, None
+            cols: 1
+            height: self.minimum_height
+            row_default_height: 50
+            row_force_default: True
+    
+    Label:
+        text: "[color=#000000]Not Burned[/color]"
+        pos_hint: {'center_x': .425, 'y':.05}
+        font_size: "20sp"
+        size_hint: .15, .025
+        markup: True
+        canvas.before:
+            Color:
+                rgba: 0,1,0,1
+            Rectangle:
+                size:self.size
+                pos:self.pos
+
+    Label:
+        text: "[color=#000000]Burned[/color]"
+        font_size: "20sp"
+        pos_hint: {'center_x': .575, 'y':.05}
+        size_hint: .15, .025
+        markup: True
+        canvas.before:
+            Color:
+                rgba: 1,0,0,1
+            Rectangle:
+                pos:self.pos
+                size:self.size

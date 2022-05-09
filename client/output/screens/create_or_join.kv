@@ -1,0 +1,22 @@
+<CreateOrJoin>:
+    GridLayout:
+    # Image de fond
+        canvas.before:
+            BorderImage:
+                border: 10, 10, 10, 10
+                source: 'client/Images/red_bg.png'
+                pos: self.pos
+                size: self.size
+    BoxLayout:
+        pos_hint: {"center_x": .7, "center_y": .5}
+        size_hint: .25,.2
+        orientation: 'vertical'
+
+        Button:
+            text: "Create a new game"
+            font_size: "20sp"
+            on_press: app.manager.push("CreateMPGame")
+        Button:
+            text: "Join an existing game"
+            font_size: "20sp"
+            on_press: app.manager.push("JoinMPGame")

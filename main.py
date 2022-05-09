@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import sentry_sdk
 
 sentry_sdk.init(
@@ -118,8 +119,15 @@ from kivy.core.window import Window
 Window.fullscreen = 'auto'
 Config.set("kivy", "exit_on_escape", "0")
 Config.set("input", "mouse", "mouse,multitouch_on_demand")
+=======
+from kivy.config import Config
+from kivy.core.window import Window
+from client.output.application import MenuApp
+>>>>>>> master
 
+# Window.fullscreen = 'auto'
+
+Config.set("kivy", "exit_on_escape", "0")
+Config.set("input", "mouse", "mouse,multitouch_on_demand")
 
 MenuApp().run()
-
-# ##########################################################################

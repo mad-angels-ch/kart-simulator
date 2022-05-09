@@ -1,6 +1,10 @@
-from kivy.graphics.transformation import Matrix
 from typing import List
-from kivy.graphics import Mesh, Rectangle, PushMatrix, Rotate, PopMatrix, Color, BindTexture
+from kivy.graphics import (
+    Rectangle,
+    PushMatrix,
+    Rotate,
+    PopMatrix,
+)
 from typing import List
 import math
 from client import io_objects
@@ -11,6 +15,8 @@ from kivy.uix.image import Image
 
 
 class IO_FilledQuadrilateral(Rectangle):
+    """Crée le rectangle à ajouter au canvas et prépare son ajout"""
+
     _scale: float
     _LGEFilledQuadrilateral: "io_objects.IO_FilledQuadrilateral"
 
@@ -19,31 +25,29 @@ class IO_FilledQuadrilateral(Rectangle):
         widget,
         LGEObject: "io_objects.IO_FilledQuadrilateral",
         source: str = None,
-        patternToRepeat: str = None
+        patternToRepeat: str = None,
     ):
-        """Crée le rectangle à ajouter au canvas et prépare son ajout"""
 
         self._LGEFilledQuadrilateral = LGEObject
         self._verticesBR = self._LGEFilledQuadrilateral.verticesBeforeRotation()
         _angle = self._LGEFilledQuadrilateral.angle() * 180 / math.pi
 
-        self.center =self._LGEFilledQuadrilateral.center()
-        self._size = (
-            self.get_sizeFromVertices()
-        )
+        self.center = self._LGEFilledQuadrilateral.center()
+        self._size = self.get_sizeFromVertices()
         position = self.get_position(self.center)
 
         if patternToRepeat:
             texture = None
-            texture = Image(source=patternToRepeat, allow_stretch = False, keep_ratio = True).texture
+            texture = Image(
+                source=patternToRepeat, allow_stretch=False, keep_ratio=True
+            ).texture
             texture.wrap = "repeat"
-            texture.uvsize = (self._size[0]//10,self._size[1]//10)
-            with widget.canvas:         # Ce type d'objet doit être placé dans l'instruction 'with self.canvas:'
+            texture.uvsize = (self._size[0] // 10, self._size[1] // 10)
+            with widget.canvas:  # Ce type d'objet doit être placé dans l'instruction 'with self.canvas:'
                 PushMatrix()
                 Rotate(origin=self.center, angle=_angle)
                 Rectangle.__init__(self, texture=texture, pos=position, size=self._size)
                 PopMatrix()
-            
 
         else:
             with widget.canvas:
