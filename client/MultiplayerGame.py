@@ -1,7 +1,7 @@
+from distutils.log import error
+from logging import warning
 from typing import AnyStr, Callable, Dict, List, Tuple
 
-import click
-import engineio
 import lib
 from game import Game, OnCollisionT
 from game.events import Event
@@ -109,21 +109,18 @@ class MultiplayerGame(ClientNamespace):
 
     def error(self, error: "None | str" = None) -> None:
         """Gestion des erreurs non fatales"""
-        print(error)
+        warning(error)
 
     def fatalError(self, error: "None | str" = None) -> None:
         """Gestion des erreurs fatales"""
         if error:
             self._changeLabelText("Fatal error...\n" + error, 6)
-            print(error)
             self.disconnect()
 
     def joiningError(self, error: "None | str" = None) -> None:
         """Gestion des erreur d'entrées en parties"""
         if error:
             self.executeInMainKivyThread(self.add_reconnectionPopup,error)
-            if click.confirm("Do you want to try again?"):
-                self.emit("join", self._name, callback=self.joiningError)
 
     def start(self) -> None:
         self.emit("start")
@@ -221,7 +218,6 @@ class MultiplayerGame(ClientNamespace):
     def on_disconnect(self) -> None:
         self._rotating = False
         self._moving = False
-        print("Connection perdue")
         if self.play:
             self.executeInMainKivyThread(self.try_reconnection)
 
@@ -298,8 +294,10 @@ class MultiplayerGame(ClientNamespace):
             self.popup = None
         try:
             self.emit("join", self._name, callback=self.joiningError)
-        except BadNamespaceError as b:
-            print(b)
+        except BadNamespaceError as e:
+            warning(e)
+        except BaseException as e:
+            error(e)
         
     def quit(self, b) -> None:
         """Appelé si le joueur renonce à se reconnecter à la partie en appuyant sur le bouton <Quit> du popup."""
