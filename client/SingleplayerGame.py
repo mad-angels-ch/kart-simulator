@@ -57,7 +57,7 @@ class SingleplayerGame:
                     self._output,
                 )
                 self.kart_ID = self._game.loadKart(
-                    "Me", self.app.get_userSettings()["kart"]
+                    self.app.get_userSettings()["username"], self.app.get_userSettings()["kart"]
                 )
 
                 self.app.start_ks()
@@ -104,7 +104,7 @@ class SingleplayerGame:
             Clock.schedule_once(
                 lambda a: self._game.loadKart(
                     placeHolder=self.kart_ID,
-                    username="",
+                    username=self.app.get_userSettings()["username"],
                     img=self.app.get_userSettings()["kart"],
                 ),
                 2 / self.fps,

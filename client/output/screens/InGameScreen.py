@@ -34,6 +34,7 @@ class WaitingRoom(FloatLayout):
             "swung to the dark side...",
         ]
 
+
     def set_laps(self, laps: int) -> None:
         """Met à jour les informations de la partie."""
         self.ids.game_info.text += f"° Number of laps: [color=#ff0000]{laps}[/color]\n"
@@ -42,6 +43,8 @@ class WaitingRoom(FloatLayout):
         """Ajoute un joueur à la liste lors d'une connection."""
         if player in ["lj44", "Noe"]:
             self.ids.game_info.text += f"\n --> {player} THE BOSS IS IN THE PLACE !"
+        elif player in ["H2PtCl6"]:
+            self.ids.game_info.text += "\n --> Prof. Manganese is in the place !"
         elif player in ["CHAJ", "chaj", "johnschmidt"]:
             self.ids.game_info.text += (
                 f"\n --> Bienvenue {player}. Ce projet mérite un 6."

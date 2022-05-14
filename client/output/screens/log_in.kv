@@ -8,12 +8,7 @@
                 pos: self.pos
                 size: self.size
 
-    Label:
-        id: errorLabel
-        pos_hint: {'center_x':.5,'center_y':.8}
-        size_hint: .4, .06
-        font_size: "20sp"
-        text: ""
+
     Label:
         color: 0,0,0,1
         pos_hint: {'x':.5,'y':.6}
@@ -45,3 +40,10 @@
         pos_hint: {'center_x':.8,'y':.4}
         size_hint: .2, .06
         on_press: root.log_in()
+    Label:
+        id: errorLabel
+        pos_hint: {'center_x':.5,'center_y':.8}
+        size_hint: .4, .06
+        font_size: "20sp"
+        color: "#000000"
+        text: ""
