@@ -282,12 +282,12 @@ class OutputFactory:
         )
         self._createdObjects[lgeKart.formID()] = ioKart
         if self.POV == "Third Person":
-            if lgeKart.username() not in self._labels:
-                lab_username = Label(text=lgeKart.username(), font_size=sp(32),color=(0,0,0,1), pos=(ioKart.pos[0], ioKart.pos[1] + 10/self._scale))
-                self._labels[lgeKart.username()] = lab_username
-                self._w.add_widget(lab_username)
-            else:
-                self._labels[lgeKart.username()].pos = (ioKart.pos[0], ioKart.pos[1] + 10/self._scale)
+            if lgeKart.username() in self._labels:
+                self._w.remove_widget(self._labels[lgeKart.username()])
+                
+            lab_username = Label(text=lgeKart.username(), font_size=sp(32),color=(0,0,0,1), pos=(ioKart.pos[0], ioKart.pos[1] + 10/self._scale))
+            self._labels[lgeKart.username()] = lab_username
+            self._w.add_widget(lab_username)
 
     def createFinishLine(self, lgeFinishLine: game_objects.FinishLine) -> None:
         """Dessine la ligne d'arrivée sur le canvas du widget et l'ajout au registre"""
