@@ -18,6 +18,7 @@ Builder.load_file("client/output/screens/InGameScreen.kv")
 class WaitingRoom(FloatLayout):
     def __init__(self, gameName, **kwargs):
         super().__init__(**kwargs)
+        self.is_initialized = False
         self.ids.game_info.text += f"[color=#ff0000]{gameName}[/color]\n"
         self.entries = [
             "finally got up and joined the game !",
@@ -37,7 +38,9 @@ class WaitingRoom(FloatLayout):
 
     def set_laps(self, laps: int) -> None:
         """Met à jour les informations de la partie."""
-        self.ids.game_info.text += f"° Number of laps: [color=#ff0000]{laps}[/color]\n"
+        if not self.is_initialized:
+            self.ids.game_info.text += f"° Number of laps: [color=#ff0000]{laps}[/color]\n"
+            self.is_initialized = True
 
     def add_player(self, player: str):
         """Ajoute un joueur à la liste lors d'une connection."""
