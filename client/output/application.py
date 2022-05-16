@@ -223,6 +223,7 @@ class MenuApp(App):
             worlds = self.session.get(
                 self.server + "/creator/kart/worldsjson",
                 params={"id": True, "worldVersion_id": True, "name": True},
+                timeout=1
             ).json()
         except requests.ConnectionError:
             self._updating = False
