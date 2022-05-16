@@ -1,3 +1,4 @@
+import webbrowser
 from client.output.screens.layouts import CustomPopup
 from kivy.app import App
 from kivy.lang import Builder
@@ -15,7 +16,7 @@ class UserSettings(FloatLayout):
         """Ajoute le Popup qui demande à l'utilisateur s'il veut se logger"""
         self.popup = CustomPopup(
             "You must be logged in to use this function.",
-            functions={"Log In":self.yes, "No": self.redirect}
+            functions={"Log In":self.yes,"Sign Up":lambda _:webbrowser.open(f"{self.app.server}/auth/register"), "No": self.redirect}
         )
         self.add_widget(self.popup)
 

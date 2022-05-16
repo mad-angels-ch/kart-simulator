@@ -1,3 +1,4 @@
+import webbrowser
 from kivy.uix.floatlayout import FloatLayout
 from kivy.lang import Builder
 from .layouts import CustomPopup
@@ -11,7 +12,7 @@ class PlayingMode(FloatLayout):
         """Ajoute le Popup qui demande à l'utilisateur s'il veut se logger"""
         self.popup = CustomPopup(
             "You must be logged in to play to this mode.",
-            functions={"Log In":self.yes, "No": self.redirect}
+            functions={"Log In":self.yes,"Sign Up":lambda _:webbrowser.open(f"{self.app.server}/auth/register"), "No": self.redirect}
         )
         self.add_widget(self.popup)
 
