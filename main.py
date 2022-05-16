@@ -6,7 +6,7 @@ sentry_sdk.init(
     # of transactions for performance monitoring.
     # We recommend adjusting this value in production.
     traces_sample_rate=1.0,
-    release="kart-simulator@2.0.1",
+    release="kart-simulator@2.0.2",
 )
 
 from kivy.config import Config
