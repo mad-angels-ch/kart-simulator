@@ -43,4 +43,4 @@
         Button:
             font_size: "20sp"
             text: "Sign up"
-            on_press: webbrowser.open(f"{app.server}/auth/register"), app.ButtonSound()
+            on_press: webbrowser.open(f"{app.server}/auth/register", autoraise=True), app.ButtonSound()
