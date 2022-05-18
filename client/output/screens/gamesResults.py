@@ -190,7 +190,7 @@ class Results(FloatLayout):
         """Ajoute le Popup qui demande à l'utilisateur s'il veut se logger."""
         self.popup = CustomPopup(
             "You must be logged in to use this function.",
-            functions={"Log In":self.pushLogIn,"Sign Up":lambda _:webbrowser.open(f"{self.app.server}/auth/register"),"No":lambda _: self.remove_widget(self.popup)}
+            functions={"Log In":self.pushLogIn,"Sign Up":lambda _:webbrowser.open(f"{self.app.server}/auth/register", autoraise=True),"No":lambda _: self.remove_widget(self.popup)}
         )
         self.add_widget(self.popup)
 

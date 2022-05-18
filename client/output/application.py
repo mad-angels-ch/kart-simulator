@@ -26,6 +26,7 @@ class MenuApp(App):
     soundEnabled = True
     cookiesPath = "client/cookies"
     server = "https://lj44.ch"
+    # server = "https://test.lj44.ch"
     # server = "http://localhost:5044"
 
     _isLogged: bool = True
@@ -222,6 +223,7 @@ class MenuApp(App):
             worlds = self.session.get(
                 self.server + "/creator/kart/worldsjson",
                 params={"id": True, "worldVersion_id": True, "name": True},
+                timeout=1
             ).json()
         except requests.ConnectionError:
             self._updating = False
