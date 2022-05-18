@@ -30,12 +30,15 @@
         BoxLayoutWithActionBar:
             title: "Create A Game"
             CreateGame:
+                id:game
                 FloatLayout:
                     TextInput:
                         hint_text: "Game name"
                         font_size: "20sp"
                         pos_hint: {"x":.499,"y":.91}
                         size_hint: .25,.045
+                        multiline: False
+                        on_text_validate: game.ids["playButton"].trigger_action()
 
                     Label:
                         font_size: "20sp"

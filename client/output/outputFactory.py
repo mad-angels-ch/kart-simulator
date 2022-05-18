@@ -284,7 +284,14 @@ class OutputFactory:
         )
         self._createdObjects[lgeKart.formID()] = ioKart
         if self.POV == "Third Person":
-            lab_username = Label(text=lgeKart.username(), font_size=sp(20/self._scale),color=(0,0,0,1), pos=(ioKart.pos[0], ioKart.pos[1] + 10/self._scale))
+            if lgeKart.username() in self._labels:
+                self._w.remove_widget(self._labels[lgeKart.username()])
+            lab_username = Label(
+                text=lgeKart.username(),
+                font_size=sp(20 / self._scale),
+                color=(0, 0, 0, 1),
+                pos=(ioKart.pos[0], ioKart.pos[1] + 10 / self._scale),
+            )
             self._labels[lgeKart.username()] = lab_username
             self._w.add_widget(lab_username)
 
