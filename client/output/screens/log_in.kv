@@ -16,25 +16,35 @@
         size_hint: .2, .06
         text: "Username"
     TextInput:
+        id: username
         pos_hint: {'x':.7,'y':.6}
         font_size: "20sp"
         size_hint: .2, .06
-        id: username
         hint_text: "Username"
+        multiline: False
+        write_tab: False
+        on_text_validate: confirmButton.trigger_action()
+
     Label:        
         color: 0,0,0,1
         font_size: "20sp"
         pos_hint: {'x':.5,'y':.5}
         size_hint: .2, .06
         text: "Password"
+
     TextInput:
+        id: password
         pos_hint: {'x':.7,'y':.5}
         font_size: "20sp"
         size_hint: .2, .06
         hint_text: "Password"
         password: True
-        id: password
+        multiline: False
+        on_text_validate: confirmButton.trigger_action()
+
+
     Button:
+        id: confirmButton
         text:"Log In"
         font_size: "20sp"
         pos_hint: {'center_x':.8,'y':.4}
