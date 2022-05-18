@@ -194,7 +194,7 @@ class MenuApp(App):
             if self.userSettings.get("error") == 401:
                 self._isLogged = False
                 self.userSettings = {
-                    "kart": "Green_kart",
+                    "kart": "Red_kart",
                     "music": "No Music",
                     "pov": "Third Person",
                     "username": "Anonyme user",

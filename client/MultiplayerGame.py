@@ -41,6 +41,7 @@ class MultiplayerGame(ClientNamespace):
         super().__init__("/kartmultiplayer")
         self.play = False
         self.pauseMode = False
+        self.start_button = None
         self.parentScreen = parentScreen
         self._name = name
         self._worldVersion_id = worldVersion_id
@@ -125,6 +126,7 @@ class MultiplayerGame(ClientNamespace):
     def start(self) -> None:
         self.emit("start")
         self.waitingScreen.remove_widget(self.start_button)
+        self.start_button = None
 
     def newEvent(self, event: Event) -> None:
         """Fonction permettant la transmition d'inputs du joueur au server"""

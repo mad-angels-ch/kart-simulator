@@ -11,6 +11,9 @@ def keyboard_closed(self) -> None:
 
 
 def keyboard_down(self, keyboard, keycode, text, modifiers) -> True:
+    if keycode[1] in ["enter"] and self.start_button:
+        self.start_button.trigger_action()
+        
     if (
         keycode[1] in ["left", "a"]
         and self.play
