@@ -1,10 +1,14 @@
-from kivy.config import Config
-from kivy.core.window import Window
-from client.output.application import MenuApp
+import sys
 
-# Window.fullscreen = 'auto'
+from PySide6.QtGui import QGuiApplication
+from PySide6.QtQml import QQmlApplicationEngine
+from PySide6.QtCore import QUrl
 
-Config.set("kivy", "exit_on_escape", "0")
-Config.set("input", "mouse", "mouse,multitouch_on_demand")
+if __name__ == "__main__":
+    app = QGuiApplication(sys.argv)
 
-MenuApp().run()
+    engine = QQmlApplicationEngine(QUrl("qml/Main.qml"))
+    if not engine.rootObjects():
+        sys.exit(-1)
+
+    sys.exit(app.exec())
