@@ -14,7 +14,11 @@
         id: gameName
         font_size: "20sp"
         hint_text: "Game name"
+        multiline: False
+        on_text_validate: joinButton.trigger_action()
+
     Button:
+        id: joinButton
         pos_hint: {'center_x':.5,'y':.4}
         size_hint: .2, .1
         font_size: "20sp"
